@@ -76,14 +76,110 @@ https://youtu.be/aIIc2DiZYcI
 ## MANUAL BUILD INSTRUCTIONS:
 Begin by preparing a copy of the Raspberry Pi Lite operating system (https://www.raspberrypi.org/software/operating-systems/) on a MicroSD card. Their [Raspberry Pi Imager](https://www.raspberrypi.org/software/) tool makes this easy.
 
+#### Update SD card
+After flashing the SD card, re-insert it into your computer and navigate to the drive named boot:
+
+```
+# Mac/Linux
+cd /Volumes/boot
+
+# Windows (alter with correct drive letter):
+cd e:
+```
+
+Then create a blank file there called `ssh`. This will allow us to remotely access the device from the command line.
+```
+# Mac/Linux:
+touch ssh
+
+# Windows:
+type nul > ssh
+```
+
+We also need to enable the support for the second SPI channel (screen uses one channel, touch support uses another). Edit the config.txt:
+
+```
+# mac/Linux:
+nano config.txt
+
+# windows
+notepad.exe config.txt  # ??
+```
+
+Find the lines that look like this:
+
+```
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+```
+
+Then uncomment the `spi=on` line and add support for the second SPI channel:
+
+```
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+dtparam=spi=on
+dtoverlay=spi1-1cs
+```
+
+Then `CTRL-X` to exit and `y` to save changes.
+
+
+## Installing dependencies
+
 SeedSigner installation and configuration requires an internet connection on the device to download the necessary libraries and code. But because the Pi Zero 1.3 does not have onboard wifi, you have two options:
 
 1. Run these steps on a separate Raspberry Pi 2/3/4 or Zero W which can connect to the internet and then transfer the SD card to the Pi Zero 1.3 when complete.
 2. OR configure the Pi Zero 1.3 directly by relaying through your computer's internet connection over USB. See instructions [here](docs/usb_relay.md).
 
-Connect a keyboard & monitor to the device or SSH into the Pi if you're familiar with that process.
+The next steps will assume that you have connected a keyboard & monitor to the device or SSHed directly into the Pi (`ssh pi@raspberrypi.local`; default password is `raspberry`).
+
 
 ### Configure the Pi
+First change the default password for the pi user:
+
+```
+passwd
+# (when prompted, the default password is "raspberry")
+```
+
+Now change the device's default name from raspberrypi:
+
+```
+sudo nano /etc/hostname
+```
+
+Change the entry to any name you like (typically seedsigner). Hit `CTRL-X` to exit and then `y` to save your changes. Then:
+
+```
+sudo nano /etc/hosts
+```
+
+You should see an entry like:
+
+```
+127.0.0.1   raspberrypi
+```
+
+Update `raspberrypi` to match whatever you set in /etc/hostname. `CTRL-X` and `y`.
+
+Restart the pi: `sudo reboot`
+
+The next time you SSH in, instead of `ssh pi@raspberrypi.local` you'll now use the new hostname:
+
+```
+ssh pi@seedsigner.local
+```
+
+Ensure the pi user can access SPI
+
+```
+sudo usermod -a -G spi,gpio pi
+```
+
 On the Pi bring up its system config:
 ```
 sudo raspi-config
@@ -99,6 +195,20 @@ Set the following:
 * WiFi settings (only necessary for the option #1 setup above)
 
 Exit and reboot when prompted within the raspi-config interface.
+
+When it's back up you should now confirm that you have two SPI channels enabled:
+
+```
+ls -l /dev/spidev*
+```
+
+Should see something like:
+
+```
+crw-rw---- 1 root spi 153, 0 Jul 25 05:52 /dev/spidev0.0
+crw-rw---- 1 root spi 153, 1 Jul 25 05:52 /dev/spidev0.1
+crw-rw---- 1 root spi 153, 2 Jul 25 05:52 /dev/spidev1.0
+```
 
 Install these dependencies:
 ```
@@ -173,3 +283,36 @@ _Reminder: If you used option #2, [return the guide](docs/usb_relay.md) to remov
 
 ## Run the tests
 see: [tests/README.md](tests/README.md)
+
+
+# Advanced developer notes
+
+## Backup an SD card
+
+You can back up and restore any size SD card but the process is a little inefficient so the bigger the source SD card, the bigger the backup will be and the longer it'll take to create (and even longer to image back to a new SD card), even if most of the card is blank.
+
+You can restore a backup image to an SD card of the same or larger size. So it's strongly recommended to do repetitive development work on a smaller card that's easier to backup and restore. Once the image is stabilized, then write it to a bigger card, if necessary (that being said, there's really no reason to use a large SD card for SeedSigner. An 8GB SD card is more than big enough).
+
+Insert the SD card into a Mac/Linux machine and create a compressed img file.
+
+First verify the name of your SD card:
+
+```
+# Mac:
+diskutil list
+
+# Linux:
+sudo fdisk -l
+```
+
+It will most likely be `/dev/disk1` on most systems.
+
+Now we use `dd` to clone and `gzip` to compress it. Note that we reference the SD card by adding an `r` in front of the disk name. This speeds up the cloning considerably.
+
+```
+sudo dd if=/dev/rdisk1 conv=sparse bs=4m | gzip -9 > seedsigner.img.gz
+```
+
+The process should take about 15 minutes and will typically generate a roughly 1.1GB image.
+
+To restore from your backup image, just use the Raspberry Pi Imager. Remember that you can only write it to an SD card of equal or greater size than the original SD card.
