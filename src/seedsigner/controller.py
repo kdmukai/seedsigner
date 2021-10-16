@@ -73,7 +73,7 @@ class Controller(Singleton):
         controller.settings_tools_view = SettingsToolsView()
         controller.screensaver = ScreensaverView(controller.buttons)
 
-        controller.screensaver_activation_ms = 120 * 1000
+        controller.screensaver_activation_ms = 120000 * 1000
 
 
     @property
@@ -158,6 +158,8 @@ class Controller(Singleton):
                 ret_val = self.show_camera_rotation_tool()
             elif ret_val == Path.DONATE:
                 ret_val = self.show_donate_tool()
+            elif ret_val == Path.DE_GHOST:
+                ret_val = self.show_de_ghost_tool()
             elif ret_val == Path.RESET:
                 ret_val = self.show_reset_tool()
             elif ret_val == Path.POWER_OFF:
@@ -852,6 +854,13 @@ class Controller(Singleton):
             time.sleep(1)
             input = self.buttons.wait_for([B.KEY_RIGHT])
             return Path.MAIN_MENU
+
+    def show_de_ghost_tool(self):
+        self.settings_tools_view.display_de_ghost_screen()
+
+        input = self.buttons.wait_for(B.ALL_KEYS)
+
+        return Path.SETTINGS_SUB_MENU
 
     def show_reset_tool(self):
         self.menu_view.draw_modal(["This will restore", "default settings and", "restart the app", ""], "Warning", "Right to Continue")

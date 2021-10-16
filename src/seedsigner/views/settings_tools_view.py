@@ -274,3 +274,21 @@ class SettingsToolsView(View):
             text_entry_display.render(self.derivation)
     
             View.DispShowImage()
+
+
+    def display_de_ghost_screen(self):
+        import random
+        # De-Ghost the screen if any sensitive info was displayed for too long and has
+        #   temporarily "burned" into the screen that can persist even through a power
+        #   cycle.
+        # Random black/white pixel flips should flush and reset each pixel
+
+        color = "black"
+        for i in range(0,25):
+            if color == "black":
+                color = "white"
+            else:
+                color = "black"
+            View.draw.rectangle((0, 0, View.canvas_width, View.canvas_height), outline=0, fill=color)
+            View.DispShowImage()
+

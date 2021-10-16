@@ -124,7 +124,18 @@ class MenuView(View):
     ### Settings Menu
 
     def display_settings_menu(self) -> int:
-        lines = ["... [ Return to Main ]", "Wallet: <wallet>", "Network: <network>", "QR Density: <density>", "Input / Output Tests", "Persistent Settings: <persistent>", "Camera Rotation", "Version Info", "Donate to SeedSigner", "Reset SeedSigner"]
+        lines = [
+            "... [ Return to Main ]",
+            "Wallet: <wallet>",
+            "Network: <network>",
+            "QR Density: <density>",
+            "Input / Output Tests",
+            "Persistent Settings: <persistent>",
+            "Camera Rotation",
+            "Version Info",
+            "Donate to SeedSigner",
+            "De-Ghost Screen",
+            "Reset SeedSigner"]
         input = 0
         
         lines[1] = lines[1].replace("<wallet>", Settings.get_instance().software)
@@ -163,6 +174,8 @@ class MenuView(View):
                 elif self.selected_menu_num == 9:
                     return Path.DONATE
                 elif self.selected_menu_num == 10:
+                    return Path.DE_GHOST
+                elif self.selected_menu_num == 11:
                     return Path.RESET
         raise Exception("Unhandled case")
 
