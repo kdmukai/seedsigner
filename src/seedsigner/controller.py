@@ -105,7 +105,9 @@ class Controller(Singleton):
         from .views import View, Destination, OpeningSplashView, MainMenuView, BackStackView
 
         opening_splash = OpeningSplashView()
-        # opening_splash.start()
+        opening_splash.start()
+
+        self.start_screensaver()
 
         """ Class references can be stored as variables in python!
 
