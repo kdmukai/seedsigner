@@ -35,7 +35,9 @@ class SeedsMenuView(View):
     def run(self):
         if not self.seeds:
             # Nothing to do here unless we have a seed loaded
-            return Destination(LoadSeedView)
+            destination = Destination(LoadSeedView)
+            destination.skip_current_view = True
+            return destination
 
         button_data = []
         for seed in self.seeds:
