@@ -1,3 +1,4 @@
+import gettext
 import json
 import os
 
@@ -102,6 +103,16 @@ class Settings(Singleton):
         if attr_name == SettingsConstants.SETTING__PERSISTENT_SETTINGS and value == SettingsConstants.OPTION__DISABLED:
             os.remove(self.SETTINGS_FILENAME)
             print(f"Removed {self.SETTINGS_FILENAME}")
+
+        # Special handling for babel
+        if attr_name == SettingsConstants.SETTING__LOCALE:
+            # `value` will be the language code (e.g. "en", "es", "de", etc)
+            os.environ['LANGUAGE'] = value
+
+            # Re-initialize babel with the new locale
+            gettext.install('messages', localedir='seedsigner/resources/babel')
+
+            print(f"Set LANGUAGE locale to {os.environ['LANGUAGE']}")
 
         self._data[attr_name] = value
         self.save()

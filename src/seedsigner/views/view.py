@@ -128,14 +128,14 @@ class MainMenuView(View):
         from .tools_views import ToolsMenuView
         from seedsigner.gui.screens import LargeButtonScreen
         menu_items = [
-            (("Scan", FontAwesomeIconConstants.QRCODE), ScanView),
-            (("Seeds", FontAwesomeIconConstants.KEY), SeedsMenuView),
-            (("Tools", FontAwesomeIconConstants.SCREWDRIVER_WRENCH), ToolsMenuView),
-            (("Settings", FontAwesomeIconConstants.GEAR), SettingsMenuView),
+            ((_("Scan"), FontAwesomeIconConstants.QRCODE), ScanView),
+            ((_("Seeds"), FontAwesomeIconConstants.KEY), SeedsMenuView),
+            ((_("Tools"), FontAwesomeIconConstants.SCREWDRIVER_WRENCH), ToolsMenuView),
+            ((_("Settings"), FontAwesomeIconConstants.GEAR), SettingsMenuView),
         ]
 
         screen = LargeButtonScreen(
-            title="Home",
+            title=_("Home"),
             title_font_size=26,
             button_data=[entry[0] for entry in menu_items],
             show_back_button=False,

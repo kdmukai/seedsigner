@@ -40,9 +40,17 @@ class SettingsConstants:
         (COORDINATOR__SPECTER_DESKTOP, "Specter Desktop"),
     ]
 
-    LANGUAGE__ENGLISH = "en"
-    ALL_LANGUAGES = [
-        (LANGUAGE__ENGLISH, "English"),
+    LOCALE__CZECH = "cs"
+    LOCALE__ENGLISH = "en"
+    LOCALE__FRENCH = "fr"
+    LOCALE__GERMAN = "de"
+    LOCALE__SPANISH = "es"
+    ALL_LOCALES = [
+        (LOCALE__CZECH, "Czech"),
+        (LOCALE__ENGLISH, "English"),
+        (LOCALE__FRENCH, "French"),
+        (LOCALE__GERMAN, "German"),
+        (LOCALE__SPANISH, "Spanish"),
     ]
 
     BTC_DENOMINATION__BTC = "btc"
@@ -137,7 +145,7 @@ class SettingsConstants:
 
     
     # Individual SettingsEntry attr_names
-    SETTING__LANGUAGE = "language"
+    SETTING__LOCALE = "locale"
     SETTING__WORDLIST_LANGUAGE = "wordlist_language"
     SETTING__PERSISTENT_SETTINGS = "persistent_settings"
     SETTING__COORDINATORS = "coordinators"
@@ -330,14 +338,12 @@ class SettingsDefinition:
     settings_entries: List[SettingsEntry] = [
         # General options
 
-        # TODO: Full babel multilanguage support! Until then, type == HIDDEN
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
-                      attr_name=SettingsConstants.SETTING__LANGUAGE,
+                      attr_name=SettingsConstants.SETTING__LOCALE,
                       display_name="Language",
                       type=SettingsConstants.TYPE__SELECT_1,
-                      visibility=SettingsConstants.VISIBILITY__HIDDEN,
-                      selection_options=SettingsConstants.ALL_LANGUAGES,
-                      default_value=SettingsConstants.LANGUAGE__ENGLISH),
+                      selection_options=SettingsConstants.ALL_LOCALES,
+                      default_value=SettingsConstants.LOCALE__ENGLISH),
 
         # TODO: Support other bip-39 wordlist languages! Until then, type == HIDDEN
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,

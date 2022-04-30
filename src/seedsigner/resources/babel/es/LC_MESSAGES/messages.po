@@ -1,0 +1,42 @@
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# 
+# Translators:
+# Keith Mukai, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-04-29 08:48-0500\n"
+"PO-Revision-Date: 2022-04-29 13:50+0000\n"
+"Last-Translator: Keith Mukai, 2022\n"
+"Language-Team: Spanish (https://www.transifex.com/the-seedsigner-project/teams/135832/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.1\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/seedsigner/views/view.py:132
+msgid "Scan"
+msgstr "Escanear"
+
+#: src/seedsigner/views/view.py:133
+msgid "Seeds"
+msgstr "Llaves"
+
+#: src/seedsigner/views/view.py:134
+msgid "Tools"
+msgstr "Útiles"
+
+#: src/seedsigner/views/view.py:135
+msgid "Settings"
+msgstr "Ajustes"
+
+#: src/seedsigner/views/view.py:139
+msgid "Home"
+msgstr "Principal"
