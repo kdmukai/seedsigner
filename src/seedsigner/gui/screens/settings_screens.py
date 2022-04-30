@@ -122,7 +122,7 @@ class IOTestScreen(BaseTopNavScreen):
         self.components.append(self.joystick_right_button)
 
         # Hardware keys UI
-        font = Fonts.get_font(GUIConstants.BUTTON_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+        font = Fonts.get_font(GUIConstants.get_button_font_name(), GUIConstants.BUTTON_FONT_SIZE)
         (left, top, text_width, bottom) = font.getbbox(text="Clear", anchor="ls")
         icon = Icon(
             icon_name=FontAwesomeIconConstants.CAMERA, 

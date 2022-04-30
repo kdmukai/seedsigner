@@ -27,37 +27,61 @@ class GUIConstants:
     TESTNET_COLOR = "#00f100"
     REGTEST_COLOR = "#00caf1"
 
-    ICON_FONT_NAME__FONT_AWESOME = "Font_Awesome_6_Free-Solid-900"
-    ICON_FONT_NAME__SEEDSIGNER = "seedsigner-glyphs"
+    ICON_FONT_NAME__FONT_AWESOME = "Font_Awesome_6_Free-Solid-900.otf"
+    ICON_FONT_NAME__SEEDSIGNER = "seedsigner-glyphs.otf"
     ICON_FONT_SIZE = 22
     ICON_INLINE_FONT_SIZE = 24
     ICON_LARGE_BUTTON_SIZE = 36
     ICON_PRIMARY_SCREEN_SIZE = 50
 
-    TOP_NAV_TITLE_FONT_NAME = "OpenSans-SemiBold"
+    TOP_NAV_TITLE_FONT_NAME = {
+        "default": "OpenSans-SemiBold.ttf",
+        "ja": "multilanguage/NotoSansJP-Regular.otf",
+    }
     TOP_NAV_TITLE_FONT_SIZE = 20
     TOP_NAV_HEIGHT = 48
     TOP_NAV_BUTTON_SIZE = 32
 
-    BODY_FONT_NAME = "OpenSans-Regular"
+    BODY_FONT_NAME = "OpenSans-Regular.ttf"
     BODY_FONT_SIZE = 17
     BODY_FONT_MAX_SIZE = TOP_NAV_TITLE_FONT_SIZE
     BODY_FONT_MIN_SIZE = 15
     BODY_FONT_COLOR = "#f8f8f8"
     BODY_LINE_SPACING = COMPONENT_PADDING
 
-    FIXED_WIDTH_FONT_NAME = "Inconsolata-Regular"
-    FIXED_WIDTH_EMPHASIS_FONT_NAME = "Inconsolata-SemiBold"
+    FIXED_WIDTH_FONT_NAME = "Inconsolata-Regular.ttf"
+    FIXED_WIDTH_EMPHASIS_FONT_NAME = "Inconsolata-SemiBold.ttf"
 
     LABEL_FONT_SIZE = BODY_FONT_MIN_SIZE
     LABEL_FONT_COLOR = "#777"
 
-    BUTTON_FONT_NAME = "OpenSans-SemiBold"
+    BUTTON_FONT_NAME = {
+        "default": "OpenSans-SemiBold.ttf",
+        "ja": "multilanguage/NotoSansJP-Regular.otf",
+    }
     BUTTON_FONT_SIZE = 18
     BUTTON_FONT_COLOR = "#e8e8e8"
     BUTTON_BACKGROUND_COLOR = "#2c2c2c"
     BUTTON_HEIGHT = 32
     BUTTON_SELECTED_FONT_COLOR = "black"
+
+
+    @staticmethod
+    def get_top_nav_title_font_name():
+        locale = Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE)
+        if locale in GUIConstants.TOP_NAV_TITLE_FONT_NAME:
+            return GUIConstants.TOP_NAV_TITLE_FONT_NAME[locale]
+        else:
+            return GUIConstants.TOP_NAV_TITLE_FONT_NAME["default"]
+
+
+    @staticmethod
+    def get_button_font_name():
+        locale = Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE)
+        if locale in GUIConstants.BUTTON_FONT_NAME:
+            return GUIConstants.BUTTON_FONT_NAME[locale]
+        else:
+            return GUIConstants.BUTTON_FONT_NAME["default"]
 
 
 
@@ -181,20 +205,17 @@ class Fonts(Singleton):
     fonts = {}
 
     @classmethod
-    def get_font(cls, font_name, size, file_extension: str = "ttf") -> ImageFont.FreeTypeFont:
+    def get_font(cls, font_name, size) -> ImageFont.FreeTypeFont:
         # Cache already-loaded fonts
         if font_name not in cls.fonts:
             cls.fonts[font_name] = {}
         
-        if font_name in [GUIConstants.ICON_FONT_NAME__FONT_AWESOME, GUIConstants.ICON_FONT_NAME__SEEDSIGNER]:
-            file_extension = "otf"
-        
         if size not in cls.fonts[font_name]:
             try:
-                cls.fonts[font_name][size] = ImageFont.truetype(os.path.join(cls.font_path, f"{font_name}.{file_extension}"), size)
+                cls.fonts[font_name][size] = ImageFont.truetype(os.path.join(cls.font_path, font_name), size)
             except OSError as e:
                 if "cannot open resource" in str(e):
-                    raise Exception(f"Font {font_name}.ttf not found: {repr(e)}")
+                    raise Exception(f"Font {font_name} not found: {repr(e)}")
                 else:
                     raise e
 
@@ -427,9 +448,9 @@ class Icon(BaseComponent):
         super().__post_init__()
 
         if SeedSignerCustomIconConstants.MIN_VALUE <= self.icon_name and self.icon_name <= SeedSignerCustomIconConstants.MAX_VALUE:
-            self.icon_font = Fonts.get_font(GUIConstants.ICON_FONT_NAME__SEEDSIGNER, self.icon_size, file_extension="otf")
+            self.icon_font = Fonts.get_font(GUIConstants.ICON_FONT_NAME__SEEDSIGNER, self.icon_size)
         else:
-            self.icon_font = Fonts.get_font(GUIConstants.ICON_FONT_NAME__FONT_AWESOME, self.icon_size, file_extension="otf")
+            self.icon_font = Fonts.get_font(GUIConstants.ICON_FONT_NAME__FONT_AWESOME, self.icon_size)
         
         # Set width/height based on exact pixels that are rendered
         (left, top, self.width, bottom) = self.icon_font.getbbox(self.icon_name, anchor="ls")
@@ -994,7 +1015,7 @@ class Button(BaseComponent):
     text_y_offset: int = 0
     background_color: str = GUIConstants.BUTTON_BACKGROUND_COLOR
     selected_color: str = GUIConstants.ACCENT_COLOR
-    font_name: str = GUIConstants.BUTTON_FONT_NAME
+    font_name: str = GUIConstants.get_button_font_name()
     font_size: int = GUIConstants.BUTTON_FONT_SIZE
     font_color: str = GUIConstants.BUTTON_FONT_COLOR
     selected_font_color: str = GUIConstants.BUTTON_SELECTED_FONT_COLOR
@@ -1191,7 +1212,7 @@ class TopNav(BaseComponent):
     background_color: str = GUIConstants.BACKGROUND_COLOR
     icon_name: str = None
     icon_color: str = GUIConstants.BODY_FONT_COLOR
-    font_name: str = GUIConstants.TOP_NAV_TITLE_FONT_NAME
+    font_name: str = GUIConstants.get_top_nav_title_font_name()
     font_size: int = GUIConstants.TOP_NAV_TITLE_FONT_SIZE
     font_color: str = "#fcfcfc"
     show_back_button: bool = True

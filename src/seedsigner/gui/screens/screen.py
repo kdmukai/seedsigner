@@ -257,7 +257,7 @@ class ButtonListScreen(BaseTopNavScreen):
     selected_button: int = 0
     is_button_text_centered: bool = True
     is_bottom_list: bool = False
-    button_font_name: str = GUIConstants.BUTTON_FONT_NAME
+    button_font_name: str = GUIConstants.get_button_font_name()
     button_font_size: int = GUIConstants.BUTTON_FONT_SIZE
     button_selected_color: str = GUIConstants.ACCENT_COLOR
 
@@ -511,7 +511,7 @@ class ButtonListScreen(BaseTopNavScreen):
 @dataclass
 class LargeButtonScreen(BaseTopNavScreen):
     button_data: list = None                  # list can be a mix of str or tuple(label: str, icon_name: str)
-    button_font_name: str = GUIConstants.BUTTON_FONT_NAME
+    button_font_name: str = GUIConstants.get_button_font_name()
     button_font_size: int = 20
     button_selected_color: str = GUIConstants.ACCENT_COLOR
     selected_button: int = 0

@@ -242,7 +242,7 @@ class ToolsDiceEntropyEntryScreen(BaseTopNavScreen):
                 # Render a new TextArea over the TopNav title bar
                 TextArea(
                     text=f"Dice Roll {cursor_position + 1}/{self.total_rolls}",
-                    font_name=GUIConstants.TOP_NAV_TITLE_FONT_NAME,
+                    font_name=GUIConstants.get_top_nav_title_font_name(),
                     font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
                     height=self.top_nav.height,
                 ).render()

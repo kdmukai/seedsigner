@@ -200,6 +200,8 @@ class Keyboard:
 
         # Set up the rendering and state params
         self.active_keys = list(self.charset)
+
+        # TODO: Remove RobotoCondensed font dependency
         self.additonal_key_compact_font = Fonts.get_font("RobotoCondensed-Bold", 18)
         self.x_start = rect[0]
         self.y_start = rect[1]

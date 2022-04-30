@@ -43,12 +43,14 @@ class SettingsConstants:
     LOCALE__CZECH = "cs"
     LOCALE__ENGLISH = "en"
     LOCALE__FRENCH = "fr"
+    LOCALE__JAPANESE = "ja"
     LOCALE__GERMAN = "de"
     LOCALE__SPANISH = "es"
     ALL_LOCALES = [
         (LOCALE__CZECH, "Czech"),
         (LOCALE__ENGLISH, "English"),
         (LOCALE__FRENCH, "French"),
+        (LOCALE__JAPANESE, "Japanese"),
         (LOCALE__GERMAN, "German"),
         (LOCALE__SPANISH, "Spanish"),
     ]

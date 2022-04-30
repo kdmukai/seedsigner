@@ -29,6 +29,9 @@ class Settings(Singleton):
                 with open(Settings.SETTINGS_FILENAME) as settings_file:
                     settings.update(json.load(settings_file), disable_missing_entries=False)
 
+            # Load default/persistent locale setting
+            settings.load_locale()
+
         return cls._instance
 
 
@@ -104,19 +107,13 @@ class Settings(Singleton):
             os.remove(self.SETTINGS_FILENAME)
             print(f"Removed {self.SETTINGS_FILENAME}")
 
-        # Special handling for babel
-        if attr_name == SettingsConstants.SETTING__LOCALE:
-            # `value` will be the language code (e.g. "en", "es", "de", etc)
-            os.environ['LANGUAGE'] = value
-
-            # Re-initialize babel with the new locale
-            gettext.install('messages', localedir='seedsigner/resources/babel')
-
-            print(f"Set LANGUAGE locale to {os.environ['LANGUAGE']}")
-
         self._data[attr_name] = value
         self.save()
-    
+
+        # Special handling for babel
+        if attr_name == SettingsConstants.SETTING__LOCALE:
+            self.load_locale()
+
 
     def get_value(self, attr_name: str):
         """
@@ -164,6 +161,19 @@ class Settings(Singleton):
         return display_names
 
 
+    def load_locale(self):
+        # Import here to avoid circular dependency
+        from seedsigner.gui.components import GUIConstants
+    
+        locale = self.get_value(SettingsConstants.SETTING__LOCALE)
+        os.environ['LANGUAGE'] = locale
+
+        # Re-initialize with the new locale
+        gettext.install('messages', localedir='seedsigner/resources/babel')
+
+        print(f"Set LANGUAGE locale to {os.environ['LANGUAGE']}")
+
+
 
     """
         Intentionally keeping the properties very limited to avoid an expectation of
@@ -171,7 +181,7 @@ class Settings(Singleton):
 
         It's more cumbersome, but instead use:
 
-        settings.get_value(SettingsConstants.SETTING__MY_SETTING_ATTR)
+        Settings.get_instance().get_value(SettingsConstants.SETTING__MY_SETTING_ATTR)
     """
     @property
     def debug(self) -> bool:
