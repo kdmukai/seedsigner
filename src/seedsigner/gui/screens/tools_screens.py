@@ -243,7 +243,7 @@ class ToolsDiceEntropyEntryScreen(BaseTopNavScreen):
                 TextArea(
                     text=f"Dice Roll {cursor_position + 1}/{self.total_rolls}",
                     font_name=GUIConstants.get_top_nav_title_font_name(),
-                    font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
+                    font_size=GUIConstants.get_top_nav_title_font_size(),
                     height=self.top_nav.height,
                 ).render()
                 self.top_nav.render_buttons()
@@ -276,7 +276,7 @@ class ToolsCalcFinalWordShowFinalWordScreen(ButtonListScreen):
 
         self.components.append(TextArea(
             text=f"""\"{self.final_word}\"""",
-            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 6,
+            font_size=26,
             is_text_centered=True,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
         ))

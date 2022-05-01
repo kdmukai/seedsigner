@@ -475,7 +475,7 @@ class SeedWordsScreen(WarningEdgesMixin, ButtonListScreen):
 
         # Have to supersample the whole body since it's all at the small font size
         supersampling_factor = 1
-        font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, (GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2) * supersampling_factor)
+        font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, (GUIConstants.get_top_nav_title_font_size() + 2) * supersampling_factor)
 
         # Calc horizontal center based on longest word
         max_word_width = 0
@@ -1118,8 +1118,8 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
         ))
 
         available_height = self.components[-1].screen_y - self.top_nav.height + GUIConstants.COMPONENT_PADDING
-        max_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8
-        min_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE - 4
+        max_font_size = 28
+        min_font_size = 16
         font_size = max_font_size
         max_lines = 3
         passphrase = [self.passphrase]
@@ -1308,7 +1308,7 @@ class SeedTranscribeSeedQRZoomedInScreen(BaseScreen):
         draw.rectangle((self.mask_width, 0, self.canvas_width - self.mask_width, self.pixels_per_block), fill=GUIConstants.ACCENT_COLOR)
         draw.rectangle((0, self.mask_height, self.pixels_per_block, self.canvas_height - self.mask_height), fill=GUIConstants.ACCENT_COLOR)
 
-        label_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME, GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8)
+        label_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME, 28)
         x_label = block_labels_x[cur_block_x]
         (left, top, right, bottom) = label_font.getbbox(x_label, anchor="ls")
         x_label_height = -1 * top
@@ -1560,7 +1560,7 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             label_text="Policy",
             value_text=self.policy,
-            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
+            font_size=20,
             screen_y=self.top_nav.height,
             is_text_centered=True,
         ))
@@ -1568,7 +1568,7 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             label_text="Signing Keys",
             value_text=" ".join(self.fingerprints),
-            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 4,
+            font_size=244,
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
             is_text_centered=True,

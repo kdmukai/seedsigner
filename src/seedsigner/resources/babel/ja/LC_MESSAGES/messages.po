@@ -28,7 +28,7 @@ msgstr "シード"
 
 #: src/seedsigner/views/view.py:134
 msgid "Tools"
-msgstr "道具"
+msgstr "ツール"
 
 #: src/seedsigner/views/view.py:135
 msgid "Settings"
@@ -36,4 +36,4 @@ msgstr "設定"
 
 #: src/seedsigner/views/view.py:139
 msgid "Home"
-msgstr "メーンメニュー"
+msgstr "メニュー"

@@ -147,7 +147,7 @@ class LoadingScreenThread(BaseThread):
             if self.text:
                 TextArea(
                     text=self.text,
-                    font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
+                    font_size=GUIConstants.get_top_nav_title_font_size(),
                     screen_y=int((renderer.canvas_height - bounding_box[3])/2),
                 ).render()
 
@@ -190,7 +190,7 @@ class BaseTopNavScreen(BaseScreen):
     top_nav_icon_name: str = None
     top_nav_icon_color: str = None
     title: str = "Screen Title"
-    title_font_size: int = GUIConstants.TOP_NAV_TITLE_FONT_SIZE
+    title_font_size: int = GUIConstants.get_top_nav_title_font_size()
     show_back_button: bool = True
     show_power_button: bool = False
 

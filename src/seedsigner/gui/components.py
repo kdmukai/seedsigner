@@ -38,13 +38,15 @@ class GUIConstants:
         "default": "OpenSans-SemiBold.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
     }
-    TOP_NAV_TITLE_FONT_SIZE = 20
+    TOP_NAV_TITLE_FONT_SIZE = {
+        "default": 20,
+    }
     TOP_NAV_HEIGHT = 48
     TOP_NAV_BUTTON_SIZE = 32
 
     BODY_FONT_NAME = "OpenSans-Regular.ttf"
     BODY_FONT_SIZE = 17
-    BODY_FONT_MAX_SIZE = TOP_NAV_TITLE_FONT_SIZE
+    BODY_FONT_MAX_SIZE = TOP_NAV_TITLE_FONT_SIZE["default"]
     BODY_FONT_MIN_SIZE = 15
     BODY_FONT_COLOR = "#f8f8f8"
     BODY_LINE_SPACING = COMPONENT_PADDING
@@ -73,6 +75,15 @@ class GUIConstants:
             return GUIConstants.TOP_NAV_TITLE_FONT_NAME[locale]
         else:
             return GUIConstants.TOP_NAV_TITLE_FONT_NAME["default"]
+
+
+    @staticmethod
+    def get_top_nav_title_font_size():
+        locale = Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE)
+        if locale in GUIConstants.TOP_NAV_TITLE_FONT_SIZE:
+            return GUIConstants.TOP_NAV_TITLE_FONT_SIZE[locale]
+        else:
+            return GUIConstants.TOP_NAV_TITLE_FONT_SIZE["default"]
 
 
     @staticmethod
@@ -1015,7 +1026,7 @@ class Button(BaseComponent):
     text_y_offset: int = 0
     background_color: str = GUIConstants.BUTTON_BACKGROUND_COLOR
     selected_color: str = GUIConstants.ACCENT_COLOR
-    font_name: str = GUIConstants.get_button_font_name()
+    font_name: str = None
     font_size: int = GUIConstants.BUTTON_FONT_SIZE
     font_color: str = GUIConstants.BUTTON_FONT_COLOR
     selected_font_color: str = GUIConstants.BUTTON_SELECTED_FONT_COLOR
@@ -1026,6 +1037,9 @@ class Button(BaseComponent):
 
 
     def __post_init__(self):
+        if not self.font_name:
+            self.font_name = GUIConstants.get_button_font_name()
+        
         super().__post_init__()
 
         if not self.width:
@@ -1212,8 +1226,8 @@ class TopNav(BaseComponent):
     background_color: str = GUIConstants.BACKGROUND_COLOR
     icon_name: str = None
     icon_color: str = GUIConstants.BODY_FONT_COLOR
-    font_name: str = GUIConstants.get_top_nav_title_font_name()
-    font_size: int = GUIConstants.TOP_NAV_TITLE_FONT_SIZE
+    font_name: str = None
+    font_size: int = None
     font_color: str = "#fcfcfc"
     show_back_button: bool = True
     show_power_button: bool = False
@@ -1221,11 +1235,16 @@ class TopNav(BaseComponent):
 
 
     def __post_init__(self):
+        if not self.font_name:
+            self.font_name = GUIConstants.get_top_nav_title_font_name()
+        
+        if not self.font_size:
+            self.font_size = GUIConstants.get_top_nav_title_font_size()
+            print(f"self.font_size: {self.font_size}")
+
         super().__post_init__()
         if not self.width:
             self.width = self.canvas_width
-
-        self.font = Fonts.get_font(self.font_name, self.font_size)
 
         if self.show_back_button:
             self.left_button = IconButton(

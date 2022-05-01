@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from seedsigner.gui.components import FontAwesomeIconConstants
+from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants
 from seedsigner.gui.screens import RET_CODE__POWER_BUTTON
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, DireWarningScreen, LargeButtonScreen, PowerOffScreen, ResetScreen, WarningScreen
 from seedsigner.models.threads import BaseThread
@@ -136,7 +136,7 @@ class MainMenuView(View):
 
         screen = LargeButtonScreen(
             title=_("Home"),
-            title_font_size=26,
+            title_font_size=GUIConstants.get_top_nav_title_font_size() + 6,
             button_data=[entry[0] for entry in menu_items],
             show_back_button=False,
             show_power_button=True,

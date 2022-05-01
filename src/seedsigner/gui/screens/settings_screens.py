@@ -169,7 +169,7 @@ class IOTestScreen(BaseTopNavScreen):
         msg_height = GUIConstants.ICON_LARGE_BUTTON_SIZE + 2*GUIConstants.COMPONENT_PADDING
         camera_message = TextArea(
             text="Capturing image...",
-            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
+            font_size=GUIConstants.get_top_nav_title_font_size(),
             is_text_centered=True,
             height=msg_height,
             screen_y=int((self.canvas_height - msg_height)/ 2),
@@ -291,7 +291,7 @@ class DonateScreen(BaseTopNavScreen):
 
         self.components.append(TextArea(
             text="seedsigner.com",
-            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8,
+            font_size=28,
             font_color=GUIConstants.ACCENT_COLOR,
             supersampling_factor=1,
             screen_y=self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING
