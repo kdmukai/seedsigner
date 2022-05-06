@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-29 08:48-0500\n"
+"POT-Creation-Date: 2022-05-04 08:13-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,125 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.1\n"
 
-#: src/seedsigner/views/view.py:132
-msgid "Scan"
+#: src/seedsigner/gui/screens/main_menu_screens.py:17
+msgid "Restarting"
 msgstr ""
 
-#: src/seedsigner/views/view.py:133
-msgid "Seeds"
+#: src/seedsigner/gui/screens/main_menu_screens.py:22
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
 msgstr ""
 
-#: src/seedsigner/views/view.py:134
-msgid "Tools"
+#: src/seedsigner/gui/screens/main_menu_screens.py:32
+msgid "Powering Off"
 msgstr ""
 
-#: src/seedsigner/views/view.py:135
+#: src/seedsigner/gui/screens/main_menu_screens.py:37
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:26
+#: src/seedsigner/views/main_menu_views.py:21
 msgid "Settings"
 msgstr ""
 
-#: src/seedsigner/views/view.py:139
+#: src/seedsigner/gui/screens/settings_screens.py:57
+msgid "I/O Test"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:138
+#: src/seedsigner/gui/screens/settings_screens.py:219
+msgid "Clear"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:159
+msgid "Exit"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:173
+msgid "Capturing image..."
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:286
+msgid "Donate"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py:290
+#, python-format
+msgid ""
+"SeedSigner is 100% free & open source, funded solely by the Bitcoin "
+"community.\n"
+"\n"
+"Donate onchain or LN at:"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:14
+msgid "Enabled"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:15
+#: src/seedsigner/models/settings_definition.py:20
+msgid "Disabled"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:18
+#: src/seedsigner/models/settings_definition.py:26
+msgid "Prompt"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:19
+#: src/seedsigner/models/settings_definition.py:23
+#: src/seedsigner/models/settings_definition.py:29
+msgid "Required"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:346
+msgid "Language"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:354
+msgid "Mnemonic language"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:362
+msgid "Persistent settings"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:368
+msgid "Coordinator software"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py:375
+msgid "Denomination display"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:18
+msgid "Scan"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:19
+msgid "Seeds"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:20
+msgid "Tools"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:25
 msgid "Home"
 msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:42
+msgid "Restart"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:43
+msgid "Power Off"
+msgstr ""
+
+#: src/seedsigner/views/main_menu_views.py:46
+msgid "Reset / Power"
+msgstr ""
+

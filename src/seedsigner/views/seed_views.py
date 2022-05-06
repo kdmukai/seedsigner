@@ -21,10 +21,11 @@ from seedsigner.models.seed import InvalidSeedException, Seed
 from seedsigner.models.settings import SettingsConstants
 from seedsigner.models.settings_definition import SettingsDefinition
 from seedsigner.models.threads import BaseThread, ThreadsafeCounter
+from seedsigner.views.main_menu_views import MainMenuView
 from seedsigner.views.psbt_views import PSBTChangeDetailsView
 from seedsigner.views.scan_views import ScanView
 
-from .view import NotYetImplementedView, View, Destination, BackStackView, MainMenuView
+from .view import NotYetImplementedView, View, Destination, BackStackView
 
 
 

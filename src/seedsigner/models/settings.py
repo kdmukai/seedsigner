@@ -1,6 +1,7 @@
 import gettext
 import json
 import os
+import pathlib
 
 from typing import Any, List
 
@@ -28,6 +29,15 @@ class Settings(Singleton):
             if os.path.exists(Settings.SETTINGS_FILENAME):
                 with open(Settings.SETTINGS_FILENAME) as settings_file:
                     settings.update(json.load(settings_file), disable_missing_entries=False)
+
+            # Setup Babel
+            path = os.path.join(
+                pathlib.Path(__file__).parent.resolve().parent.resolve(),
+                "resources",
+                "babel"
+            )
+            gettext.bindtextdomain('messages', localedir=path)
+            gettext.textdomain('messages')
 
             # Load default/persistent locale setting
             settings.load_locale()
@@ -162,16 +172,15 @@ class Settings(Singleton):
 
 
     def load_locale(self):
-        # Import here to avoid circular dependency
-        from seedsigner.gui.components import GUIConstants
-    
         locale = self.get_value(SettingsConstants.SETTING__LOCALE)
         os.environ['LANGUAGE'] = locale
 
+        print(f""""Settings" = {gettext.gettext("Settings")}""")
+
         # Re-initialize with the new locale
-        gettext.install('messages', localedir='seedsigner/resources/babel')
 
         print(f"Set LANGUAGE locale to {os.environ['LANGUAGE']}")
+        print(f""""Settings" = {gettext.gettext("Settings")}""")
 
 
 

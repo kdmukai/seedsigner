@@ -1,15 +1,17 @@
 import time
 
 from dataclasses import dataclass
+from gettext import gettext as _
 from PIL.ImageOps import autocontrast
 from typing import List
+
 from seedsigner.gui.components import Button, CheckboxButton, CheckedSelectionButton, FontAwesomeIconConstants, Fonts, GUIConstants, Icon, IconButton, IconTextLine, TextArea
 from seedsigner.gui.screens.scan_screens import ScanScreen
-
 from seedsigner.gui.screens.screen import BaseScreen, BaseTopNavScreen, ButtonListScreen
 from seedsigner.hardware.buttons import HardwareButtonsConstants
 from seedsigner.hardware.camera import Camera
 from seedsigner.models.settings import SettingsConstants
+
 
 
 @dataclass
@@ -21,7 +23,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
     selected_button: int = 0
 
     def __post_init__(self):
-        self.title = "Settings"
+        self.title = _("Settings")
         self.is_bottom_list = True
         self.use_checked_selection_buttons = True
         if self.settings_entry_type == SettingsConstants.TYPE__MULTISELECT:
@@ -52,7 +54,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
 @dataclass
 class IOTestScreen(BaseTopNavScreen):
     def __post_init__(self):
-        self.title = "I/O Test"
+        self.title = _("I/O Test")
         self.show_back_button = False
         self.resolution = (96, 96)
         self.framerate = 10
@@ -133,7 +135,7 @@ class IOTestScreen(BaseTopNavScreen):
         key2_y = int(self.canvas_height/2) - int(key_button_height/2)
 
         self.key2_button = Button(
-            text="Clear",   # Initialize with text to set vertical centering
+            text=_("Clear"),   # Initialize with text to set vertical centering
             width=key_button_width,
             height=key_button_height,
             screen_x=self.canvas_width - key_button_width + GUIConstants.EDGE_PADDING,
@@ -154,7 +156,7 @@ class IOTestScreen(BaseTopNavScreen):
         self.components.append(self.key1_button)
 
         self.key3_button = Button(
-            text="Exit",
+            text=_("Exit"),
             width=key_button_width,
             height=key_button_height,
             screen_x=self.canvas_width - key_button_width + GUIConstants.EDGE_PADDING,
@@ -168,7 +170,7 @@ class IOTestScreen(BaseTopNavScreen):
         cur_selected_button = self.key1_button
         msg_height = GUIConstants.ICON_LARGE_BUTTON_SIZE + 2*GUIConstants.COMPONENT_PADDING
         camera_message = TextArea(
-            text="Capturing image...",
+            text=_("Capturing image..."),
             font_size=GUIConstants.get_top_nav_title_font_size(),
             is_text_centered=True,
             height=msg_height,
@@ -214,7 +216,7 @@ class IOTestScreen(BaseTopNavScreen):
                     )
                     with self.renderer.lock:
                         self.canvas.paste(display_version, (0, self.top_nav.height))
-                        self.key2_button.text = "Clear"
+                        self.key2_button.text = _("Clear")
                         for component in self.components:
                             component.render()
                         self.renderer.show_image()
@@ -281,11 +283,11 @@ class IOTestScreen(BaseTopNavScreen):
 @dataclass
 class DonateScreen(BaseTopNavScreen):
     def __post_init__(self):
-        self.title = "Donate"
+        self.title = _("Donate")
         super().__post_init__()
 
         self.components.append(TextArea(
-            text="SeedSigner is 100% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:",
+            text=_("SeedSigner is 100% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:"),
             screen_y=self.top_nav.height + 3*GUIConstants.COMPONENT_PADDING,
         ))
 

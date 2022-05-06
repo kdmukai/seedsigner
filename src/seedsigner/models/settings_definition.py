@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+from gettext import gettext as _
 
 
 class SettingsConstants:
@@ -10,22 +11,22 @@ class SettingsConstants:
     OPTION__PROMPT = "P"
     OPTION__REQUIRED = "R"
     OPTIONS__ENABLED_DISABLED = [
-        (OPTION__ENABLED, "Enabled"),
-        (OPTION__DISABLED, "Disabled"),
+        (OPTION__ENABLED, _("Enabled")),
+        (OPTION__DISABLED, _("Disabled")),
     ]
     OPTIONS__PROMPT_REQUIRED_DISABLED = [
-        (OPTION__PROMPT, "Prompt"),
-        (OPTION__REQUIRED, "Required"),
-        (OPTION__DISABLED, "Disabled"),
+        (OPTION__PROMPT, _("Prompt")),
+        (OPTION__REQUIRED, _("Required")),
+        (OPTION__DISABLED, _("Disabled")),
     ]
     OPTIONS__ENABLED_DISABLED_REQUIRED = OPTIONS__ENABLED_DISABLED +[
-        (OPTION__REQUIRED, "Required"),
+        (OPTION__REQUIRED, _("Required")),
     ]
     OPTIONS__ENABLED_DISABLED_PROMPT = OPTIONS__ENABLED_DISABLED + [
-        (OPTION__PROMPT, "Prompt"),
+        (OPTION__PROMPT, _("Prompt")),
     ]
     ALL_OPTIONS = OPTIONS__ENABLED_DISABLED_PROMPT + [
-        (OPTION__REQUIRED, "Required"),
+        (OPTION__REQUIRED, _("Required")),
     ]
 
     # User-facing selection options
@@ -273,7 +274,7 @@ class SettingsEntry:
                 option_value = option
                 display_name = option
             if option_value == value:
-                return display_name
+                return _(display_name)
 
 
     def get_selection_option_value_by_display_name(self, display_name: str):
@@ -342,7 +343,7 @@ class SettingsDefinition:
 
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__LOCALE,
-                      display_name="Language",
+                      display_name=_("Language"),
                       type=SettingsConstants.TYPE__SELECT_1,
                       selection_options=SettingsConstants.ALL_LOCALES,
                       default_value=SettingsConstants.LOCALE__ENGLISH),
@@ -350,7 +351,7 @@ class SettingsDefinition:
         # TODO: Support other bip-39 wordlist languages! Until then, type == HIDDEN
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__WORDLIST_LANGUAGE,
-                      display_name="Mnemonic language",
+                      display_name=_("Mnemonic language"),
                       type=SettingsConstants.TYPE__SELECT_1,
                       visibility=SettingsConstants.VISIBILITY__HIDDEN,
                       selection_options=SettingsConstants.ALL_WORDLIST_LANGUAGES,
@@ -358,20 +359,20 @@ class SettingsDefinition:
 
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__PERSISTENT_SETTINGS,
-                      display_name="Persistent settings",
+                      display_name=_("Persistent settings"),
                       help_text="Store Settings on SD card.",
                       default_value=SettingsConstants.OPTION__DISABLED),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__WALLET,
                       attr_name=SettingsConstants.SETTING__COORDINATORS,
-                      display_name="Coordinator software",
+                      display_name=_("Coordinator software"),
                       type=SettingsConstants.TYPE__MULTISELECT,
                       selection_options=SettingsConstants.ALL_COORDINATORS,
                       default_value=SettingsConstants.ALL_COORDINATORS),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__BTC_DENOMINATION,
-                      display_name="Denomination display",
+                      display_name=_("Denomination display"),
                       type=SettingsConstants.TYPE__SELECT_1,
                       selection_options=SettingsConstants.ALL_BTC_DENOMINATIONS,
                       default_value=SettingsConstants.BTC_DENOMINATION__THRESHOLD),

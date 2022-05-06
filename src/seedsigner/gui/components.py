@@ -5,11 +5,12 @@ import pathlib
 from dataclasses import dataclass
 from decimal import Decimal
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 from seedsigner.models import Singleton
 from seedsigner.models.settings import Settings
 from seedsigner.models.settings_definition import SettingsConstants
+
 
 
 # TODO: Remove all pixel hard coding
@@ -212,7 +213,11 @@ def load_image(image_name: str) -> Image.Image:
 
 
 class Fonts(Singleton):
-    font_path = os.path.join(pathlib.Path(__file__).parent.resolve(), "..", "resources", "fonts")
+    font_path = os.path.join(
+        pathlib.Path(__file__).parent.resolve().parent.resolve(),
+        "resources",
+        "fonts"
+    )
     fonts = {}
 
     @classmethod
@@ -245,7 +250,7 @@ class BaseComponent:
     canvas: Image.Image = None
 
     def __post_init__(self):
-        from seedsigner.gui import Renderer
+        from seedsigner.gui.renderer import Renderer
         self.renderer: Renderer = Renderer.get_instance()
         self.canvas_width = self.renderer.canvas_width
         self.canvas_height = self.renderer.canvas_height
@@ -441,7 +446,7 @@ class TextArea(BaseComponent):
             draw.text((line["text_x"], cur_y), line["text"], fill=self.font_color, font=self.font, anchor="ls")
             cur_y += self.bbox_height + self.line_spacing
 
-        resized = img.resize((int(self.supersampled_width / self.supersampling_factor), self.height), Image.LANCZOS)
+        resized = img.resize((int(self.supersampled_width / self.supersampling_factor), self.height), Image.Resampling.LANCZOS)
         resized = resized.filter(ImageFilter.SHARPEN)
         self.canvas.paste(resized, (self.screen_x, self.screen_y))
 
@@ -1367,4 +1372,3 @@ def calc_bezier_curve(p1: Tuple[int,int], p2: Tuple[int,int], p3: Tuple[int,int]
         points.append(q1)
     
     return points
-

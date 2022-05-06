@@ -7,7 +7,7 @@ from seedsigner.gui.renderer import Renderer
 
 from seedsigner.models.threads import BaseThread
 from seedsigner.models.encode_qr import EncodeQR
-from seedsigner.models.settings import Settings, SettingsConstants
+from seedsigner.models.settings import SettingsConstants
 
 from ..components import (GUIConstants, BaseComponent, Button, Icon, LargeIconButton, SeedSignerCustomIconConstants, TopNav,
     TextArea, load_image)
@@ -24,10 +24,16 @@ RET_CODE__POWER_BUTTON = 1001
 
 @dataclass
 class BaseScreen(BaseComponent):
+    disable_inputs: bool = False
+
+
     def __post_init__(self):
         super().__post_init__()
         
-        self.hw_inputs = HardwareButtons.get_instance()
+        if not self.disable_inputs:
+            # For testing or rendering screen previews off the device when hardware
+            # support is not available.
+            self.hw_inputs = HardwareButtons.get_instance()
 
         # Implementation classes can add their own BaseThread to run in parallel with the
         # main execution thread.
@@ -511,12 +517,15 @@ class ButtonListScreen(BaseTopNavScreen):
 @dataclass
 class LargeButtonScreen(BaseTopNavScreen):
     button_data: list = None                  # list can be a mix of str or tuple(label: str, icon_name: str)
-    button_font_name: str = GUIConstants.get_button_font_name()
+    button_font_name: str = None
     button_font_size: int = 20
     button_selected_color: str = GUIConstants.ACCENT_COLOR
     selected_button: int = 0
 
     def __post_init__(self):
+        if not self.button_font_name:
+            self.button_font_name = GUIConstants.get_button_font_name()
+
         super().__post_init__()
 
         if len(self.button_data) not in [2, 4]:
@@ -842,32 +851,3 @@ class DireWarningScreen(WarningScreen):
     status_headline: str = "Classified Info!"     # The colored text under the alert icon
     status_color: str = GUIConstants.DIRE_WARNING_COLOR
 
-
-
-@dataclass
-class ResetScreen(BaseTopNavScreen):
-    def __post_init__(self):
-        self.title = "Restarting"
-        self.show_back_button = False
-        super().__post_init__()
-
-        self.components.append(TextArea(
-            text="SeedSigner is restarting.\n\nAll in-memory data will be wiped.",
-            screen_y=self.top_nav.height,
-            height=self.canvas_height - self.top_nav.height,
-        ))
-
-
-
-@dataclass
-class PowerOffScreen(BaseTopNavScreen):
-    def __post_init__(self):
-        self.title = "Powering Off"
-        self.show_back_button = False
-        super().__post_init__()
-
-        self.components.append(TextArea(
-            text="Please wait about 30 seconds before disconnecting power.",
-            screen_y=self.top_nav.height,
-            height=self.canvas_height - self.top_nav.height,
-        ))

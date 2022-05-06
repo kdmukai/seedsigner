@@ -6,8 +6,9 @@ from embit.descriptor import Descriptor
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON
 from seedsigner.models import DecodeQR, Seed
 from seedsigner.models.settings import SettingsConstants
+from seedsigner.views.main_menu_views import MainMenuView
 
-from .view import BackStackView, MainMenuView, NotYetImplementedView, View, Destination
+from .view import BackStackView, NotYetImplementedView, View, Destination
 
 
 

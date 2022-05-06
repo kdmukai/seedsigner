@@ -18,7 +18,7 @@ All you have to do in your code is wrap each piece of English text with the `get
 ### Rescanning for text that needs translations
 Re-generate the `messages.pot` file:
 ```
-pybabel extract -N -F babel/babel.cfg -o babel/messages.pot .
+pybabel extract -F babel/babel.cfg -o babel/messages.pot .
 ```
 This will rescan all wrapped text, picking up new strings as well as updating existings strings that have been edited.
 

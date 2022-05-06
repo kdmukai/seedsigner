@@ -1,8 +1,8 @@
-from PIL import Image, ImageDraw, ImageFont
+import os
+from PIL import Image, ImageDraw
 from threading import Lock
 
 from seedsigner.gui.components import Fonts, GUIConstants
-from seedsigner.hardware.ST7789 import ST7789
 from seedsigner.models import ConfigurableSingleton
 
 
@@ -19,7 +19,7 @@ class Renderer(ConfigurableSingleton):
 
     @classmethod
     def configure_instance(cls):
-        from seedsigner.models.settings import Settings
+        from seedsigner.hardware.ST7789 import ST7789
 
         # Instantiate the one and only Renderer instance
         renderer = cls.__new__(cls)
@@ -199,7 +199,5 @@ class Renderer(ConfigurableSingleton):
     def display_blank_screen(self):
         self.draw.rectangle((0, 0, self.canvas_width, self.canvas_height), outline=0, fill=0)
         self.show_image()
-
-
 
 

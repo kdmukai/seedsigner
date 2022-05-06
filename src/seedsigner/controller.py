@@ -182,7 +182,8 @@ class Controller(Singleton):
 
 
     def start(self) -> None:
-        from .views import MainMenuView, BackStackView
+        from .views import BackStackView
+        from .views.main_menu_views import MainMenuView
         from .views.screensaver import OpeningSplashScreen
 
         opening_splash = OpeningSplashScreen()
@@ -229,7 +230,6 @@ class Controller(Singleton):
                     self.multisig_wallet_descriptor = None
                     self.unverified_address = None
 
-                
                 print(f"back_stack: {self.back_stack}")
 
                 try:

@@ -1,10 +1,11 @@
-from seedsigner.gui.components import FontAwesomeIconConstants, SeedSignerCustomIconConstants
-from seedsigner.models.decode_qr import DecodeQR
+from gettext import gettext as _
 
-from .view import View, Destination, BackStackView, MainMenuView
-
+from seedsigner.gui.components import SeedSignerCustomIconConstants
+from seedsigner.views.main_menu_views import MainMenuView
 from seedsigner.gui.screens import (RET_CODE__BACK_BUTTON, ButtonListScreen, settings_screens)
 from seedsigner.models.settings import SettingsConstants, SettingsDefinition
+
+from .view import View, Destination
 
 
 
@@ -16,13 +17,13 @@ class SettingsMenuView(View):
 
 
     def run(self):
-        IO_TEST = "I/O test"
-        DONATE = "Donate"
+        IO_TEST = _("I/O test")
+        DONATE = _("Donate")
 
         settings_entries = SettingsDefinition.get_settings_entries(
             visibiilty=self.visibility
         )
-        button_data=[e.display_name for e in settings_entries]
+        button_data=[_(e.display_name) for e in settings_entries]
 
         selected_button = 0
         if self.selected_attr:
@@ -32,17 +33,17 @@ class SettingsMenuView(View):
                     break
 
         if self.visibility == SettingsConstants.VISIBILITY__GENERAL:
-            title = "Settings"
+            title = _("Settings")
 
             # Set up the next nested level of menuing
-            button_data.append(("Advanced", None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
+            button_data.append((_("Advanced"), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
             next = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__ADVANCED})
 
             button_data.append(IO_TEST)
             button_data.append(DONATE)
 
         elif self.visibility == SettingsConstants.VISIBILITY__ADVANCED:
-            title = "Advanced"
+            title = _("Advanced")
 
             # So far there are no real Developer options; disabling for now
             # button_data.append(("Developer Options", None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
@@ -50,7 +51,7 @@ class SettingsMenuView(View):
             next = None
         
         elif self.visibility == SettingsConstants.VISIBILITY__DEVELOPER:
-            title = "Dev Options"
+            title = _("Dev Options")
             next = None
 
         selected_menu_num = ButtonListScreen(
@@ -103,7 +104,7 @@ class SettingsEntryUpdateSelectionView(View):
                 value, display_name = value
             else:
                 display_name = value
-            button_data.append(display_name)
+            button_data.append(_(display_name))
             if (type(initial_value) == list and value in initial_value) or value == initial_value:
                 checked_buttons.append(i)
 
