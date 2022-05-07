@@ -1,0 +1,149 @@
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# 
+# Translators:
+# Daniel Babaev, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-05-04 08:13-0500\n"
+"PO-Revision-Date: 2022-04-29 13:50+0000\n"
+"Last-Translator: Daniel Babaev, 2022\n"
+"Language-Team: Hebrew (https://www.transifex.com/seedsigner/teams/135832/he/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.1\n"
+"Language: he\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:17
+msgid "Restarting"
+msgstr "מפעיל מחדש"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:22
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+"מפעיל מחדש את SeedSigner.\n"
+"\n"
+"כל הנתונים בזיכרון הפנימי יימחקו."
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:32
+msgid "Powering Off"
+msgstr "מתכבה"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:37
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr "אנא המתן כ-30 שניות לפני ניתוק החשמל."
+
+#: src/seedsigner/gui/screens/settings_screens.py:26
+#: src/seedsigner/views/main_menu_views.py:21
+msgid "Settings"
+msgstr "הגדרות"
+
+#: src/seedsigner/gui/screens/settings_screens.py:57
+msgid "I/O Test"
+msgstr "בדיקת קלט/פלט"
+
+#: src/seedsigner/gui/screens/settings_screens.py:138
+#: src/seedsigner/gui/screens/settings_screens.py:219
+msgid "Clear"
+msgstr "לנקות"
+
+#: src/seedsigner/gui/screens/settings_screens.py:159
+msgid "Exit"
+msgstr "לצאת"
+
+#: src/seedsigner/gui/screens/settings_screens.py:173
+msgid "Capturing image..."
+msgstr "לכידת תמונה..."
+
+#: src/seedsigner/gui/screens/settings_screens.py:286
+msgid "Donate"
+msgstr "לתרום"
+
+#: src/seedsigner/gui/screens/settings_screens.py:290
+#, python-format
+msgid ""
+"SeedSigner is free & open source, funded solely by the Bitcoin community.\n"
+"\n"
+"Donate onchain or LN at:"
+msgstr ""
+"SeedSigner הוא 100% חינמי וקוד פתוח, הממומן אך ורק על ידי קהילת הביטקוין.\n"
+"\n"
+"תרמו בעזרת על-השרשרת או ברשת ברק בכתובת:"
+
+#: src/seedsigner/models/settings_definition.py:14
+msgid "Enabled"
+msgstr "מופעל"
+
+#: src/seedsigner/models/settings_definition.py:15
+#: src/seedsigner/models/settings_definition.py:20
+msgid "Disabled"
+msgstr "מושבת"
+
+#: src/seedsigner/models/settings_definition.py:18
+#: src/seedsigner/models/settings_definition.py:26
+msgid "Prompt"
+msgstr "הנחיה"
+
+#: src/seedsigner/models/settings_definition.py:19
+#: src/seedsigner/models/settings_definition.py:23
+#: src/seedsigner/models/settings_definition.py:29
+msgid "Required"
+msgstr "נדרש"
+
+#: src/seedsigner/models/settings_definition.py:346
+msgid "Language"
+msgstr "שפה"
+
+#: src/seedsigner/models/settings_definition.py:354
+msgid "Mnemonic language"
+msgstr "שפת הזכרונות"
+
+#: src/seedsigner/models/settings_definition.py:362
+msgid "Persistent settings"
+msgstr "הגדרות קבועות"
+
+#: src/seedsigner/models/settings_definition.py:368
+msgid "Coordinator software"
+msgstr "תוכנת רכז"
+
+#: src/seedsigner/models/settings_definition.py:375
+msgid "Denomination display"
+msgstr "תצוגת יחידה"
+
+#: src/seedsigner/views/main_menu_views.py:18
+msgid "Scan"
+msgstr "לסרוק"
+
+#: src/seedsigner/views/main_menu_views.py:19
+msgid "Seeds"
+msgstr "מפתחות"
+
+#: src/seedsigner/views/main_menu_views.py:20
+msgid "Tools"
+msgstr "כלים"
+
+#: src/seedsigner/views/main_menu_views.py:25
+msgid "Home"
+msgstr "מסך ראשי"
+
+#: src/seedsigner/views/main_menu_views.py:42
+msgid "Restart"
+msgstr "הפעלה מחדש"
+
+#: src/seedsigner/views/main_menu_views.py:43
+msgid "Power Off"
+msgstr "כיבוי"
+
+#: src/seedsigner/views/main_menu_views.py:46
+msgid "Reset / Power"
+msgstr "איפוס / הפעלה"

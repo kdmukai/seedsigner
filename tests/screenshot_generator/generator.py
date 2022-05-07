@@ -41,6 +41,7 @@ def test_generate_screenshots():
 
     screenshot_list = [
         main_menu_views.MainMenuView,
+        main_menu_views.PowerOffView,
         settings_views.SettingsMenuView,
         (settings_views.SettingsEntryUpdateSelectionView, dict(attr_name=SettingsConstants.SETTING__BTC_DENOMINATION)),
         settings_views.IOTestView,

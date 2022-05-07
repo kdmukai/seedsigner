@@ -1,10 +1,12 @@
 import time
 
 from dataclasses import dataclass
+from gettext import gettext as _
 from PIL import Image, ImageDraw, ImageColor
 from typing import Any, List, Tuple
-from seedsigner.gui.renderer import Renderer
 
+from seedsigner.gui.renderer import Renderer
+from seedsigner.hardware.buttons import HardwareButtonsConstants, HardwareButtons
 from seedsigner.models.threads import BaseThread
 from seedsigner.models.encode_qr import EncodeQR
 from seedsigner.models.settings import SettingsConstants
@@ -12,7 +14,6 @@ from seedsigner.models.settings import SettingsConstants
 from ..components import (GUIConstants, BaseComponent, Button, Icon, LargeIconButton, SeedSignerCustomIconConstants, TopNav,
     TextArea, load_image)
 
-from seedsigner.hardware.buttons import HardwareButtonsConstants, HardwareButtons
 
 
 # Must be huge numbers to avoid conflicting with the selected_button returned by the
@@ -263,8 +264,8 @@ class ButtonListScreen(BaseTopNavScreen):
     selected_button: int = 0
     is_button_text_centered: bool = True
     is_bottom_list: bool = False
-    button_font_name: str = GUIConstants.get_button_font_name()
-    button_font_size: int = GUIConstants.BUTTON_FONT_SIZE
+    button_font_name: str = None
+    button_font_size: int = None
     button_selected_color: str = GUIConstants.ACCENT_COLOR
 
     # Params for version of list used for Settings
@@ -273,7 +274,12 @@ class ButtonListScreen(BaseTopNavScreen):
 
 
     def __post_init__(self):
+        if not self.button_font_name:
+            self.button_font_name = GUIConstants.get_button_font_name()
+        if not self.button_font_size:
+            self.button_font_size = GUIConstants.get_button_font_size()
         super().__post_init__()
+
         button_height = GUIConstants.BUTTON_HEIGHT
         if len(self.button_data) == 1:
             button_list_height = button_height
@@ -518,13 +524,15 @@ class ButtonListScreen(BaseTopNavScreen):
 class LargeButtonScreen(BaseTopNavScreen):
     button_data: list = None                  # list can be a mix of str or tuple(label: str, icon_name: str)
     button_font_name: str = None
-    button_font_size: int = 20
+    button_font_size: int = None
     button_selected_color: str = GUIConstants.ACCENT_COLOR
     selected_button: int = 0
 
     def __post_init__(self):
         if not self.button_font_name:
             self.button_font_name = GUIConstants.get_button_font_name()
+        if not self.button_font_size:
+            self.button_font_size = GUIConstants.get_button_font_size() + 2
 
         super().__post_init__()
 
@@ -709,11 +717,11 @@ class QRDisplayScreen(BaseScreen):
 
 @dataclass
 class LargeIconStatusScreen(ButtonListScreen):
-    title: str = "Success!"
+    title: str = _("Success!")
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_CHECK
     status_icon_size: int = GUIConstants.ICON_PRIMARY_SCREEN_SIZE
     status_color: str = GUIConstants.SUCCESS_COLOR
-    status_headline: str = "Success!"  # The colored text under the large icon
+    status_headline: str = _("Success!")  # The colored text under the large icon
     text: str = ""                          # The body text of the screen
     button_data: list = None
     allow_text_overflow: bool = False
@@ -722,7 +730,7 @@ class LargeIconStatusScreen(ButtonListScreen):
     def __post_init__(self):
         self.is_bottom_list: bool = True
         if not self.button_data:
-            self.button_data = ["OK"]
+            self.button_data = [_("OK")]
         super().__post_init__()
 
         self.status_icon = Icon(
@@ -833,14 +841,14 @@ class WarningEdgesMixin:
 
 @dataclass
 class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
-    title: str = "Caution"
+    title: str = _("Caution")
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_EXCLAMATION
     status_color: str = "yellow"
-    status_headline: str = "Privacy Leak!"     # The colored text under the alert icon
+    status_headline: str = _("Privacy Leak!")     # The colored text under the alert icon
 
     def __post_init__(self):
         if not self.button_data:
-            self.button_data = ["I Understand"]
+            self.button_data = [_("I Understand")]
 
         super().__post_init__()
 
@@ -848,6 +856,6 @@ class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
 
 @dataclass
 class DireWarningScreen(WarningScreen):
-    status_headline: str = "Classified Info!"     # The colored text under the alert icon
+    status_headline: str = _("Classified Info!")     # The colored text under the alert icon
     status_color: str = GUIConstants.DIRE_WARNING_COLOR
 

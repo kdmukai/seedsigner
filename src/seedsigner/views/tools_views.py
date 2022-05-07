@@ -2,6 +2,7 @@ import hashlib
 import os
 import time
 
+from gettext import gettext as _
 from PIL import Image
 from PIL.ImageOps import autocontrast
 
@@ -20,12 +21,12 @@ from .view import View, Destination, BackStackView
 
 class ToolsMenuView(View):
     def run(self):
-        IMAGE = (" New seed", FontAwesomeIconConstants.CAMERA)
-        DICE = ("New seed", FontAwesomeIconConstants.DICE)
-        KEYBOARD = ("Calc 12th/24th word", FontAwesomeIconConstants.KEYBOARD)
+        IMAGE = (_(" New seed"), FontAwesomeIconConstants.CAMERA)
+        DICE = (_("New seed"), FontAwesomeIconConstants.DICE)
+        KEYBOARD = (_("Calc 12th/24th word"), FontAwesomeIconConstants.KEYBOARD)
         button_data = [IMAGE, DICE, KEYBOARD]
         screen = ButtonListScreen(
-            title="Tools",
+            title=_("Tools"),
             is_button_text_centered=False,
             button_data=button_data
         )
@@ -98,12 +99,12 @@ class ToolsImageEntropyFinalImageView(View):
 
 class ToolsImageEntropyMnemonicLengthView(View):
     def run(self):
-        TWELVE_WORDS = "12 words"
-        TWENTYFOUR_WORDS = "24 words"
+        TWELVE_WORDS = _("12 words")
+        TWENTYFOUR_WORDS = _("24 words")
         button_data = [TWELVE_WORDS, TWENTYFOUR_WORDS]
 
         selected_menu_num = ButtonListScreen(
-            title="Mnemonic Length?",
+            title=_("Mnemonic Length?"),
             button_data=button_data,
         ).display()
 
@@ -170,12 +171,12 @@ class ToolsImageEntropyMnemonicLengthView(View):
 ****************************************************************************"""
 class ToolsDiceEntropyMnemonicLengthView(View):
     def run(self):
-        TWELVE = "12 words (50 rolls)"
-        TWENTY_FOUR = "24 words (99 rolls)"
+        TWELVE = _("12 words (50 rolls)")
+        TWENTY_FOUR = _("24 words (99 rolls)")
         
         button_data = [TWELVE, TWENTY_FOUR]
         selected_menu_num = ButtonListScreen(
-            title="Mnemonic Length",
+            title=_("Mnemonic Length"),
             is_bottom_list=True,
             is_button_text_centered=True,
             button_data=button_data,
@@ -224,12 +225,12 @@ class ToolsDiceEntropyEntryView(View):
 ****************************************************************************"""
 class ToolsCalcFinalWordNumWordsView(View):
     def run(self):
-        TWELVE = "12 words"
-        TWENTY_FOUR = "24 words"
+        TWELVE = _("12 words")
+        TWENTY_FOUR = _("24 words")
         
         button_data = [TWELVE, TWENTY_FOUR]
         selected_menu_num = ButtonListScreen(
-            title="Mnemonic Length",
+            title=_("Mnemonic Length"),
             is_bottom_list=True,
             is_button_text_centered=True,
             button_data=button_data,
@@ -254,8 +255,8 @@ class ToolsCalcFinalWordShowFinalWordView(View):
         mnemonic_word_length = len(mnemonic)
         final_word = mnemonic[-1]
 
-        LOAD = "Load seed"
-        DISCARD = ("Discard", None, None, "red")
+        LOAD = _("Load seed")
+        DISCARD = (_("Discard"), None, None, "red")
         button_data = [LOAD, DISCARD]
 
         selected_menu_num = ToolsCalcFinalWordShowFinalWordScreen(

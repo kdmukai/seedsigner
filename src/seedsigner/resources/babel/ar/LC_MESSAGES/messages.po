@@ -1,0 +1,149 @@
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# 
+# Translators:
+# Best Money, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-05-04 08:13-0500\n"
+"PO-Revision-Date: 2022-04-29 13:50+0000\n"
+"Last-Translator: Best Money, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/seedsigner/teams/135832/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.1\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:17
+msgid "Restarting"
+msgstr "يتم إعادة التشغيل"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:22
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+"جارٍ إعادة تشغيل الـ SeedSigner.\n"
+"\n"
+"سيتم مسح جميع البيانات من الذاكرة"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:32
+msgid "Powering Off"
+msgstr "يتم إيقاف التشغيل"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:37
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr "يرجى الانتظار 30 ثانية تقريبا قبل فصل الطاقة."
+
+#: src/seedsigner/gui/screens/settings_screens.py:26
+#: src/seedsigner/views/main_menu_views.py:21
+msgid "Settings"
+msgstr "إعدادات"
+
+#: src/seedsigner/gui/screens/settings_screens.py:57
+msgid "I/O Test"
+msgstr "فحص المدخل/المخرج"
+
+#: src/seedsigner/gui/screens/settings_screens.py:138
+#: src/seedsigner/gui/screens/settings_screens.py:219
+msgid "Clear"
+msgstr "مسح"
+
+#: src/seedsigner/gui/screens/settings_screens.py:159
+msgid "Exit"
+msgstr "خروج"
+
+#: src/seedsigner/gui/screens/settings_screens.py:173
+msgid "Capturing image..."
+msgstr "يتم التصوير..."
+
+#: src/seedsigner/gui/screens/settings_screens.py:286
+msgid "Donate"
+msgstr "للتبرع"
+
+#: src/seedsigner/gui/screens/settings_screens.py:290
+#, python-format
+msgid ""
+"SeedSigner is free & open source, funded solely by the Bitcoin community.\n"
+"\n"
+"Donate onchain or LN at:"
+msgstr ""
+"SeedSigner هو مجاني 100% ومفتوح المصدر، مُمول فقط من مجتمع البيتكوين.\n"
+"\n"
+"للتبرع عن طريق البيتكوين وشبكة البرق:"
+
+#: src/seedsigner/models/settings_definition.py:14
+msgid "Enabled"
+msgstr "مُفعل"
+
+#: src/seedsigner/models/settings_definition.py:15
+#: src/seedsigner/models/settings_definition.py:20
+msgid "Disabled"
+msgstr "مُعطل"
+
+#: src/seedsigner/models/settings_definition.py:18
+#: src/seedsigner/models/settings_definition.py:26
+msgid "Prompt"
+msgstr "تنبيه"
+
+#: src/seedsigner/models/settings_definition.py:19
+#: src/seedsigner/models/settings_definition.py:23
+#: src/seedsigner/models/settings_definition.py:29
+msgid "Required"
+msgstr "إلزامي"
+
+#: src/seedsigner/models/settings_definition.py:346
+msgid "Language"
+msgstr "اللغة"
+
+#: src/seedsigner/models/settings_definition.py:354
+msgid "Mnemonic language"
+msgstr "لغة الكلمات التذكيرية"
+
+#: src/seedsigner/models/settings_definition.py:362
+msgid "Persistent settings"
+msgstr "تثبيت الإعدادات"
+
+#: src/seedsigner/models/settings_definition.py:368
+msgid "Coordinator software"
+msgstr "برنامج التنسيق"
+
+#: src/seedsigner/models/settings_definition.py:375
+msgid "Denomination display"
+msgstr "طريقة عرض فئة النقد"
+
+#: src/seedsigner/views/main_menu_views.py:18
+msgid "Scan"
+msgstr "للمسح ضوئيًا"
+
+#: src/seedsigner/views/main_menu_views.py:19
+msgid "Seeds"
+msgstr "المفاتيح"
+
+#: src/seedsigner/views/main_menu_views.py:20
+msgid "Tools"
+msgstr "أدوات"
+
+#: src/seedsigner/views/main_menu_views.py:25
+msgid "Home"
+msgstr "الرئيسية"
+
+#: src/seedsigner/views/main_menu_views.py:42
+msgid "Restart"
+msgstr "إعادة تشغيل"
+
+#: src/seedsigner/views/main_menu_views.py:43
+msgid "Power Off"
+msgstr "إغلاق"
+
+#: src/seedsigner/views/main_menu_views.py:46
+msgid "Reset / Power"
+msgstr "إعادة/تشغيل"

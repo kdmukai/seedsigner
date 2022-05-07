@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from gettext import gettext as _
 from PIL.Image import Image
+
 from seedsigner.gui.keyboard import Keyboard, TextEntryDisplay
 from seedsigner.hardware.camera import Camera
 from seedsigner.gui.components import FontAwesomeIconConstants, Fonts, GUIConstants, IconTextLine, SeedSignerCustomIconConstants, TextArea
@@ -13,7 +15,7 @@ from seedsigner.hardware.buttons import HardwareButtonsConstants
 class ToolsImageEntropyLivePreviewScreen(BaseScreen):
     def __post_init__(self):
         # Customize defaults
-        self.title = "Initializing Camera..."
+        self.title = _("Initializing Camera...")
 
         # Initialize the base class
         super().__post_init__()
@@ -26,7 +28,7 @@ class ToolsImageEntropyLivePreviewScreen(BaseScreen):
         # save preview image frames to use as additional entropy below
         preview_images = []
         max_entropy_frames = 50
-        instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+        instructions_font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_button_font_size())
 
         while True:
             frame = self.camera.read_video_stream(as_image=True)
@@ -38,7 +40,7 @@ class ToolsImageEntropyLivePreviewScreen(BaseScreen):
                         int(self.renderer.canvas_width/2),
                         self.renderer.canvas_height - GUIConstants.EDGE_PADDING
                     ),
-                    text="< back  |  click joystick",
+                    text=_("< back  |  click joystick"),
                     fill=GUIConstants.BODY_FONT_COLOR,
                     font=instructions_font,
                     stroke_width=4,
@@ -69,7 +71,7 @@ class ToolsImageEntropyLivePreviewScreen(BaseScreen):
                         int(self.renderer.canvas_width/2),
                         self.renderer.canvas_height - GUIConstants.EDGE_PADDING
                     ),
-                    text="Capturing image...",
+                    text=_("Capturing image..."),
                     fill=GUIConstants.ACCENT_COLOR,
                     font=instructions_font,
                     stroke_width=4,
@@ -87,7 +89,7 @@ class ToolsImageEntropyFinalImageScreen(BaseScreen):
     final_image: Image = None
 
     def _run(self):
-        instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+        instructions_font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_button_font_size())
 
         self.renderer.canvas.paste(self.final_image)
         self.renderer.draw.text(
@@ -95,7 +97,7 @@ class ToolsImageEntropyFinalImageScreen(BaseScreen):
                 int(self.renderer.canvas_width/2),
                 self.renderer.canvas_height - GUIConstants.EDGE_PADDING
             ),
-            text=" < reshoot  |  accept > ",
+            text=_(" < reshoot  |  accept > "),
             fill=GUIConstants.BODY_FONT_COLOR,
             font=instructions_font,
             stroke_width=4,
@@ -116,7 +118,7 @@ class ToolsDiceEntropyEntryScreen(BaseTopNavScreen):
 
 
     def __post_init__(self):
-        self.title = f"Dice Roll 1/{self.total_rolls}"
+        self.title = _("Dice Roll 1/{}").format(self.total_rolls)
         super().__post_init__()
 
         self.dice_rolls = ""
@@ -269,7 +271,7 @@ class ToolsCalcFinalWordShowFinalWordScreen(ButtonListScreen):
 
     def __post_init__(self):
         # Customize defaults
-        self.title = f"{self.mnemonic_word_length}th Word"
+        self.title = _("{}th Word").format(self.mnemonic_word_length)
         self.is_bottom_list = True
 
         super().__post_init__()
@@ -284,7 +286,7 @@ class ToolsCalcFinalWordShowFinalWordScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
             icon_color="blue",
-            label_text="fingerprint",
+            label_text=_("fingerprint"),
             value_text=self.fingerprint,
             is_text_centered=True,
             screen_y=self.components[-1].screen_y + self.components[-1].height + 3*GUIConstants.COMPONENT_PADDING,

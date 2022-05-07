@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from gettext import gettext as _
 from typing import List
 
 from seedsigner.gui.screens import RET_CODE__POWER_BUTTON
@@ -118,11 +119,12 @@ class NotYetImplementedView(View):
         Temporary View to use during dev.
     """
     def run(self):
+        from seedsigner.views.main_menu_views import MainMenuView
         WarningScreen(
-            title="Work In Progress",
-            status_headline="Not Yet Implemented",
-            text="This is still on our to-do list!",
-            button_data=["Back to Main Menu"],
+            title=_("Work In Progress"),
+            status_headline=_("Not Yet Implemented"),
+            text=_("This is still on our to-do list!"),
+            button_data=[_("Back to Main Menu")],
         ).display()
 
         return Destination(MainMenuView)
@@ -135,11 +137,12 @@ class UnhandledExceptionView(View):
 
 
     def run(self):
+        from seedsigner.views.main_menu_views import MainMenuView
         DireWarningScreen(
-            title="System Error",
+            title=_("System Error"),
             status_headline=self.error[0],
             text=self.error[1] + "\n" + self.error[2],
-            button_data=["OK"],
+            button_data=[_("OK")],
             show_back_button=False,
             allow_text_overflow=True,  # Fit what we can, let the rest go off the edges
         ).display()

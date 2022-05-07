@@ -52,7 +52,7 @@ class OpeningSplashScreen(LogoScreen):
             self.renderer.show_image()
 
         # Display version num below SeedSigner logo
-        font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.TOP_NAV_TITLE_FONT_SIZE["default"])
+        font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_top_nav_title_font_size())
         version = f"v{controller.VERSION}"
         (left, top, version_tw, version_th) = font.getbbox(version, anchor="lt")
 

@@ -28,7 +28,7 @@ class ScanView(View):
                 seed_mnemonic = self.decoder.get_seed_phrase()
                 if not seed_mnemonic:
                     # seed is not valid, Exit if not valid with message
-                    raise Exception("Not yet implemented!")
+                    return Destination(NotYetImplementedView)
                 else:
                     # Found a valid mnemonic seed! All new seeds should be considered
                     #   pending (might set a passphrase, SeedXOR, etc) until finalized.

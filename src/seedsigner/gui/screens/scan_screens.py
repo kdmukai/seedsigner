@@ -18,7 +18,7 @@ from ..components import BaseComponent, Button, GUIConstants, Fonts, IconButton,
 @dataclass
 class ScanScreen(BaseScreen):
     decoder: DecodeQR = None
-    instructions_text: str = "Scan a QR code"
+    instructions_text: str = _("Scan a QR code")
     resolution: Tuple[int,int] = (480, 480)
     framerate: int = 12
     render_rect: Tuple[int,int,int,int] = None
@@ -63,7 +63,7 @@ class ScanScreen(BaseScreen):
         def run(self):
             from timeit import default_timer as timer
 
-            instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+            instructions_font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_button_font_size())
             while self.keep_running:
                 start = timer()
                 frame = self.camera.read_video_stream(as_image=True)
@@ -131,12 +131,12 @@ class ScanScreen(BaseScreen):
 @dataclass
 class SettingsUpdatedScreen(ButtonListScreen):
     config_name: str = None
-    title: str = "Settings QR"
+    title: str = _("Settings QR")
     is_bottom_list: bool = True
 
     def __post_init__(self):
         # Customize defaults
-        self.button_data = ["Home"]
+        self.button_data = [_("Home")]
 
         super().__post_init__()
 
@@ -152,7 +152,7 @@ class SettingsUpdatedScreen(ButtonListScreen):
             start_y = self.config_name_textarea.screen_y + 50
         
         self.components.append(TextArea(
-            text="Settings imported successfully!",
+            text=_("Settings imported successfully!"),
             is_text_centered=True,
             auto_line_break=True,
             screen_y=start_y

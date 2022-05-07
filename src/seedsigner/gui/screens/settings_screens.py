@@ -33,7 +33,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
         super().__post_init__()
 
         self.components.append(TextArea(
-            text=self.display_name,
+            text=_(self.display_name),
             font_size=GUIConstants.BODY_FONT_MAX_SIZE,
             is_text_centered=True,
             auto_line_break=False,
@@ -43,7 +43,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
         if self.help_text:
             prev_component_bottom = self.components[-1].screen_y + self.components[-1].height
             self.components.append(TextArea(
-                text=self.help_text,
+                text=_(self.help_text),
                 font_color=GUIConstants.LABEL_FONT_COLOR,
                 is_text_centered=True,
                 screen_y=prev_component_bottom + GUIConstants.COMPONENT_PADDING,
@@ -124,7 +124,7 @@ class IOTestScreen(BaseTopNavScreen):
         self.components.append(self.joystick_right_button)
 
         # Hardware keys UI
-        font = Fonts.get_font(GUIConstants.get_button_font_name(), GUIConstants.BUTTON_FONT_SIZE)
+        font = Fonts.get_font(GUIConstants.get_button_font_name(), GUIConstants.get_button_font_size())
         (left, top, text_width, bottom) = font.getbbox(text="Clear", anchor="ls")
         icon = Icon(
             icon_name=FontAwesomeIconConstants.CAMERA, 
@@ -293,6 +293,7 @@ class DonateScreen(BaseTopNavScreen):
 
         self.components.append(TextArea(
             text="seedsigner.com",
+            font_name=GUIConstants.BODY_FONT_NAME["default"],
             font_size=28,
             font_color=GUIConstants.ACCENT_COLOR,
             supersampling_factor=1,
