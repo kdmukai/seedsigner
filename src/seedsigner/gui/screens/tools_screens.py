@@ -14,10 +14,6 @@ from seedsigner.hardware.buttons import HardwareButtonsConstants
 @dataclass
 class ToolsImageEntropyLivePreviewScreen(BaseScreen):
     def __post_init__(self):
-        # Customize defaults
-        self.title = _("Initializing Camera...")
-
-        # Initialize the base class
         super().__post_init__()
 
         self.camera = Camera.get_instance()

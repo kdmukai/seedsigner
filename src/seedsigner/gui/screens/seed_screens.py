@@ -86,7 +86,7 @@ class SeedMnemonicEntryScreen(BaseTopNavScreen):
             text="abcdefghijklmnopqrstuvwxyz",
             is_text_centered=False,
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
-            font_size=GUIConstants.get_get_button_font_size()() + 4,
+            font_size=GUIConstants.get_button_font_size() + 4,
             screen_x=self.matches_list_x,
             screen_y=self.highlighted_row_y,
             width=self.canvas_width - self.matches_list_x + GUIConstants.COMPONENT_PADDING,
@@ -115,7 +115,7 @@ class SeedMnemonicEntryScreen(BaseTopNavScreen):
             height=arrow_button_height,
         )
 
-        self.word_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME, GUIConstants.get_get_button_font_size()() + 4)
+        self.word_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME, GUIConstants.get_button_font_size() + 4)
         (left, top, right, bottom) = self.word_font.getbbox("abcdefghijklmnopqrstuvwxyz", anchor="ls")
         self.word_font_height = -1 * top
         self.matches_list_row_height = self.word_font_height + GUIConstants.COMPONENT_PADDING
