@@ -48,6 +48,7 @@ class SettingsConstants:
     LOCALE__GERMAN = "de"
     LOCALE__HEBREW = "he"
     LOCALE__JAPANESE = "ja"
+    LOCALE__RUSSIAN = "ru"
     LOCALE__SPANISH = "es"
     ALL_LOCALES = [
         (LOCALE__ARABIC, "Arabic"),
@@ -57,6 +58,7 @@ class SettingsConstants:
         (LOCALE__GERMAN, "German"),
         (LOCALE__HEBREW, "Hebrew"),
         (LOCALE__JAPANESE, "Japanese"),
+        (LOCALE__RUSSIAN, "Russian"),
         (LOCALE__SPANISH, "Spanish"),
     ]
 

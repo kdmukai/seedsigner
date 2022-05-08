@@ -40,6 +40,7 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     TOP_NAV_TITLE_FONT_SIZE = {
         "default": 20,
@@ -52,6 +53,7 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     BODY_FONT_SIZE = {
         "default": 17,
@@ -73,10 +75,12 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     BUTTON_FONT_SIZE = {
         "default": 18,
         "ar": 16,
+        "ja": 16,
     }
     BUTTON_FONT_COLOR = "#e8e8e8"
     BUTTON_BACKGROUND_COLOR = "#2c2c2c"
@@ -438,12 +442,18 @@ class TextArea(BaseComponent):
                     # Candidate line is possibly shorter than necessary.
                     return _binary_len_search(min_index=index, max_index=max_index)
 
-            if len(self.text.split()) == 1 and not self.allow_text_overflow:
-                # No whitespace chars to split on!
-                raise TextDoesNotFitException("Text cannot fit in target rect with this font/size")
+            if Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE) not in [SettingsConstants.LOCALE__JAPANESE]:
+                if len(self.text.split()) == 1 and not self.allow_text_overflow:
+                    # No whitespace chars to split on!
+                    raise TextDoesNotFitException("Text cannot fit in target rect with this font/size")
 
             for line in self.text.split("\n"):
-                words = line.split()
+                if Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE) not in [SettingsConstants.LOCALE__JAPANESE]:
+                    # Treat each character as a word that can be split
+                    # TODO: Needs refinement; only split on kanji, not English or Katakana chars
+                    words = line
+                else:
+                    words = line.split()
                 if not words:
                     # It's a blank line
                     _add_text_line("", 0)

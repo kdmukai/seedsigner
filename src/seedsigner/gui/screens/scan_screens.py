@@ -1,6 +1,7 @@
 import time
 
 from dataclasses import dataclass
+from gettext import gettext as _
 from typing import List, Tuple
 
 from seedsigner.gui import renderer
@@ -131,11 +132,11 @@ class ScanScreen(BaseScreen):
 @dataclass
 class SettingsUpdatedScreen(ButtonListScreen):
     config_name: str = None
-    title: str = _("Settings QR")
-    is_bottom_list: bool = True
 
     def __post_init__(self):
         # Customize defaults
+        self.title = _("Settings QR")
+        self.is_bottom_list = True
         self.button_data = [_("Home")]
 
         super().__post_init__()

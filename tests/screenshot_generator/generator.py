@@ -7,7 +7,7 @@ from seedsigner.hardware.buttons import HardwareButtons
 from seedsigner.hardware.camera import Camera
 from seedsigner.models.settings import Settings
 from seedsigner.models.settings_definition import SettingsConstants
-from seedsigner.views import main_menu_views, seed_views, settings_views, tools_views
+from seedsigner.views import main_menu_views, scan_views, seed_views, settings_views, tools_views
 from seedsigner.views.view import View
 
 from .utils import ScreenshotComplete, ScreenshotRenderer
@@ -33,7 +33,7 @@ def test_generate_screenshots():
     Renderer.configure_instance = Mock()
     Renderer.get_instance = Mock(return_value=screenshot_renderer)
 
-    Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=SettingsConstants.LOCALE__CZECH)
+    Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=SettingsConstants.LOCALE__ARABIC)
 
     def screencap_view(view_cls: View, view_args: dict={}):
         screenshot_renderer.set_screenshot_filename(view_cls.__name__ + ".png")
@@ -44,6 +44,8 @@ def test_generate_screenshots():
     screenshot_list = [
         main_menu_views.MainMenuView,
         main_menu_views.PowerOffView,
+
+        (scan_views.SettingsUpdatedView, dict(config_name="Keith's Settings")),
 
         seed_views.LoadSeedView,
         seed_views.SeedMnemonicEntryView,
