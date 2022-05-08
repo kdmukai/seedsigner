@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-05-06 21:56-0500\n"
+"POT-Creation-Date: 2022-05-08 16:50-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Generated-By: Babel 2.10.1\n"
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:12
-#: src/seedsigner/gui/screens/scan_screens.py:139
+#: src/seedsigner/gui/screens/scan_screens.py:140
 msgid "Home"
 msgstr ""
 
@@ -89,112 +90,108 @@ msgid "recipient {}"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py:139
+#: src/seedsigner/gui/screens/psbt_screens.py:551
 msgid "fee"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:143
+#. Label for a change output in the PSBT Overview flow diagram
+#: src/seedsigner/gui/screens/psbt_screens.py:144
 msgid "change"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:454
+#: src/seedsigner/gui/screens/psbt_screens.py:455
 msgid "PSBT Math"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:455
+#: src/seedsigner/gui/screens/psbt_screens.py:456
 msgid "Review Recipients"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:461
-#: src/seedsigner/gui/screens/psbt_screens.py:514
+#: src/seedsigner/gui/screens/psbt_screens.py:462
+#: src/seedsigner/gui/screens/psbt_screens.py:515
 msgid "btc"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:473
+#: src/seedsigner/gui/screens/psbt_screens.py:474
 msgid "sats"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:532
-msgid " input{}"
+#: src/seedsigner/gui/screens/psbt_screens.py:533
+msgid "input{}"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:543
-msgid " recipient{}"
+#: src/seedsigner/gui/screens/psbt_screens.py:544
+msgid "recipient{}"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:550
-msgid " fee"
+#. Denonination is inserted (e.g. your "btc change" or "sats change")
+#: src/seedsigner/gui/screens/psbt_screens.py:562
+msgid "{} change"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:560
-msgid " {} change"
-msgstr ""
-
-#: src/seedsigner/gui/screens/psbt_screens.py:623
-#: src/seedsigner/views/psbt_views.py:320
-msgid "Your Change"
-msgstr ""
-
-#: src/seedsigner/gui/screens/psbt_screens.py:666
+#: src/seedsigner/gui/screens/psbt_screens.py:667
 msgid "Address verified!"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:678
+#: src/seedsigner/gui/screens/psbt_screens.py:679
 msgid "Sign PSBT"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:692
+#: src/seedsigner/gui/screens/psbt_screens.py:693
 msgid "Click to authorize this transaction"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:702
+#: src/seedsigner/gui/screens/psbt_screens.py:703
 msgid "Signed PSBT"
 msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:707
+#. Prompt to specify which coordinator software to use (e.g. Specter, Sparrow,
+#. etc)
+#: src/seedsigner/gui/screens/psbt_screens.py:709
 msgid "Export as a QR code for:"
 msgstr ""
 
-#: src/seedsigner/gui/screens/scan_screens.py:21
+#: src/seedsigner/gui/screens/scan_screens.py:22
 msgid "Scan a QR code"
 msgstr ""
 
-#: src/seedsigner/gui/screens/scan_screens.py:134
+#: src/seedsigner/gui/screens/scan_screens.py:138
 msgid "Settings QR"
 msgstr ""
 
-#: src/seedsigner/gui/screens/scan_screens.py:155
+#: src/seedsigner/gui/screens/scan_screens.py:156
 msgid "Settings imported successfully!"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:720
-#: src/seedsigner/gui/screens/screen.py:724
+#: src/seedsigner/gui/screens/screen.py:731
+#: src/seedsigner/gui/screens/screen.py:734
 #: src/seedsigner/views/seed_views.py:953
 #: src/seedsigner/views/seed_views.py:1200
 msgid "Success!"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:733
+#: src/seedsigner/gui/screens/screen.py:738
 #: src/seedsigner/views/seed_views.py:955
 #: src/seedsigner/views/seed_views.py:1203
-#: src/seedsigner/views/seed_views.py:1645 src/seedsigner/views/view.py:144
+#: src/seedsigner/views/seed_views.py:1646 src/seedsigner/views/view.py:145
 msgid "OK"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:844
+#: src/seedsigner/gui/screens/screen.py:855
 #: src/seedsigner/views/psbt_views.py:426
 msgid "Caution"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:847
+#: src/seedsigner/gui/screens/screen.py:858
 #: src/seedsigner/views/seed_views.py:619
 msgid "Privacy Leak!"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:851
+#: src/seedsigner/gui/screens/screen.py:861
 msgid "I Understand"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:859
+#: src/seedsigner/gui/screens/screen.py:873
 msgid "Classified Info!"
 msgstr ""
 
@@ -203,7 +200,7 @@ msgid "Finalize Seed"
 msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py:424
-#: src/seedsigner/gui/screens/tools_screens.py:289
+#: src/seedsigner/gui/screens/tools_screens.py:285
 msgid "fingerprint"
 msgstr ""
 
@@ -301,35 +298,25 @@ msgstr ""
 msgid "Verify Address"
 msgstr ""
 
-#: src/seedsigner/gui/screens/seed_screens.py:1463
-#: src/seedsigner/views/seed_views.py:1432
-msgid "Skip 10"
-msgstr ""
-
-#: src/seedsigner/gui/screens/seed_screens.py:1463
-#: src/seedsigner/views/seed_views.py:1433
-#: src/seedsigner/views/seed_views.py:1614
-msgid "Cancel"
-msgstr ""
-
-#: src/seedsigner/gui/screens/seed_screens.py:1519
+#: src/seedsigner/gui/screens/seed_screens.py:1518
 msgid "Checking address {}"
 msgstr ""
 
-#: src/seedsigner/gui/screens/seed_screens.py:1536
+#: src/seedsigner/gui/screens/seed_screens.py:1535
 msgid "Multisig Verification"
 msgstr ""
 
-#: src/seedsigner/gui/screens/seed_screens.py:1541
+#: src/seedsigner/gui/screens/seed_screens.py:1540
 msgid ""
 "Load your multisig wallet descriptor to verify your receive/self-transfer"
 " or change address."
 msgstr ""
 
-#: src/seedsigner/gui/screens/seed_screens.py:1554
+#: src/seedsigner/gui/screens/seed_screens.py:1553
 msgid "Descriptor Loaded"
 msgstr ""
 
+#. Label for the multisig wallet's signing policy (e.g. 2-of-3)
 #: src/seedsigner/gui/screens/seed_screens.py:1559
 msgid "Policy"
 msgstr ""
@@ -358,7 +345,7 @@ msgid "Exit"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py:173
-#: src/seedsigner/gui/screens/tools_screens.py:74
+#: src/seedsigner/gui/screens/tools_screens.py:70
 msgid "Capturing image..."
 msgstr ""
 
@@ -376,23 +363,19 @@ msgid ""
 "Donate onchain or LN at:"
 msgstr ""
 
-#: src/seedsigner/gui/screens/tools_screens.py:18
-msgid "Initializing Camera..."
-msgstr ""
-
-#: src/seedsigner/gui/screens/tools_screens.py:43
+#: src/seedsigner/gui/screens/tools_screens.py:39
 msgid "< back  |  click joystick"
 msgstr ""
 
-#: src/seedsigner/gui/screens/tools_screens.py:100
+#: src/seedsigner/gui/screens/tools_screens.py:96
 msgid " < reshoot  |  accept > "
 msgstr ""
 
-#: src/seedsigner/gui/screens/tools_screens.py:121
+#: src/seedsigner/gui/screens/tools_screens.py:117
 msgid "Dice Roll 1/{}"
 msgstr ""
 
-#: src/seedsigner/gui/screens/tools_screens.py:274
+#: src/seedsigner/gui/screens/tools_screens.py:270
 msgid "{}th Word"
 msgstr ""
 
@@ -416,141 +399,141 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:68
+#: src/seedsigner/models/settings_definition.py:70
 msgid "Btc-only"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:69
+#: src/seedsigner/models/settings_definition.py:71
 msgid "Sats-only"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:70
+#: src/seedsigner/models/settings_definition.py:72
 msgid "Threshold at 0.01"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:71
+#: src/seedsigner/models/settings_definition.py:73
 msgid "Btc | Sats hybrid"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:79
+#: src/seedsigner/models/settings_definition.py:81
 msgid "0°"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:80
+#: src/seedsigner/models/settings_definition.py:82
 msgid "90°"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:81
+#: src/seedsigner/models/settings_definition.py:83
 msgid "180°"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:82
+#: src/seedsigner/models/settings_definition.py:84
 msgid "270°"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:90
+#: src/seedsigner/models/settings_definition.py:92
 msgid "Low"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:91
+#: src/seedsigner/models/settings_definition.py:93
 msgid "Medium"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:92
+#: src/seedsigner/models/settings_definition.py:94
 msgid "High"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:100
+#: src/seedsigner/models/settings_definition.py:102
 msgid "Mainnet"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:101
+#: src/seedsigner/models/settings_definition.py:103
 msgid "Testnet"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:102
+#: src/seedsigner/models/settings_definition.py:104
 msgid "Regtest"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:118
+#: src/seedsigner/models/settings_definition.py:120
 #: src/seedsigner/views/seed_views.py:465
 msgid "Single Sig"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:119
+#: src/seedsigner/models/settings_definition.py:121
 #: src/seedsigner/views/seed_views.py:466
 msgid "Multisig"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:350
+#: src/seedsigner/models/settings_definition.py:352
 msgid "Language"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:358
+#: src/seedsigner/models/settings_definition.py:360
 msgid "Mnemonic language"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:366
+#: src/seedsigner/models/settings_definition.py:368
 msgid "Persistent settings"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:372
+#: src/seedsigner/models/settings_definition.py:374
 msgid "Coordinator software"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:379
+#: src/seedsigner/models/settings_definition.py:381
 msgid "Denomination display"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:388
+#: src/seedsigner/models/settings_definition.py:390
 msgid "Bitcoin network"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:396
+#: src/seedsigner/models/settings_definition.py:398
 msgid "QR code density"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:404
+#: src/seedsigner/models/settings_definition.py:406
 msgid "Xpub export"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:410
+#: src/seedsigner/models/settings_definition.py:412
 msgid "Sig types"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:418
+#: src/seedsigner/models/settings_definition.py:420
 msgid "Script types"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:426
+#: src/seedsigner/models/settings_definition.py:428
 msgid "Show xpub details"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:432
+#: src/seedsigner/models/settings_definition.py:434
 msgid "BIP-39 passphrase"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:440
+#: src/seedsigner/models/settings_definition.py:442
 msgid "Camera rotation"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:448
+#: src/seedsigner/models/settings_definition.py:450
 msgid "Compact SeedQR"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:454
+#: src/seedsigner/models/settings_definition.py:456
 msgid "Show privacy warnings"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:460
+#: src/seedsigner/models/settings_definition.py:462
 msgid "Show dire warnings"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:466
+#: src/seedsigner/models/settings_definition.py:468
 msgid "Show partner logos"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:481
+#: src/seedsigner/models/settings_definition.py:483
 msgid "QR background color"
 msgstr ""
 
@@ -636,6 +619,10 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: src/seedsigner/views/psbt_views.py:320
+msgid "Your Change"
+msgstr ""
+
 #: src/seedsigner/views/psbt_views.py:321
 msgid "Verify Multisig Change"
 msgstr ""
@@ -702,6 +689,10 @@ msgstr ""
 msgid "Select Diff Seed"
 msgstr ""
 
+#: src/seedsigner/views/screensaver.py:73
+msgid "With support from:"
+msgstr ""
+
 #: src/seedsigner/views/seed_views.py:53
 msgid "Load a seed"
 msgstr ""
@@ -764,7 +755,7 @@ msgid "Scan PSBT"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py:352
-#: src/seedsigner/views/seed_views.py:1644
+#: src/seedsigner/views/seed_views.py:1645
 msgid "Verify Addr"
 msgstr ""
 
@@ -918,32 +909,42 @@ msgstr ""
 msgid "Can't validate a single sig addr without specifying a seed"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1561
-#: src/seedsigner/views/seed_views.py:1577
+#. Option when scanning for a matching address; skips ten addresses ahead
+#: src/seedsigner/views/seed_views.py:1433
+msgid "Skip 10"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:1434
+#: src/seedsigner/views/seed_views.py:1615
+msgid "Cancel"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:1562
+#: src/seedsigner/views/seed_views.py:1578
 msgid "Taproot verification not yet implemented!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1573
+#: src/seedsigner/views/seed_views.py:1574
 msgid "Legacy P2PKH verification not implemented!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1598
+#: src/seedsigner/views/seed_views.py:1599
 msgid "multisig"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1600
+#: src/seedsigner/views/seed_views.py:1601
 msgid "seed {}"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1603
+#: src/seedsigner/views/seed_views.py:1604
 msgid "Address Verified"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1613
+#: src/seedsigner/views/seed_views.py:1614
 msgid "Scan Descriptor"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1643
+#: src/seedsigner/views/seed_views.py:1644
 msgid "Return to PSBT"
 msgstr ""
 
@@ -1019,7 +1020,7 @@ msgstr ""
 msgid "Back to Main Menu"
 msgstr ""
 
-#: src/seedsigner/views/view.py:141
+#: src/seedsigner/views/view.py:142
 msgid "System Error"
 msgstr ""
 

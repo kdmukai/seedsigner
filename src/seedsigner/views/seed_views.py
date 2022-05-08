@@ -1429,6 +1429,7 @@ class SeedAddressVerificationView(View):
         # Start brute-force calculations from the zero-th index
         self.addr_verification_thread.start()
 
+        # TRANSLATOR_NOTE: Option when scanning for a matching address; skips ten addresses ahead
         SKIP_10 = _("Skip 10")
         CANCEL = _("Cancel")
         button_data = [SKIP_10, CANCEL]

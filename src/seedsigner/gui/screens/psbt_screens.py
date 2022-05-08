@@ -140,6 +140,7 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             if self.num_change_outputs > 0:
                 for i in range(0, self.num_change_outputs):
+                    # TRANSLATOR_NOTE: Label for a change output in the PSBT Overview flow diagram
                     destination_column.append(_("change"))
 
             max_destination_text_width = 0
@@ -497,8 +498,8 @@ class PSBTMathScreen(ButtonListScreen):
         image = Image.new("RGB", (body_width*ssf, body_height*ssf))
         draw = ImageDraw.Draw(image)
 
-        body_font = Fonts.get_font(GUIConstants.get_body_font_name(), (GUIConstants.BODY_FONT_SIZE)*ssf)
-        fixed_width_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_FONT_NAME, (GUIConstants.BODY_FONT_SIZE + 6)*ssf)
+        body_font = Fonts.get_font(GUIConstants.get_body_font_name(), (GUIConstants.get_body_font_size())*ssf)
+        fixed_width_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_FONT_NAME, (GUIConstants.get_body_font_size() + 6)*ssf)
         digits_width, digits_height = fixed_width_font.getsize(self.input_amount + "+")
 
         # Draw each line of the equation
@@ -523,13 +524,13 @@ class PSBTMathScreen(ButtonListScreen):
                 draw.text((main_zone_width + digit_group_spacing + mid_zone_width + digit_group_spacing, cur_y), text=end_zone, font=fixed_width_font, fill=tertiary_digit_color)
             else:
                 draw.text((0, cur_y), text=amount_str, font=fixed_width_font, fill=GUIConstants.BODY_FONT_COLOR)
-            draw.text((digits_width + 2*digit_group_spacing, cur_y), text=info_text, font=body_font, fill=info_text_color)
+            draw.text((digits_width + 3*digit_group_spacing, cur_y), text=info_text, font=body_font, fill=info_text_color)
 
         render_amount(
             cur_y,
             f" {self.input_amount}",
             # info_text=f""" {self.num_inputs} input{"s" if self.num_inputs > 1 else ""}""",
-            info_text=_(" input{}").format("s" if self.num_inputs > 1 else ""),
+            info_text=_("input{}").format("s" if self.num_inputs > 1 else ""),
         )
 
         # spend_amount will be zero on self-transfers; only display when there's an
@@ -540,14 +541,14 @@ class PSBTMathScreen(ButtonListScreen):
                 cur_y,
                 f"-{self.spend_amount}",
                 # info_text=f""" {self.num_recipients} recipient{"s" if self.num_recipients > 1 else ""}""",
-                info_text=_(" recipient{}").format("s" if self.num_recipients > 1 else ""),
+                info_text=_("recipient{}").format("s" if self.num_recipients > 1 else ""),
             )
 
         cur_y += int(digits_height * 1.2)
         render_amount(
             cur_y,
             f"-{self.fee_amount}",
-            info_text=_(" fee"),
+            info_text=_("fee"),
         )
 
         cur_y += int(digits_height * 1.2) + 4 * ssf
@@ -557,7 +558,8 @@ class PSBTMathScreen(ButtonListScreen):
         render_amount(
             cur_y,
             f" {self.change_amount}",
-            info_text=_(" {} change").format(denomination),
+            # TRANSLATOR_NOTE: Denonination is inserted (e.g. your "btc change" or "sats change")
+            info_text=_("{} change").format(denomination),
             info_text_color="darkorange"  # super-sampling alters the perceived color
         )
 
@@ -620,7 +622,6 @@ class PSBTAddressDetailsScreen(ButtonListScreen):
 
 @dataclass
 class PSBTChangeDetailsScreen(ButtonListScreen):
-    title: str = _("Your Change")
     amount: int = 0
     address: str = None
     is_multisig: bool = False
@@ -704,6 +705,7 @@ class PSBTSelectCoordinatorScreen(ButtonListScreen):
         super().__post_init__()
 
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: Prompt to specify which coordinator software to use (e.g. Specter, Sparrow, etc)
             text=_("Export as a QR code for:"),
             is_text_centered=True,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,

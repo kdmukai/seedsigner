@@ -18,7 +18,11 @@ All you have to do in your code is wrap each piece of English text with the `get
 ### Rescanning for text that needs translations
 Re-generate the `messages.pot` file:
 ```
-pybabel extract -F babel/babel.cfg -o babel/messages.pot .
+# -c TRANSLATOR_NOTE: will extract translator hints identified as comments starting with "# NOTE"
+# -s will strip the "NOTE:" part of the translator hint out
+# -F specifies the config file
+# -o is our target output file
+pybabel extract -c TRANSLATOR_NOTE: -s -F babel/babel.cfg -o babel/messages.pot .
 ```
 This will rescan all wrapped text, picking up new strings as well as updating existings strings that have been edited.
 
@@ -59,13 +63,18 @@ The only other step is to add the new language to the LOCALES list in `SettingsD
 The *.mo files are not checked into the repository as (large) binary (large) objects ("BLOBs") should not be checked into git to reduce repo bloat. So they need to be generated after fetching the code:
 
 ```
-pybabel compile -d src/seedsigner/resources/babel
+# -f allow fuzzy translations
+# -d DIRECTORY points to the root dir for our translation files
+pybabel compile -f -d src/seedsigner/resources/babel
 ```
 
+Note: We don't expect to see any fuzzy translations, but the `extract` step above marks the `messages.pot` file's metadata as `#, fuzzy` which will cause `compile` to ignore the entire file unless `-f` is specified.
+
+<!-- 
 In order to make that as transparent as possible, that procedure has been integrated into the setup-process. So it will be executed by:
 
 ```
 python3 setup.py install
 ```
 
-Unfortunately, it won't be executed by `pip3 install -e .` even though that has been propagated very long to be the developement-env installation procedure.
+Unfortunately, it won't be executed by `pip3 install -e .` even though that has been propagated very long to be the developement-env installation procedure. -->

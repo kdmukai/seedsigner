@@ -717,17 +717,22 @@ class QRDisplayScreen(BaseScreen):
 
 @dataclass
 class LargeIconStatusScreen(ButtonListScreen):
-    title: str = _("Success!")
+    title: str = None
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_CHECK
     status_icon_size: int = GUIConstants.ICON_PRIMARY_SCREEN_SIZE
     status_color: str = GUIConstants.SUCCESS_COLOR
-    status_headline: str = _("Success!")  # The colored text under the large icon
     text: str = ""                          # The body text of the screen
     button_data: list = None
     allow_text_overflow: bool = False
 
 
     def __post_init__(self):
+        if not self.title:
+            self.title = _("Success!")
+
+        if not self.status_headline:
+            self.status_headline = _("Success!")
+
         self.is_bottom_list: bool = True
         if not self.button_data:
             self.button_data = [_("OK")]
@@ -841,12 +846,17 @@ class WarningEdgesMixin:
 
 @dataclass
 class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
-    title: str = _("Caution")
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_EXCLAMATION
+    status_headline: str = None  # The colored text under the large icon
     status_color: str = "yellow"
-    status_headline: str = _("Privacy Leak!")     # The colored text under the alert icon
 
     def __post_init__(self):
+        if not self.title:
+            self.title = _("Caution")
+        
+        if not self.status_headline:
+            self.status_headline = _("Privacy Leak!")
+
         if not self.button_data:
             self.button_data = [_("I Understand")]
 
@@ -856,6 +866,10 @@ class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
 
 @dataclass
 class DireWarningScreen(WarningScreen):
-    status_headline: str = _("Classified Info!")     # The colored text under the alert icon
     status_color: str = GUIConstants.DIRE_WARNING_COLOR
 
+    def __post_init__(self):
+        if not self.status_headline:
+            self.status_headline = _("Classified Info!")
+        
+        super().__post_init__()

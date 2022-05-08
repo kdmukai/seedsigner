@@ -2,6 +2,7 @@ import os
 import random
 import time
 
+from gettext import gettext as _
 from PIL import Image
 
 from seedsigner.gui.components import Fonts, GUIConstants, load_image
@@ -68,8 +69,8 @@ class OpeningSplashScreen(LogoScreen):
 
             # Set up the partner logo
             partner_logo: Image.Image = self.partner_logos[self.get_random_partner()]
-            font = Fonts.get_font(GUIConstants.get_top_nav_title_font_name(), GUIConstants.BODY_FONT_SIZE)
-            sponsor_text = "With support from:"
+            font = Fonts.get_font(GUIConstants.get_top_nav_title_font_name(), GUIConstants.get_body_font_size())
+            sponsor_text = _("With support from:")
             (left, top, tw, th) = font.getbbox(sponsor_text, anchor="lt")
 
             x = int((self.renderer.canvas_width) / 2)

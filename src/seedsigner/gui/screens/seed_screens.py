@@ -423,7 +423,7 @@ class SeedFinalizeScreen(ButtonListScreen):
             icon_size=GUIConstants.ICON_FONT_SIZE + 12,
             label_text=_("fingerprint"),
             value_text=self.fingerprint,
-            font_size=GUIConstants.BODY_FONT_SIZE + 2,
+            font_size=GUIConstants.get_body_font_size() + 2,
             is_text_centered=True,
             screen_y=self.top_nav.height + int((self.buttons[0].screen_y - self.top_nav.height) / 2) - 30
         )
@@ -739,7 +739,7 @@ class SeedExportXpubDetailsScreen(WarningEdgesMixin, ButtonListScreen):
             label_text=_("Xpub"),
             value_text=f"{self.xpub[:18]}...",
             font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
-            font_size=GUIConstants.BODY_FONT_SIZE + 2,
+            font_size=GUIConstants.get_body_font_size() + 2,
             screen_x=GUIConstants.COMPONENT_PADDING,
             screen_y=self.components[-1].screen_y + self.components[-1].height + int(1.5*GUIConstants.COMPONENT_PADDING),
         )
@@ -1112,7 +1112,7 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
             label_text=_("changes fingerprint"),
             value_text=f"{self.fingerprint_without} >> {self.fingerprint_with}",
             is_text_centered=True,
-            screen_y = self.buttons[0].screen_y - GUIConstants.COMPONENT_PADDING - int(GUIConstants.BODY_FONT_SIZE*2.5)
+            screen_y = self.buttons[0].screen_y - GUIConstants.COMPONENT_PADDING - int(GUIConstants.get_body_font_size()*2.5)
         ))
 
         available_height = self.components[-1].screen_y - self.top_nav.height + GUIConstants.COMPONENT_PADDING
@@ -1265,7 +1265,7 @@ class SeedTranscribeSeedQRZoomedInScreen(BaseScreen):
         draw.line((self.mask_width, self.canvas_height - self.mask_height, self.canvas_width - self.mask_width, self.canvas_height - self.mask_height), fill=GUIConstants.ACCENT_COLOR)
 
         msg = _("click to exit")
-        font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.BODY_FONT_SIZE)
+        font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_body_font_size())
         (left, top, right, bottom) = font.getbbox(msg, anchor="ls")
         msg_height = -1 * top
         msg_width = right
@@ -1291,8 +1291,8 @@ class SeedTranscribeSeedQRZoomedInScreen(BaseScreen):
             text=msg,
             background_color=GUIConstants.BACKGROUND_COLOR,
             is_text_centered=True,
-            screen_y=self.canvas_height - GUIConstants.BODY_FONT_SIZE - GUIConstants.COMPONENT_PADDING,
-            height=GUIConstants.BODY_FONT_SIZE + GUIConstants.COMPONENT_PADDING,
+            screen_y=self.canvas_height - GUIConstants.get_body_font_size() - GUIConstants.COMPONENT_PADDING,
+            height=GUIConstants.get_body_font_size() + GUIConstants.COMPONENT_PADDING,
         ).render()
 
 
@@ -1460,7 +1460,6 @@ class SeedAddressVerificationScreen(ButtonListScreen):
         self.title = _("Verify Address")
         self.is_bottom_list = True
         self.show_back_button = False
-        self.button_data = [_("Skip 10"), _("Cancel")]
 
         super().__post_init__()
 
@@ -1508,7 +1507,7 @@ class SeedAddressVerificationScreen(ButtonListScreen):
         
 
         def run(self):
-            font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.BODY_FONT_SIZE)
+            font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_body_font_size())
             while self.keep_running:
                 if self.verified_index.cur_count is not None:
                     # Have to trigger a hw_input event to break the Screen out of the wait_for loop
@@ -1518,7 +1517,7 @@ class SeedAddressVerificationScreen(ButtonListScreen):
                 textarea = TextArea(
                     text=_("Checking address {}").format(self.threadsafe_counter.cur_count),
                     font_name=GUIConstants.get_body_font_name(),
-                    font_size=GUIConstants.BODY_FONT_SIZE,
+                    font_size=GUIConstants.get_body_font_size(),
                     screen_y=self.screen_y
                 )
 
@@ -1556,6 +1555,7 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
         super().__post_init__()
 
         self.components.append(IconTextLine(
+            # TRANSLATOR_NOTE: Label for the multisig wallet's signing policy (e.g. 2-of-3)
             label_text=_("Policy"),
             value_text=self.policy,
             font_size=20,
@@ -1566,7 +1566,7 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             label_text=_("Signing Keys"),
             value_text=" ".join(self.fingerprints),
-            font_size=244,
+            font_size=24,
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
             is_text_centered=True,

@@ -413,14 +413,15 @@ class TextArea(BaseComponent):
 
         else:
             # Have to calc how to break text into multiple lines
-            def _binary_len_search(min_index, max_index):
+            def _binary_len_search(min_index, max_index, word_spacer=" "):
                 # Try the middle of the range
                 index = math.ceil((max_index + min_index) / 2)
                 if index == 0:
                     # Handle edge case where there's only one word in the last line
                     index = 1
 
-                tw, th = self.font.getsize(" ".join(words[0:index]))
+                tw, th = self.font.getsize(word_spacer.join(words[0:index]))
+                # print(f"tw: {tw} vs {self.supersampled_width} | {word_spacer.join(words[0:index])}")
 
                 if tw > self.supersampled_width - (2 * self.edge_padding * self.supersampling_factor):
                     # Candidate line is still too long. Restrict search range down.
@@ -434,13 +435,13 @@ class TextArea(BaseComponent):
                             # There's still room to back down the min_index in the next
                             # round.
                             index -= 1
-                    return _binary_len_search(min_index=min_index, max_index=index)
+                    return _binary_len_search(min_index=min_index, max_index=index, word_spacer=word_spacer)
                 elif index == max_index:
                     # We have converged
                     return (index, tw)
                 else:
                     # Candidate line is possibly shorter than necessary.
-                    return _binary_len_search(min_index=index, max_index=max_index)
+                    return _binary_len_search(min_index=index, max_index=max_index, word_spacer=word_spacer)
 
             if Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE) not in [SettingsConstants.LOCALE__JAPANESE]:
                 if len(self.text.split()) == 1 and not self.allow_text_overflow:
@@ -448,19 +449,30 @@ class TextArea(BaseComponent):
                     raise TextDoesNotFitException("Text cannot fit in target rect with this font/size")
 
             for line in self.text.split("\n"):
-                if Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE) not in [SettingsConstants.LOCALE__JAPANESE]:
+                if Settings.get_instance().get_value(SettingsConstants.SETTING__LOCALE) in [SettingsConstants.LOCALE__JAPANESE]:
                     # Treat each character as a word that can be split
                     # TODO: Needs refinement; only split on kanji, not English or Katakana chars
                     words = line
+
+                    # No spaces between chars
+                    word_spacer = ""
+
                 else:
+                    # Separate words by any whitespace (spaces, line breaks, etc)
                     words = line.split()
+
+                    # When joining words, separate with a space char
+                    word_spacer = " "
+
                 if not words:
                     # It's a blank line
                     _add_text_line("", 0)
+
                 else:
                     while words:
-                        (index, tw) = _binary_len_search(0, len(words))
-                        _add_text_line(" ".join(words[0:index]), tw)
+                        (index, tw) = _binary_len_search(0, len(words), word_spacer=word_spacer)
+
+                        _add_text_line(word_spacer.join(words[0:index]), tw)
                         words = words[index:]
 
             # TODO: Don't render blank lines as full height
@@ -592,7 +604,7 @@ class IconTextLine(BaseComponent):
                 image_draw=self.image_draw,
                 canvas=self.canvas,
                 text=self.label_text,
-                font_size=GUIConstants.BODY_FONT_SIZE - 2,
+                font_size=GUIConstants.get_body_font_size() - 2,
                 font_color="#666",
                 edge_padding=0,
                 is_text_centered=self.is_text_centered if not self.icon_name else False,
@@ -876,7 +888,7 @@ class BtcAmount(BaseComponent):
         
         digit_font = Fonts.get_font(font_name=GUIConstants.get_body_font_name(), size=self.font_size)
         smaller_digit_font = Fonts.get_font(font_name=GUIConstants.get_body_font_name(), size=self.font_size - 2)
-        unit_font_size = GUIConstants.BUTTON_FONT_SIZE + 2
+        unit_font_size = GUIConstants.get_button_font_size() + 2
 
         # Render to a temp surface
         self.paste_image = Image.new(mode="RGB", size=(self.canvas_width, self.icon_size), color=GUIConstants.BACKGROUND_COLOR)
