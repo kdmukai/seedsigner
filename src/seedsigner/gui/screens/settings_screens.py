@@ -54,6 +54,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
 @dataclass
 class IOTestScreen(BaseTopNavScreen):
     def __post_init__(self):
+        # TRANSLATOR_NOTE: Short for "Input/Output"; screen to make sure the buttons and camera are working properly
         self.title = _("I/O Test")
         self.show_back_button = False
         self.resolution = (96, 96)
@@ -125,7 +126,7 @@ class IOTestScreen(BaseTopNavScreen):
 
         # Hardware keys UI
         font = Fonts.get_font(GUIConstants.get_button_font_name(), GUIConstants.get_button_font_size())
-        (left, top, text_width, bottom) = font.getbbox(text="Clear", anchor="ls")
+        (left, top, text_width, bottom) = font.getbbox(text=_("Clear"), anchor="ls")
         icon = Icon(
             icon_name=FontAwesomeIconConstants.CAMERA, 
             icon_size=GUIConstants.ICON_INLINE_FONT_SIZE,
@@ -135,6 +136,7 @@ class IOTestScreen(BaseTopNavScreen):
         key2_y = int(self.canvas_height/2) - int(key_button_height/2)
 
         self.key2_button = Button(
+            # TRANSLATOR_NOTE: Blank the screen
             text=_("Clear"),   # Initialize with text to set vertical centering
             width=key_button_width,
             height=key_button_height,
@@ -287,7 +289,8 @@ class DonateScreen(BaseTopNavScreen):
         super().__post_init__()
 
         self.components.append(TextArea(
-            text=_("SeedSigner is 100% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:"),
+            # TRANSLATOR_NOTE: Use two percent signs ("%%") to properly display a single percent sign in the final output
+            text=_("SeedSigner is 100%% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:"),
             screen_y=self.top_nav.height + 3*GUIConstants.COMPONENT_PADDING,
         ))
 

@@ -70,6 +70,7 @@ class OpeningSplashScreen(LogoScreen):
             # Set up the partner logo
             partner_logo: Image.Image = self.partner_logos[self.get_random_partner()]
             font = Fonts.get_font(GUIConstants.get_top_nav_title_font_name(), GUIConstants.get_body_font_size())
+            # TRANSLATOR_NOTE: This is on the opening splash screen, displayed above the HRF logo
             sponsor_text = _("With support from:")
             (left, top, tw, th) = font.getbbox(sponsor_text, anchor="lt")
 

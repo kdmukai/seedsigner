@@ -36,6 +36,7 @@ class ToolsImageEntropyLivePreviewScreen(BaseScreen):
                         int(self.renderer.canvas_width/2),
                         self.renderer.canvas_height - GUIConstants.EDGE_PADDING
                     ),
+                    # TRANSLATOR_NOTE: Instructions when taking a picture; "back" should point left.
                     text=_("< back  |  click joystick"),
                     fill=GUIConstants.BODY_FONT_COLOR,
                     font=instructions_font,
@@ -93,6 +94,7 @@ class ToolsImageEntropyFinalImageScreen(BaseScreen):
                 int(self.renderer.canvas_width/2),
                 self.renderer.canvas_height - GUIConstants.EDGE_PADDING
             ),
+            # TRANSLATOR_NOTE: Instructions when reviewing an image; "reshoot" must point left, "accept" must point right
             text=_(" < reshoot  |  accept > "),
             fill=GUIConstants.BODY_FONT_COLOR,
             font=instructions_font,
@@ -114,7 +116,8 @@ class ToolsDiceEntropyEntryScreen(BaseTopNavScreen):
 
 
     def __post_init__(self):
-        self.title = _("Dice Roll 1/{}").format(self.total_rolls)
+        # TRANSLATOR_NOTE: current roll number vs total rolls (e.g. roll 7 of 50)
+        self.title = _("Dice Roll {}/{}").format(1, self.total_rolls)
         super().__post_init__()
 
         self.dice_rolls = ""
@@ -239,7 +242,7 @@ class ToolsDiceEntropyEntryScreen(BaseTopNavScreen):
 
                 # Render a new TextArea over the TopNav title bar
                 TextArea(
-                    text=f"Dice Roll {cursor_position + 1}/{self.total_rolls}",
+                    text=_("Dice Roll {}/{}").format(cursor_position + 1, self.total_rolls),
                     font_name=GUIConstants.get_top_nav_title_font_name(),
                     font_size=GUIConstants.get_top_nav_title_font_size(),
                     height=self.top_nav.height,
@@ -266,8 +269,11 @@ class ToolsCalcFinalWordShowFinalWordScreen(ButtonListScreen):
     fingerprint: str = None
 
     def __post_init__(self):
-        # Customize defaults
-        self.title = _("{}th Word").format(self.mnemonic_word_length)
+        # Manually specify 12 vs 24 case for easier ordinal translation
+        if self.mnemonic_word_length == 12:
+            self.title = _("12th Word")
+        else:
+            self.title = _("24th Word")
         self.is_bottom_list = True
 
         super().__post_init__()

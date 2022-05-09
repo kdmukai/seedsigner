@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from gettext import gettext as _
+from gettext import ngettext
 from PIL import Image, ImageDraw, ImageFilter
 from typing import List
 
@@ -88,7 +89,9 @@ class PSBTOverviewScreen(ButtonListScreen):
         elif self.num_inputs > 5:
             inputs_column.append(_("input 1"))
             inputs_column.append(_("input 2"))
+            # TRANSLATOR_NOTE: Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...], 8"
             inputs_column.append(_("[ ... ]"))
+            # TRANSLATOR_NOTE: Input number will be inserted (e.g. "input 3")
             inputs_column.append(_("input {}").format(self.num_inputs-1))
             inputs_column.append(_("input {}").format(self.num_inputs))
         else:
@@ -120,6 +123,7 @@ class PSBTOverviewScreen(ButtonListScreen):
         # Now let's maximize the actual destination col by adjusting our addr truncation
         def calculate_destination_col_width(truncate_at: int):
             def truncate_destination_addr(addr):
+                # TRANSLATOR_NOTE: Display a truncated address (e.g. "bc1qabc...")
                 return _("{}...").format(addr[:truncate_at])
             
             destination_column = []
@@ -133,7 +137,9 @@ class PSBTOverviewScreen(ButtonListScreen):
             else:
                 # destination_column.append(f"{len(self.destination_addresses)} recipients")
                 destination_column.append(_("recipient 1"))
+                # TRANSLATOR_NOTE: Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...], 8"
                 destination_column.append(_("[ ... ]"))
+                # TRANSLATOR_NOTE: Inserts the recipient number (e.g. the fifth one is: "recipient 5")
                 destination_column.append(_("recipient {}").format(len(self.destination_addresses) + self.num_self_transfer_outputs))
 
             destination_column.append(_("fee"))
@@ -529,8 +535,7 @@ class PSBTMathScreen(ButtonListScreen):
         render_amount(
             cur_y,
             f" {self.input_amount}",
-            # info_text=f""" {self.num_inputs} input{"s" if self.num_inputs > 1 else ""}""",
-            info_text=_("input{}").format("s" if self.num_inputs > 1 else ""),
+            info_text=ngettext("input", "inputs", self.num_inputs),
         )
 
         # spend_amount will be zero on self-transfers; only display when there's an
@@ -540,8 +545,7 @@ class PSBTMathScreen(ButtonListScreen):
             render_amount(
                 cur_y,
                 f"-{self.spend_amount}",
-                # info_text=f""" {self.num_recipients} recipient{"s" if self.num_recipients > 1 else ""}""",
-                info_text=_("recipient{}").format("s" if self.num_recipients > 1 else ""),
+                info_text=ngettext("recipient", "recipients", self.num_recipients),
             )
 
         cur_y += int(digits_height * 1.2)

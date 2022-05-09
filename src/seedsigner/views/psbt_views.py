@@ -170,6 +170,7 @@ class PSBTUnsupportedScriptTypeWarningView(View):
 class PSBTNoChangeWarningView(View):
     def run(self):
         selected_menu_num = WarningScreen(
+            # TRANSLATOR_NOTE: User will receive no change back; the inputs to this transaction are fully spent
             status_headline=_("Full Spend!"),
             text=_("This PSBT spends its entire input value. No change is coming back to your wallet."),
             button_data=[_("Continue")],
@@ -237,6 +238,7 @@ class PSBTAddressDetailsView(View):
             # Should not be able to get here
             return Destination(MainMenuView)
 
+        # TRANSLATOR_NOTE: Future-tense used to indicate that this transaction will send this amount, as opposed to "Send" on its own which could be misread as an instant command (e.g. "Send Now").
         title = _("Will Send")
         if psbt_parser.num_destinations > 1:
             title += f" (#{self.address_num + 1})"
@@ -245,6 +247,7 @@ class PSBTAddressDetailsView(View):
         if self.address_num < psbt_parser.num_destinations - 1:
             button_data.append(_("Next Recipient"))
         else:
+            # TRANSLATOR_NOTE: Short for "Next step"
             button_data.append(_("Next"))
 
         selected_menu_num = psbt_screens.PSBTAddressDetailsScreen(
@@ -317,6 +320,7 @@ class PSBTChangeDetailsView(View):
         NEXT = _("Next")
 
         if is_change_derivation_path:
+            # TRANSLATOR_NOTE: The amount you're receiving back from the transaction
             title = _("Your Change")
             VERIFY_MULTISIG = _("Verify Multisig Change")
         else:

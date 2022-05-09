@@ -457,6 +457,7 @@ class SeedWordsScreen(WarningEdgesMixin, ButtonListScreen):
 
 
     def __post_init__(self):
+        # TRANSLATOR_NOTE: Displays the page number and total: (e.g. page 1 of 6)
         self.title = _("Seed Words: {}/{}").format(self.page_index + 1, self.num_pages)
         super().__post_init__()
 
@@ -727,6 +728,7 @@ class SeedExportXpubDetailsScreen(WarningEdgesMixin, ButtonListScreen):
 
         self.derivation_line = IconTextLine(
             icon_name=SeedSignerCustomIconConstants.PATH,
+            # TRANSLATOR_NOTE: Short for "Derivation Path"
             label_text=_("Derivation"),
             value_text=self.derivation_path,
             screen_x=GUIConstants.COMPONENT_PADDING,
@@ -1109,6 +1111,7 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
             icon_color="blue",
+            # TRANSLATOR_NOTE: Describes the effect of applying a BIP-39 passphrase; it changes the seed's fingerprint
             label_text=_("changes fingerprint"),
             value_text=f"{self.fingerprint_without} >> {self.fingerprint_with}",
             is_text_centered=True,
@@ -1163,7 +1166,9 @@ class SeedTranscribeSeedQRFormatScreen(ButtonListScreen):
         super().__post_init__()
 
         self.components.append(IconTextLine(
+            # TRANSLATOR_NOTE: Refers to the SeedQR type: Standard or Compact
             label_text=_("Standard"),
+            # TRANSLATOR_NOTE: Briefly explains the Standard SeedQR data format
             value_text=_("BIP-39 wordlist indices"),
             is_text_centered=False,
             auto_line_break=True,
@@ -1171,7 +1176,9 @@ class SeedTranscribeSeedQRFormatScreen(ButtonListScreen):
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
         ))
         self.components.append(IconTextLine(
+            # TRANSLATOR_NOTE: Refers to the SeedQR type: Standard or Compact
             label_text=_("Compact"),
+            # TRANSLATOR_NOTE: Briefly explains the Compact SeedQR data format
             value_text=_("Raw entropy bits"),
             is_text_centered=False,
             screen_x=GUIConstants.EDGE_PADDING,
@@ -1187,6 +1194,7 @@ class SeedTranscribeSeedQRWholeQRScreen(WarningEdgesMixin, ButtonListScreen):
 
     def __post_init__(self):
         self.title = _("Transcribe SeedQR")
+        # TRANSLATOR_NOTE: Refers to the QR code size: 21x21, 25x25, or 29x29
         self.button_data = [_("Begin {}x{}").format(self.num_modules, self.num_modules)]
         self.is_bottom_list = True
         self.status_color = GUIConstants.DIRE_WARNING_COLOR
@@ -1515,6 +1523,7 @@ class SeedAddressVerificationScreen(ButtonListScreen):
                     return
 
                 textarea = TextArea(
+                    # TRANSLATOR_NOTE: Inserts the nth address number (e.g. "Checking address 7")
                     text=_("Checking address {}").format(self.threadsafe_counter.cur_count),
                     font_name=GUIConstants.get_body_font_name(),
                     font_size=GUIConstants.get_body_font_size(),
