@@ -75,9 +75,9 @@ class SeedsMenuView(View):
 class LoadSeedView(View):
     def run(self):
         SEED_QR = (_("Scan a SeedQR"), FontAwesomeIconConstants.QRCODE)
-        TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)
-        TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
-        CREATE = (" Create a seed", FontAwesomeIconConstants.PLUS)
+        TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        CREATE = (_("Create a seed"), FontAwesomeIconConstants.PLUS)
         button_data=[
             SEED_QR,
             TYPE_24WORD,
@@ -86,7 +86,7 @@ class LoadSeedView(View):
         ]
 
         selected_menu_num = ButtonListScreen(
-            title="Load A Seed",
+            title=_("Load A Seed"),
             is_button_text_centered=False,
             button_data=button_data
         ).display()
@@ -122,6 +122,7 @@ class SeedMnemonicEntryView(View):
 
     def run(self):
         ret = seed_screens.SeedMnemonicEntryScreen(
+            # TRANSLATOR_NOTE: Inserts the word number (e.g. "Seed Word #6")
             title=_("Seed Word #{}").format(self.cur_word_index + 1),  # Human-readable 1-indexing!
             initial_letters=list(self.cur_word) if self.cur_word else ["a"],
             wordlist=Seed.get_wordlist(wordlist_language_code=self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE)),

@@ -12,7 +12,7 @@ class ScreenshotRenderer(Renderer):
     screenshot_filename: str = None
 
     @classmethod
-    def configure_instance(cls, screenshot_path: str):
+    def configure_instance(cls):
         # Instantiate the one and only Renderer instance
         renderer = cls.__new__(cls)
         cls._instance = renderer
@@ -23,12 +23,16 @@ class ScreenshotRenderer(Renderer):
 
         renderer.canvas = Image.new('RGB', (renderer.canvas_width, renderer.canvas_height))
         renderer.draw = ImageDraw.Draw(renderer.canvas)
-
-        renderer.screenshot_path = screenshot_path
     
 
     def set_screenshot_filename(self, filename:str):
         self.screenshot_filename = filename
+    
+
+    def set_screenshot_path(self, path):
+        if not os.path.exists(path):
+            os.makedirs(path)
+        self.screenshot_path = path
 
 
     def show_image(self, image=None, alpha_overlay=None):

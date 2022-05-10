@@ -1,3 +1,4 @@
+import os
 import pytest
 from mock import Mock, patch
 
@@ -26,14 +27,13 @@ def test_generate_screenshots():
     Camera.get_instance = Mock()
 
     # Prep the ScreenshotRenderer that will be patched over the normal Renderer
-    ScreenshotRenderer.configure_instance(screenshot_path="/Users/kdmukai/Downloads")
+    screenshot_path = "/Users/kdmukai/Downloads/screenshots"
+    ScreenshotRenderer.configure_instance()
     screenshot_renderer: ScreenshotRenderer = ScreenshotRenderer.get_instance()
 
     # Replace the core `Singleton` calls so that only our ScreenshotRenderer is used.
     Renderer.configure_instance = Mock()
     Renderer.get_instance = Mock(return_value=screenshot_renderer)
-
-    Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=SettingsConstants.LOCALE__ARABIC)
 
     def screencap_view(view_cls: View, view_args: dict={}):
         screenshot_renderer.set_screenshot_filename(view_cls.__name__ + ".png")
@@ -62,10 +62,14 @@ def test_generate_screenshots():
         (tools_views.ToolsDiceEntropyEntryView, dict(total_rolls=50)),
     ]
 
-    for screenshot in screenshot_list:
-        if type(screenshot) == tuple:
-            view_cls, view_args = screenshot
-        else:
-            view_cls = screenshot
-            view_args = {}
-        screencap_view(view_cls, view_args)
+    for locale, display_name in SettingsConstants.ALL_LOCALES:
+        Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=locale)
+        screenshot_renderer.set_screenshot_path(os.path.join(screenshot_path, locale))
+
+        for screenshot in screenshot_list:
+            if type(screenshot) == tuple:
+                view_cls, view_args = screenshot
+            else:
+                view_cls = screenshot
+                view_args = {}
+            screencap_view(view_cls, view_args)

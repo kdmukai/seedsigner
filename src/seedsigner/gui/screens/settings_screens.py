@@ -289,8 +289,7 @@ class DonateScreen(BaseTopNavScreen):
         super().__post_init__()
 
         self.components.append(TextArea(
-            # TRANSLATOR_NOTE: Use two percent signs ("%%") to properly display a single percent sign in the final output
-            text=_("SeedSigner is 100%% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:"),
+            text=_("SeedSigner is 100% free & open source, funded solely by the Bitcoin community.\n\nDonate onchain or LN at:"),
             screen_y=self.top_nav.height + 3*GUIConstants.COMPONENT_PADDING,
         ))
 
