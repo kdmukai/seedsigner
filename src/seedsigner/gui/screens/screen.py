@@ -730,9 +730,6 @@ class LargeIconStatusScreen(ButtonListScreen):
         if not self.title:
             self.title = _("Success!")
 
-        if not self.status_headline:
-            self.status_headline = _("Success!")
-
         self.is_bottom_list: bool = True
         if not self.button_data:
             self.button_data = [_("OK")]
@@ -854,9 +851,6 @@ class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
         if not self.title:
             self.title = _("Caution")
         
-        if not self.status_headline:
-            self.status_headline = _("Privacy Leak!")
-
         if not self.button_data:
             self.button_data = [_("I Understand")]
 

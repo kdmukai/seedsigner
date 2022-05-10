@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-05-10 13:36-0500\n"
+"POT-Creation-Date: 2022-05-10 17:32-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,34 +173,28 @@ msgid "Settings imported successfully!"
 msgstr ""
 
 #: src/seedsigner/gui/screens/screen.py:731
-#: src/seedsigner/gui/screens/screen.py:734
 #: src/seedsigner/views/seed_views.py:954
 #: src/seedsigner/views/seed_views.py:1201
 msgid "Success!"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:738
+#: src/seedsigner/gui/screens/screen.py:735
 #: src/seedsigner/views/seed_views.py:956
 #: src/seedsigner/views/seed_views.py:1204
 #: src/seedsigner/views/seed_views.py:1647 src/seedsigner/views/view.py:145
 msgid "OK"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:855
+#: src/seedsigner/gui/screens/screen.py:852
 #: src/seedsigner/views/psbt_views.py:430
 msgid "Caution"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:858
-#: src/seedsigner/views/seed_views.py:620
-msgid "Privacy Leak!"
-msgstr ""
-
-#: src/seedsigner/gui/screens/screen.py:861
+#: src/seedsigner/gui/screens/screen.py:855
 msgid "I Understand"
 msgstr ""
 
-#: src/seedsigner/gui/screens/screen.py:873
+#: src/seedsigner/gui/screens/screen.py:867
 msgid "Classified Info!"
 msgstr ""
 
@@ -377,10 +371,13 @@ msgstr ""
 msgid "Donate"
 msgstr ""
 
-#: src/seedsigner/gui/screens/settings_screens.py:292
+#. If your language uses the percent sign ("%"), your translation must also use
+#. two percent signs ("%%") due to python formatting oddities. "100%%" will be
+#. rendered as "100%".
+#: src/seedsigner/gui/screens/settings_screens.py:293
 #, python-format
 msgid ""
-"SeedSigner is 100% free & open source, funded solely by the Bitcoin "
+"SeedSigner is 100%% free & open source, funded solely by the Bitcoin "
 "community.\n"
 "\n"
 "Donate onchain or LN at:"
@@ -831,6 +828,10 @@ msgstr ""
 
 #: src/seedsigner/views/seed_views.py:432
 msgid "Export as SeedQR"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:620
+msgid "Privacy Leak!"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py:621

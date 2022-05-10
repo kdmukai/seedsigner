@@ -4,16 +4,18 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 # 
 # Translators:
-# Keith Mukai, 2022
 # mister wizard, 2022
+# I M, 2022
+# Keith Mukai, 2022
 # 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-05-06 21:56-0500\n"
+"POT-Creation-Date: 2022-05-10 17:32-0500\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
-"Last-Translator: mister wizard, 2022\n"
+"Last-Translator: Keith Mukai, 2022\n"
 "Language-Team: Japanese (https://www.transifex.com/seedsigner/teams/135832/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +25,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:12
-#: src/seedsigner/gui/screens/scan_screens.py:139
+#: src/seedsigner/gui/screens/scan_screens.py:140
 msgid "Home"
 msgstr "メニュー"
 
@@ -39,7 +41,7 @@ msgid ""
 msgstr ""
 "シードサイナーが再起動中。\n"
 "\n"
-"揮発性メモリーにあるデータの全てが削除される。"
+"揮発性メモリーにある全てのデータが削除されます。"
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:39
 msgid "Powering Off"
@@ -47,303 +49,300 @@ msgstr "シャットダウン中"
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:44
 msgid "Please wait about 30 seconds before disconnecting power."
-msgstr "電源を外す前に、約30秒を待ってください。"
+msgstr "電源を外す前に、約30秒待ってください。"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:28
-#: src/seedsigner/views/seed_views.py:351
+#: src/seedsigner/gui/screens/psbt_screens.py:29
+#: src/seedsigner/views/seed_views.py:352
 msgid "Review PSBT"
 msgstr "PSBTの内容を確認する"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:30
+#: src/seedsigner/gui/screens/psbt_screens.py:31
 msgid "Review Details"
 msgstr "詳細を確認する"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:87
+#: src/seedsigner/gui/screens/psbt_screens.py:88
 msgid "1 input"
 msgstr "インプット数 = 1"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:89
+#: src/seedsigner/gui/screens/psbt_screens.py:90
 msgid "input 1"
 msgstr "インプット1"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:90
+#: src/seedsigner/gui/screens/psbt_screens.py:91
 msgid "input 2"
 msgstr "インプット2"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:91
-#: src/seedsigner/gui/screens/psbt_screens.py:136
+#. Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...],
+#. 8"
+#: src/seedsigner/gui/screens/psbt_screens.py:93
+#: src/seedsigner/gui/screens/psbt_screens.py:141
 msgid "[ ... ]"
 msgstr "[ ... ]"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:92
-#: src/seedsigner/gui/screens/psbt_screens.py:93
+#. Input number will be inserted (e.g. "input 3")
+#: src/seedsigner/gui/screens/psbt_screens.py:95
 #: src/seedsigner/gui/screens/psbt_screens.py:96
+#: src/seedsigner/gui/screens/psbt_screens.py:99
 msgid "input {}"
 msgstr "インプット {}"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:123
+#. Display a truncated address (e.g. "bc1qabc...")
+#: src/seedsigner/gui/screens/psbt_screens.py:127
 msgid "{}..."
 msgstr "{}..."
 
-#: src/seedsigner/gui/screens/psbt_screens.py:132
+#: src/seedsigner/gui/screens/psbt_screens.py:136
 msgid "self-transfer"
 msgstr "自己送付"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:135
+#: src/seedsigner/gui/screens/psbt_screens.py:139
 msgid "recipient 1"
 msgstr "宛先1"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:137
+#. Inserts the recipient number (e.g. the fifth one is: "recipient 5")
+#: src/seedsigner/gui/screens/psbt_screens.py:143
 msgid "recipient {}"
 msgstr "宛先{}"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:139
+#: src/seedsigner/gui/screens/psbt_screens.py:145
+#: src/seedsigner/gui/screens/psbt_screens.py:555
 msgid "fee"
 msgstr "手数料"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:143
+#. Label for a change output in the PSBT Overview flow diagram
+#: src/seedsigner/gui/screens/psbt_screens.py:150
 msgid "change"
 msgstr "お釣り"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:454
+#: src/seedsigner/gui/screens/psbt_screens.py:461
 msgid "PSBT Math"
 msgstr "PSBT算出方式"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:455
+#: src/seedsigner/gui/screens/psbt_screens.py:462
 msgid "Review Recipients"
 msgstr "宛先を確認する"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:461
-#: src/seedsigner/gui/screens/psbt_screens.py:514
+#: src/seedsigner/gui/screens/psbt_screens.py:468
+#: src/seedsigner/gui/screens/psbt_screens.py:521
 msgid "btc"
 msgstr "btc"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:473
+#: src/seedsigner/gui/screens/psbt_screens.py:480
 msgid "sats"
 msgstr "sat"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:532
-msgid " input{}"
-msgstr "インプット{}"
+#: src/seedsigner/gui/screens/psbt_screens.py:538
+msgid "input"
+msgid_plural "inputs"
+msgstr[0] ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:543
-msgid " recipient{}"
-msgstr "宛先{}"
+#: src/seedsigner/gui/screens/psbt_screens.py:548
+msgid "recipient"
+msgid_plural "recipients"
+msgstr[0] ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:550
-msgid " fee"
-msgstr "手数料"
+#. Denonination is inserted (e.g. your "btc change" or "sats change")
+#: src/seedsigner/gui/screens/psbt_screens.py:566
+msgid "{} change"
+msgstr ""
 
-#: src/seedsigner/gui/screens/psbt_screens.py:560
-msgid " {} change"
-msgstr "お釣り {}"
-
-#: src/seedsigner/gui/screens/psbt_screens.py:623
-#: src/seedsigner/views/psbt_views.py:320
-msgid "Your Change"
-msgstr "お釣り"
-
-#: src/seedsigner/gui/screens/psbt_screens.py:666
+#: src/seedsigner/gui/screens/psbt_screens.py:671
 msgid "Address verified!"
 msgstr "アドレスを確認済み。"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:678
+#: src/seedsigner/gui/screens/psbt_screens.py:683
 msgid "Sign PSBT"
-msgstr "PSBTを署名する"
+msgstr "PSBTに署名する"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:692
+#: src/seedsigner/gui/screens/psbt_screens.py:697
 msgid "Click to authorize this transaction"
 msgstr "この取り引きを許可する場合、クリックしてください。"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:702
+#: src/seedsigner/gui/screens/psbt_screens.py:707
 msgid "Signed PSBT"
 msgstr "署名済みPSBT"
 
-#: src/seedsigner/gui/screens/psbt_screens.py:707
+#. Prompt to specify which coordinator software to use (e.g. Specter, Sparrow,
+#. etc)
+#: src/seedsigner/gui/screens/psbt_screens.py:713
 msgid "Export as a QR code for:"
 msgstr "{}用QRコードとしてエクスポートする。"
 
-#: src/seedsigner/gui/screens/scan_screens.py:21
+#: src/seedsigner/gui/screens/scan_screens.py:22
 msgid "Scan a QR code"
 msgstr "QRコードを読み取る"
 
-#: src/seedsigner/gui/screens/scan_screens.py:134
+#: src/seedsigner/gui/screens/scan_screens.py:138
 msgid "Settings QR"
-msgstr "デフォールト設定を保存するためのQR"
+msgstr "デフォルト設定を保存するためのQR"
 
-#: src/seedsigner/gui/screens/scan_screens.py:155
+#: src/seedsigner/gui/screens/scan_screens.py:156
 msgid "Settings imported successfully!"
-msgstr "デフォールト設定を無事にインポートできました。"
+msgstr "デフォルト設定を無事インポートできました。"
 
-#: src/seedsigner/gui/screens/screen.py:720
-#: src/seedsigner/gui/screens/screen.py:724
-#: src/seedsigner/views/seed_views.py:953
-#: src/seedsigner/views/seed_views.py:1200
+#: src/seedsigner/gui/screens/screen.py:731
+#: src/seedsigner/views/seed_views.py:954
+#: src/seedsigner/views/seed_views.py:1201
 msgid "Success!"
 msgstr "成功しました。"
 
-#: src/seedsigner/gui/screens/screen.py:733
-#: src/seedsigner/views/seed_views.py:955
-#: src/seedsigner/views/seed_views.py:1203
-#: src/seedsigner/views/seed_views.py:1645 src/seedsigner/views/view.py:144
+#: src/seedsigner/gui/screens/screen.py:735
+#: src/seedsigner/views/seed_views.py:956
+#: src/seedsigner/views/seed_views.py:1204
+#: src/seedsigner/views/seed_views.py:1647 src/seedsigner/views/view.py:145
 msgid "OK"
 msgstr "OK"
 
-#: src/seedsigner/gui/screens/screen.py:844
-#: src/seedsigner/views/psbt_views.py:426
+#: src/seedsigner/gui/screens/screen.py:852
+#: src/seedsigner/views/psbt_views.py:430
 msgid "Caution"
 msgstr "注意"
 
-#: src/seedsigner/gui/screens/screen.py:847
-#: src/seedsigner/views/seed_views.py:619
-msgid "Privacy Leak!"
-msgstr "個人情報漏洩注意！"
-
-#: src/seedsigner/gui/screens/screen.py:851
+#: src/seedsigner/gui/screens/screen.py:855
 msgid "I Understand"
 msgstr "承知しました。"
 
-#: src/seedsigner/gui/screens/screen.py:859
+#: src/seedsigner/gui/screens/screen.py:867
 msgid "Classified Info!"
 msgstr "秘密情報！"
 
 #: src/seedsigner/gui/screens/seed_screens.py:411
 msgid "Finalize Seed"
-msgstr "シードを完了化する"
+msgstr "シードを最終化する"
 
 #: src/seedsigner/gui/screens/seed_screens.py:424
-#: src/seedsigner/gui/screens/tools_screens.py:289
+#: src/seedsigner/gui/screens/tools_screens.py:291
 msgid "fingerprint"
 msgstr "フィンガープリント値"
 
-#: src/seedsigner/gui/screens/seed_screens.py:460
+#. Displays the page number and total: (e.g. page 1 of 6)
+#: src/seedsigner/gui/screens/seed_screens.py:461
 msgid "Seed Words: {}/{}"
 msgstr "{}/{}のシードワード"
 
-#: src/seedsigner/gui/screens/seed_screens.py:540
+#: src/seedsigner/gui/screens/seed_screens.py:541
 msgid "Verify Backup?"
 msgstr "復元用控えを確認する？"
 
-#: src/seedsigner/gui/screens/seed_screens.py:546
+#: src/seedsigner/gui/screens/seed_screens.py:547
 msgid "Optionally verify that your mnemonic backup is correct."
 msgstr "復元用シードの控えに誤りがないかを確認する（省略可）。"
 
-#: src/seedsigner/gui/screens/seed_screens.py:555
+#: src/seedsigner/gui/screens/seed_screens.py:556
 msgid "Derivation Path"
 msgstr "導出パス"
 
-#: src/seedsigner/gui/screens/seed_screens.py:702
+#: src/seedsigner/gui/screens/seed_screens.py:703
 msgid "Xpub Details"
 msgstr "xpubの詳細"
 
-#: src/seedsigner/gui/screens/seed_screens.py:708
-#: src/seedsigner/gui/screens/seed_screens.py:712
-#: src/seedsigner/views/seed_views.py:353
-#: src/seedsigner/views/seed_views.py:470
-#: src/seedsigner/views/seed_views.py:503
-#: src/seedsigner/views/seed_views.py:577
+#: src/seedsigner/gui/screens/seed_screens.py:709
+#: src/seedsigner/gui/screens/seed_screens.py:713
+#: src/seedsigner/views/seed_views.py:354
+#: src/seedsigner/views/seed_views.py:471
+#: src/seedsigner/views/seed_views.py:504
+#: src/seedsigner/views/seed_views.py:578
 msgid "Export Xpub"
 msgstr "xpubをエクスポートする"
 
-#: src/seedsigner/gui/screens/seed_screens.py:721
+#: src/seedsigner/gui/screens/seed_screens.py:722
 msgid "Fingerprint"
 msgstr "フィンガープリント値"
 
-#: src/seedsigner/gui/screens/seed_screens.py:730
+#. Short for "Derivation Path"
+#: src/seedsigner/gui/screens/seed_screens.py:732
 msgid "Derivation"
 msgstr "導出パス"
 
-#: src/seedsigner/gui/screens/seed_screens.py:739
+#: src/seedsigner/gui/screens/seed_screens.py:741
 msgid "Xpub"
 msgstr "xpub"
 
-#: src/seedsigner/gui/screens/seed_screens.py:752
-#: src/seedsigner/views/seed_views.py:216
+#: src/seedsigner/gui/screens/seed_screens.py:754
+#: src/seedsigner/views/seed_views.py:217
 msgid "Add Passphrase"
 msgstr "パスフレーズを追加する"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1104
+#: src/seedsigner/gui/screens/seed_screens.py:1106
 msgid "Verify Passphrase"
 msgstr "パスフレーズを確認する"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1112
+#. Describes the effect of applying a BIP-39 passphrase; it changes the seed's
+#. fingerprint
+#: src/seedsigner/gui/screens/seed_screens.py:1115
 msgid "changes fingerprint"
-msgstr "フィンガープリント値が変更する"
+msgstr "フィンガープリント値を変更する"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1166
+#. Refers to the SeedQR type: Standard or Compact
+#: src/seedsigner/gui/screens/seed_screens.py:1170
 msgid "Standard"
 msgstr "標準"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1167
+#. Briefly explains the Standard SeedQR data format
+#: src/seedsigner/gui/screens/seed_screens.py:1172
 msgid "BIP-39 wordlist indices"
 msgstr "BIP-39のワードリストで何番目のワード"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1174
+#. Refers to the SeedQR type: Standard or Compact
+#: src/seedsigner/gui/screens/seed_screens.py:1180
 msgid "Compact"
 msgstr "コンパクト"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1175
+#. Briefly explains the Compact SeedQR data format
+#: src/seedsigner/gui/screens/seed_screens.py:1182
 msgid "Raw entropy bits"
 msgstr "生のエントロピー用ビット"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1189
+#: src/seedsigner/gui/screens/seed_screens.py:1196
 msgid "Transcribe SeedQR"
 msgstr "シードQRの控えを書き写す"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1190
+#. Refers to the QR code size: 21x21, 25x25, or 29x29
+#: src/seedsigner/gui/screens/seed_screens.py:1198
 msgid "Begin {}x{}"
 msgstr "{}x{} 開始"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1267
+#: src/seedsigner/gui/screens/seed_screens.py:1275
 msgid "click to exit"
 msgstr "戻るにはクリックしてください。"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1403
+#: src/seedsigner/gui/screens/seed_screens.py:1411
 msgid ""
 "Optionally scan your transcribed SeedQR to confirm that it reads back "
 "correctly."
 msgstr "書き写されたシードQRの控えを読み取り、誤りがないかを確認する（省略可）。"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1460
-#: src/seedsigner/views/seed_views.py:1283
-#: src/seedsigner/views/seed_views.py:1341
+#: src/seedsigner/gui/screens/seed_screens.py:1468
+#: src/seedsigner/views/seed_views.py:1284
+#: src/seedsigner/views/seed_views.py:1342
 msgid "Verify Address"
 msgstr "アドレスを確認する"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1463
-#: src/seedsigner/views/seed_views.py:1432
-msgid "Skip 10"
-msgstr "10ほど飛ばす"
-
-#: src/seedsigner/gui/screens/seed_screens.py:1463
-#: src/seedsigner/views/seed_views.py:1433
-#: src/seedsigner/views/seed_views.py:1614
-msgid "Cancel"
-msgstr "キャンセル"
-
-#: src/seedsigner/gui/screens/seed_screens.py:1519
+#. Inserts the nth address number (e.g. "Checking address 7")
+#: src/seedsigner/gui/screens/seed_screens.py:1527
 msgid "Checking address {}"
 msgstr "アドレス{}を確認中"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1536
+#: src/seedsigner/gui/screens/seed_screens.py:1544
 msgid "Multisig Verification"
 msgstr "マルチシグの確認"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1541
+#: src/seedsigner/gui/screens/seed_screens.py:1549
 msgid ""
 "Load your multisig wallet descriptor to verify your receive/self-transfer or"
 " change address."
 msgstr "宛先・自己送付・お釣り用アドレスを確認するには、マルチシグウォレットのdescriptorを入力してください。"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1554
+#: src/seedsigner/gui/screens/seed_screens.py:1562
 msgid "Descriptor Loaded"
 msgstr "descriptor入力済み"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1559
+#. Label for the multisig wallet's signing policy (e.g. 2-of-3)
+#: src/seedsigner/gui/screens/seed_screens.py:1568
 msgid "Policy"
 msgstr "スクリプト仕様"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1567
+#: src/seedsigner/gui/screens/seed_screens.py:1576
 msgid "Signing Keys"
 msgstr "署名用鍵"
 
@@ -353,59 +352,72 @@ msgstr "署名用鍵"
 msgid "Settings"
 msgstr "設定"
 
-#: src/seedsigner/gui/screens/settings_screens.py:57
+#. Short for "Input/Output"; screen to make sure the buttons and camera are
+#. working properly
+#: src/seedsigner/gui/screens/settings_screens.py:58
 msgid "I/O Test"
 msgstr "入出力テスト"
 
-#: src/seedsigner/gui/screens/settings_screens.py:138
-#: src/seedsigner/gui/screens/settings_screens.py:219
+#. Blank the screen
+#: src/seedsigner/gui/screens/settings_screens.py:129
+#: src/seedsigner/gui/screens/settings_screens.py:140
+#: src/seedsigner/gui/screens/settings_screens.py:221
 msgid "Clear"
 msgstr "画像を破棄"
 
-#: src/seedsigner/gui/screens/settings_screens.py:159
+#: src/seedsigner/gui/screens/settings_screens.py:161
 msgid "Exit"
 msgstr "戻る"
 
-#: src/seedsigner/gui/screens/settings_screens.py:173
-#: src/seedsigner/gui/screens/tools_screens.py:74
+#: src/seedsigner/gui/screens/settings_screens.py:175
+#: src/seedsigner/gui/screens/tools_screens.py:71
 msgid "Capturing image..."
 msgstr "画像を読み取り中..."
 
-#: src/seedsigner/gui/screens/settings_screens.py:286
+#: src/seedsigner/gui/screens/settings_screens.py:288
 #: src/seedsigner/views/settings_views.py:21
 msgid "Donate"
 msgstr "寄付する"
 
-#: src/seedsigner/gui/screens/settings_screens.py:290
+#. If your language uses the percent sign ("%"), your translation must also
+#. use
+#. two percent signs ("%%") due to python formatting oddities. "100%%" will be
+#. rendered as "100%".
+#: src/seedsigner/gui/screens/settings_screens.py:293
 #, python-format
 msgid ""
-"SeedSigner is free & open source, funded solely by the Bitcoin community.\n"
+"SeedSigner is 100%% free & open source, funded solely by the Bitcoin community.\n"
 "\n"
 "Donate onchain or LN at:"
 msgstr ""
-"シードサイナーは100%フリーソフトウェア・オープンソースソフトウェアであり、その開発に必要な資金の全てがビットコイン・コミュニティの皆様から頂いているものです。\n"
+"シードサイナーは100%%フリーソフトウェア・オープンソースソフトウェアであり、その開発に必要な資金の全てがビットコイン・コミュニティの皆様から頂いているものです。\n"
 "\n"
 "BTC若しくはライトニングによる寄付をするには、下記リンクを使ってください。"
 
-#: src/seedsigner/gui/screens/tools_screens.py:18
-msgid "Initializing Camera..."
-msgstr "カメラを初期化中..."
-
-#: src/seedsigner/gui/screens/tools_screens.py:43
+#. Instructions when taking a picture; "back" should point left.
+#: src/seedsigner/gui/screens/tools_screens.py:40
 msgid "< back  |  click joystick"
 msgstr "< 戻る  |  ジョイスティックをクリック"
 
-#: src/seedsigner/gui/screens/tools_screens.py:100
+#. Instructions when reviewing an image; "reshoot" must point left, "accept"
+#. must point right
+#: src/seedsigner/gui/screens/tools_screens.py:98
 msgid " < reshoot  |  accept > "
 msgstr " < 撮り直す  |  確定 > "
 
-#: src/seedsigner/gui/screens/tools_screens.py:121
-msgid "Dice Roll 1/{}"
-msgstr "サイコロを投げる 1/{}回目"
+#. current roll number vs total rolls (e.g. roll 7 of 50)
+#: src/seedsigner/gui/screens/tools_screens.py:120
+#: src/seedsigner/gui/screens/tools_screens.py:245
+msgid "Dice Roll {}/{}"
+msgstr ""
 
 #: src/seedsigner/gui/screens/tools_screens.py:274
-msgid "{}th Word"
-msgstr "{}番目のワード"
+msgid "12th Word"
+msgstr ""
+
+#: src/seedsigner/gui/screens/tools_screens.py:276
+msgid "24th Word"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:14
 msgid "Enabled"
@@ -427,141 +439,141 @@ msgstr "促す"
 msgid "Required"
 msgstr "必須"
 
-#: src/seedsigner/models/settings_definition.py:68
+#: src/seedsigner/models/settings_definition.py:72
 msgid "Btc-only"
 msgstr "btcのみ"
 
-#: src/seedsigner/models/settings_definition.py:69
+#: src/seedsigner/models/settings_definition.py:73
 msgid "Sats-only"
 msgstr "satのみ"
 
-#: src/seedsigner/models/settings_definition.py:70
+#: src/seedsigner/models/settings_definition.py:74
 msgid "Threshold at 0.01"
 msgstr "閾値0.01で切り替え"
 
-#: src/seedsigner/models/settings_definition.py:71
+#: src/seedsigner/models/settings_definition.py:75
 msgid "Btc | Sats hybrid"
 msgstr "btc | sat の切り替え表示"
 
-#: src/seedsigner/models/settings_definition.py:79
+#: src/seedsigner/models/settings_definition.py:83
 msgid "0°"
 msgstr "0°"
 
-#: src/seedsigner/models/settings_definition.py:80
+#: src/seedsigner/models/settings_definition.py:84
 msgid "90°"
 msgstr "90°"
 
-#: src/seedsigner/models/settings_definition.py:81
+#: src/seedsigner/models/settings_definition.py:85
 msgid "180°"
 msgstr "180°"
 
-#: src/seedsigner/models/settings_definition.py:82
+#: src/seedsigner/models/settings_definition.py:86
 msgid "270°"
 msgstr "270°"
 
-#: src/seedsigner/models/settings_definition.py:90
+#: src/seedsigner/models/settings_definition.py:94
 msgid "Low"
 msgstr "低"
 
-#: src/seedsigner/models/settings_definition.py:91
+#: src/seedsigner/models/settings_definition.py:95
 msgid "Medium"
 msgstr "中"
 
-#: src/seedsigner/models/settings_definition.py:92
+#: src/seedsigner/models/settings_definition.py:96
 msgid "High"
 msgstr "高"
 
-#: src/seedsigner/models/settings_definition.py:100
+#: src/seedsigner/models/settings_definition.py:104
 msgid "Mainnet"
-msgstr "メーンネット"
+msgstr "メインネット"
 
-#: src/seedsigner/models/settings_definition.py:101
+#: src/seedsigner/models/settings_definition.py:105
 msgid "Testnet"
 msgstr "テストネット"
 
-#: src/seedsigner/models/settings_definition.py:102
+#: src/seedsigner/models/settings_definition.py:106
 msgid "Regtest"
 msgstr "リグレッションテスト"
 
-#: src/seedsigner/models/settings_definition.py:118
-#: src/seedsigner/views/seed_views.py:465
+#: src/seedsigner/models/settings_definition.py:122
+#: src/seedsigner/views/seed_views.py:466
 msgid "Single Sig"
 msgstr "シングルシグ"
 
-#: src/seedsigner/models/settings_definition.py:119
-#: src/seedsigner/views/seed_views.py:466
+#: src/seedsigner/models/settings_definition.py:123
+#: src/seedsigner/views/seed_views.py:467
 msgid "Multisig"
 msgstr "マルチシグ"
 
-#: src/seedsigner/models/settings_definition.py:350
+#: src/seedsigner/models/settings_definition.py:354
 msgid "Language"
 msgstr "言語"
 
-#: src/seedsigner/models/settings_definition.py:358
+#: src/seedsigner/models/settings_definition.py:362
 msgid "Mnemonic language"
 msgstr "シードワード言語"
 
-#: src/seedsigner/models/settings_definition.py:366
+#: src/seedsigner/models/settings_definition.py:370
 msgid "Persistent settings"
 msgstr "非揮発性設定"
 
-#: src/seedsigner/models/settings_definition.py:372
+#: src/seedsigner/models/settings_definition.py:376
 msgid "Coordinator software"
 msgstr "コーディネーター用アプリ"
 
-#: src/seedsigner/models/settings_definition.py:379
+#: src/seedsigner/models/settings_definition.py:383
 msgid "Denomination display"
 msgstr "表示金額の単位"
 
-#: src/seedsigner/models/settings_definition.py:388
+#: src/seedsigner/models/settings_definition.py:392
 msgid "Bitcoin network"
 msgstr "ビットコインネットワーク"
 
-#: src/seedsigner/models/settings_definition.py:396
+#: src/seedsigner/models/settings_definition.py:400
 msgid "QR code density"
 msgstr "QRコードの解像度"
 
-#: src/seedsigner/models/settings_definition.py:404
+#: src/seedsigner/models/settings_definition.py:408
 msgid "Xpub export"
 msgstr "xpubをエクスポートする"
 
-#: src/seedsigner/models/settings_definition.py:410
+#: src/seedsigner/models/settings_definition.py:414
 msgid "Sig types"
 msgstr "署名の書類"
 
-#: src/seedsigner/models/settings_definition.py:418
+#: src/seedsigner/models/settings_definition.py:422
 msgid "Script types"
-msgstr "スクリプトの書類"
+msgstr "スクリプトの種類"
 
-#: src/seedsigner/models/settings_definition.py:426
+#: src/seedsigner/models/settings_definition.py:430
 msgid "Show xpub details"
 msgstr "xpubの詳細を表示"
 
-#: src/seedsigner/models/settings_definition.py:432
+#: src/seedsigner/models/settings_definition.py:436
 msgid "BIP-39 passphrase"
 msgstr "BIP-39パスフレーズ"
 
-#: src/seedsigner/models/settings_definition.py:440
+#: src/seedsigner/models/settings_definition.py:444
 msgid "Camera rotation"
 msgstr "カメラ回転"
 
-#: src/seedsigner/models/settings_definition.py:448
+#: src/seedsigner/models/settings_definition.py:452
 msgid "Compact SeedQR"
-msgstr "コンパクトのシードQR"
+msgstr "コンパクトなシードQR"
 
-#: src/seedsigner/models/settings_definition.py:454
+#: src/seedsigner/models/settings_definition.py:458
 msgid "Show privacy warnings"
 msgstr "個人情報漏洩注意の表示"
 
-#: src/seedsigner/models/settings_definition.py:460
+#: src/seedsigner/models/settings_definition.py:464
 msgid "Show dire warnings"
 msgstr "深刻危険注意の表示"
 
-#: src/seedsigner/models/settings_definition.py:466
+#: src/seedsigner/models/settings_definition.py:470
 msgid "Show partner logos"
 msgstr "パートナー ロゴの表示"
 
-#: src/seedsigner/models/settings_definition.py:481
+#: src/seedsigner/models/settings_definition.py:485
 msgid "QR background color"
 msgstr "QR背景色"
 
@@ -591,12 +603,12 @@ msgid "Reset / Power"
 msgstr "再起動・シャットダウン"
 
 #: src/seedsigner/views/psbt_views.py:36
-#: src/seedsigner/views/seed_views.py:1321
+#: src/seedsigner/views/seed_views.py:1322
 msgid "Scan a seed"
 msgstr "シードを読み取る"
 
 #: src/seedsigner/views/psbt_views.py:37
-#: src/seedsigner/views/seed_views.py:1322
+#: src/seedsigner/views/seed_views.py:1323
 msgid "Enter 12/24 words"
 msgstr "12・24ワードを入力する"
 
@@ -615,102 +627,119 @@ msgstr "未対応のスクリプトの種類！"
 #: src/seedsigner/views/psbt_views.py:156
 msgid ""
 "PSBT has unsupported input script type, please verify your change addresses."
-msgstr "PSBTに未対応のスクリプトの種類がある。お釣り用アドレスをご確認ください。"
+msgstr "PSBTに未対応のスクリプトの種類があります。お釣り用アドレスをご確認ください。"
 
 #: src/seedsigner/views/psbt_views.py:157
-#: src/seedsigner/views/psbt_views.py:175
+#: src/seedsigner/views/psbt_views.py:176
 msgid "Continue"
 msgstr "続く"
 
-#: src/seedsigner/views/psbt_views.py:173
+#. User will receive no change back; the inputs to this transaction are fully
+#. spent
+#: src/seedsigner/views/psbt_views.py:174
 msgid "Full Spend!"
 msgstr "全額が支払われるぞ！"
 
-#: src/seedsigner/views/psbt_views.py:174
+#: src/seedsigner/views/psbt_views.py:175
 msgid ""
 "This PSBT spends its entire input value. No change is coming back to your "
 "wallet."
-msgstr "このPSBTのインプットの全額が支払われるため、送金元のウォレットへお釣りが一切戻って来ない。"
+msgstr "このPSBTのインプットの全額が支払われるため、送金元のウォレットへお釣りが一切戻って来ません。"
 
-#: src/seedsigner/views/psbt_views.py:240
+#. Future-tense used to indicate that this transaction will send this amount,
+#. as opposed to "Send" on its own which could be misread as an instant
+#. command
+#. (e.g. "Send Now").
+#: src/seedsigner/views/psbt_views.py:242
 msgid "Will Send"
 msgstr "送付する予定"
 
-#: src/seedsigner/views/psbt_views.py:246
+#: src/seedsigner/views/psbt_views.py:248
 msgid "Next Recipient"
 msgstr "次の宛先"
 
-#: src/seedsigner/views/psbt_views.py:248
-#: src/seedsigner/views/psbt_views.py:317
-#: src/seedsigner/views/seed_views.py:795
+#. Short for "Next step"
+#: src/seedsigner/views/psbt_views.py:251
+#: src/seedsigner/views/psbt_views.py:320
+#: src/seedsigner/views/seed_views.py:796
 msgid "Next"
 msgstr "次"
 
-#: src/seedsigner/views/psbt_views.py:321
+#. The amount you're receiving back from the transaction
+#: src/seedsigner/views/psbt_views.py:324
+msgid "Your Change"
+msgstr "お釣り"
+
+#: src/seedsigner/views/psbt_views.py:325
 msgid "Verify Multisig Change"
 msgstr "マルチシグのお釣りを確認する"
 
-#: src/seedsigner/views/psbt_views.py:323
+#: src/seedsigner/views/psbt_views.py:327
 msgid "Self-Transfer"
 msgstr "自己送付"
 
-#: src/seedsigner/views/psbt_views.py:324
+#: src/seedsigner/views/psbt_views.py:328
 msgid "Verify Multisig Addr"
 msgstr "マルチシグアドレスを確認する"
 
-#: src/seedsigner/views/psbt_views.py:343
+#: src/seedsigner/views/psbt_views.py:347
 msgid "Verifying Change..."
 msgstr "お釣りを確認中..."
 
-#: src/seedsigner/views/psbt_views.py:345
+#: src/seedsigner/views/psbt_views.py:349
 msgid "Verifying Self-Transfer..."
 msgstr "自己送付を確認中..."
 
-#: src/seedsigner/views/psbt_views.py:427
+#: src/seedsigner/views/psbt_views.py:431
 msgid ""
 "PSBT's {} address could not be verified with your multisig wallet "
 "descriptor."
 msgstr "このマルチシグウォレットのdescriptorでPSBTの{}のアドレスを確認できなかった！"
 
-#: src/seedsigner/views/psbt_views.py:429
+#: src/seedsigner/views/psbt_views.py:433
 msgid "Suspicious PSBT"
 msgstr "怪しいPSBT！"
 
-#: src/seedsigner/views/psbt_views.py:430
+#: src/seedsigner/views/psbt_views.py:434
 msgid "PSBT's {} address could not be generated from your seed."
 msgstr "シードからPSBTの{}のアドレスを生成できなかった！"
 
-#: src/seedsigner/views/psbt_views.py:434
+#: src/seedsigner/views/psbt_views.py:438
 msgid "Address Verification Failed"
 msgstr "アドレスを確認できなかった！"
 
-#: src/seedsigner/views/psbt_views.py:436
+#: src/seedsigner/views/psbt_views.py:440
 msgid "Discard PSBT"
 msgstr "PSBTを破棄する"
 
-#: src/seedsigner/views/psbt_views.py:461
+#: src/seedsigner/views/psbt_views.py:465
 msgid "Approve PSBT"
 msgstr "PSBTを認可する"
 
-#: src/seedsigner/views/psbt_views.py:466
+#: src/seedsigner/views/psbt_views.py:470
 msgid "Signing PSBT..."
 msgstr "PSBTを署名中..."
 
-#: src/seedsigner/views/psbt_views.py:544
+#: src/seedsigner/views/psbt_views.py:548
 msgid "PSBT Error"
 msgstr "PSBTのエラーが発生した！"
 
-#: src/seedsigner/views/psbt_views.py:546
+#: src/seedsigner/views/psbt_views.py:550
 msgid "Signing Failed"
 msgstr "署名できなかった！"
 
-#: src/seedsigner/views/psbt_views.py:547
+#: src/seedsigner/views/psbt_views.py:551
 msgid "Signing with this seed did not add a valid signature."
 msgstr "このシードで署名しても、有効な署名を付加できなかった！"
 
-#: src/seedsigner/views/psbt_views.py:548
+#: src/seedsigner/views/psbt_views.py:552
 msgid "Select Diff Seed"
 msgstr "違うシードを選択"
+
+#. This is on the opening splash screen, displayed above the HRF logo
+#: src/seedsigner/views/screensaver.py:74
+msgid "With support from:"
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py:53
 msgid "Load a seed"
@@ -724,237 +753,268 @@ msgstr "揮発性メモリー内のシード"
 msgid "Scan a SeedQR"
 msgstr "シードQRを読み取る"
 
-#: src/seedsigner/views/seed_views.py:125
+#: src/seedsigner/views/seed_views.py:78
+msgid "Enter 24-word seed"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:79
+msgid "Enter 12-word seed"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:80
+msgid "Create a seed"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:89
+msgid "Load A Seed"
+msgstr ""
+
+#. Inserts the word number (e.g. "Seed Word #6")
+#: src/seedsigner/views/seed_views.py:126
 msgid "Seed Word #{}"
 msgstr "{}番目のシードワード"
 
-#: src/seedsigner/views/seed_views.py:186
+#: src/seedsigner/views/seed_views.py:187
 msgid "Review & Edit"
 msgstr "確認・編集"
 
-#: src/seedsigner/views/seed_views.py:187
-#: src/seedsigner/views/seed_views.py:309
+#: src/seedsigner/views/seed_views.py:188
+#: src/seedsigner/views/seed_views.py:310
 #: src/seedsigner/views/tools_views.py:259
 msgid "Discard"
 msgstr "破棄"
 
-#: src/seedsigner/views/seed_views.py:191
+#: src/seedsigner/views/seed_views.py:192
 msgid "Invalid Mnemonic!"
 msgstr "シードが無効です！"
 
-#: src/seedsigner/views/seed_views.py:193
+#: src/seedsigner/views/seed_views.py:194
 msgid "Checksum failure; not a valid seed phrase."
 msgstr "チェックサム整合性無し、シードが無効です！"
 
-#: src/seedsigner/views/seed_views.py:215
-#: src/seedsigner/views/seed_views.py:267
-#: src/seedsigner/views/seed_views.py:796
-#: src/seedsigner/views/seed_views.py:1145
+#: src/seedsigner/views/seed_views.py:216
+#: src/seedsigner/views/seed_views.py:268
+#: src/seedsigner/views/seed_views.py:797
+#: src/seedsigner/views/seed_views.py:1146
 msgid "Done"
 msgstr "終了"
 
-#: src/seedsigner/views/seed_views.py:266
+#: src/seedsigner/views/seed_views.py:267
 msgid "Edit passphrase"
 msgstr "パスフレーズを編集する"
 
-#: src/seedsigner/views/seed_views.py:308
+#: src/seedsigner/views/seed_views.py:309
 msgid "Keep Seed"
 msgstr "シードを保管"
 
-#: src/seedsigner/views/seed_views.py:314
+#: src/seedsigner/views/seed_views.py:315
 msgid "Discard Seed?"
 msgstr "シードを破棄する？"
 
-#: src/seedsigner/views/seed_views.py:316
+#: src/seedsigner/views/seed_views.py:317
 msgid "Wipe seed {} from the device?"
 msgstr "シード{}を消去する？"
 
-#: src/seedsigner/views/seed_views.py:350
+#: src/seedsigner/views/seed_views.py:351
 msgid "Scan PSBT"
 msgstr "PSBTを読み取る"
 
-#: src/seedsigner/views/seed_views.py:352
-#: src/seedsigner/views/seed_views.py:1644
+#: src/seedsigner/views/seed_views.py:353
+#: src/seedsigner/views/seed_views.py:1646
 msgid "Verify Addr"
 msgstr "アドレスを確認する"
 
-#: src/seedsigner/views/seed_views.py:354
-#: src/seedsigner/views/seed_views.py:435
+#: src/seedsigner/views/seed_views.py:355
+#: src/seedsigner/views/seed_views.py:436
 msgid "Backup Seed"
 msgstr "復元用シードの控えを書き写す"
 
-#: src/seedsigner/views/seed_views.py:355
+#: src/seedsigner/views/seed_views.py:356
 msgid "Discard Seed"
 msgstr "シードを破棄"
 
-#: src/seedsigner/views/seed_views.py:430
+#: src/seedsigner/views/seed_views.py:431
 msgid "View Seed Words"
 msgstr "シードワードを表示"
 
-#: src/seedsigner/views/seed_views.py:431
+#: src/seedsigner/views/seed_views.py:432
 msgid "Export as SeedQR"
 msgstr "シードQRとしてエクスポート"
 
 #: src/seedsigner/views/seed_views.py:620
+msgid "Privacy Leak!"
+msgstr "個人情報漏洩注意！"
+
+#: src/seedsigner/views/seed_views.py:621
 msgid "Xpub can be used to view all future transactions."
 msgstr "xpubを知ってれば、今後の全ての取り引きを監視できる！"
 
-#: src/seedsigner/views/seed_views.py:650
+#: src/seedsigner/views/seed_views.py:651
 msgid "Generating xpub..."
 msgstr "xpub生成中..."
 
-#: src/seedsigner/views/seed_views.py:770
+#: src/seedsigner/views/seed_views.py:771
 msgid "You must keep your seed words private & away from all online devices."
 msgstr "シードワードを秘密に守り、インタネットに接続可能な機器等に対して露出しないよう、ご注意ください！"
 
-#: src/seedsigner/views/seed_views.py:835
+#: src/seedsigner/views/seed_views.py:836
 msgid "Verify"
 msgstr "確認する"
 
-#: src/seedsigner/views/seed_views.py:836
+#: src/seedsigner/views/seed_views.py:837
 msgid "Skip"
 msgstr "省略する"
 
-#: src/seedsigner/views/seed_views.py:885
+#: src/seedsigner/views/seed_views.py:886
 msgid "Verify Word #{}"
 msgstr "{}番目のワードを確認"
 
-#: src/seedsigner/views/seed_views.py:925
+#: src/seedsigner/views/seed_views.py:926
 msgid "Review Seed Words"
 msgstr "シードワードを確認"
 
-#: src/seedsigner/views/seed_views.py:926
+#: src/seedsigner/views/seed_views.py:927
 msgid "Try Again"
 msgstr "もう一度やってみてください。"
 
-#: src/seedsigner/views/seed_views.py:930
+#: src/seedsigner/views/seed_views.py:931
 msgid "Verification Error"
 msgstr "確認エラー！"
 
-#: src/seedsigner/views/seed_views.py:932
+#: src/seedsigner/views/seed_views.py:933
 msgid "Wrong Word!"
 msgstr "ワードが誤っている！"
 
-#: src/seedsigner/views/seed_views.py:933
+#: src/seedsigner/views/seed_views.py:934
 msgid "Word #{} is not \"{}\"!"
 msgstr "{}番目のワードは、「{}」ではありません！"
 
-#: src/seedsigner/views/seed_views.py:951
+#: src/seedsigner/views/seed_views.py:952
 msgid "Backup Verified"
 msgstr "復元用シードの控えを確認済み"
 
-#: src/seedsigner/views/seed_views.py:954
+#: src/seedsigner/views/seed_views.py:955
 msgid "All mnemonic backup words were successfully verified!"
 msgstr "復元用シードの控えにある全てのワードを確認済みです。"
 
-#: src/seedsigner/views/seed_views.py:977
+#: src/seedsigner/views/seed_views.py:978
 msgid "Standard: 25x25"
 msgstr "標準: 25x25"
 
-#: src/seedsigner/views/seed_views.py:978
+#: src/seedsigner/views/seed_views.py:979
 msgid "Compact: 21x21"
 msgstr "コンパクト: 21x21"
 
-#: src/seedsigner/views/seed_views.py:982
+#: src/seedsigner/views/seed_views.py:983
 msgid "Standard: 29x29"
 msgstr "標準: 29x29"
 
-#: src/seedsigner/views/seed_views.py:983
+#: src/seedsigner/views/seed_views.py:984
 msgid "Compact: 25x25"
 msgstr "コンパクト: 25x25"
 
-#: src/seedsigner/views/seed_views.py:1002
+#: src/seedsigner/views/seed_views.py:1003
 msgid "SeedQR Format"
 msgstr "シードQRの形式"
 
-#: src/seedsigner/views/seed_views.py:1051
+#: src/seedsigner/views/seed_views.py:1052
 msgid "SeedQR is your private key!"
 msgstr "シードQRとは、秘密鍵のことです！"
 
-#: src/seedsigner/views/seed_views.py:1052
+#: src/seedsigner/views/seed_views.py:1053
 msgid "Never photograph it or scan it into an online device."
 msgstr "写真を撮ったり、インタネットに接続可能な機器等で読み取ったりしないよう、ご注意ください！"
 
-#: src/seedsigner/views/seed_views.py:1144
-#: src/seedsigner/views/seed_views.py:1188
-#: src/seedsigner/views/seed_views.py:1199
-#: src/seedsigner/views/seed_views.py:1211
+#: src/seedsigner/views/seed_views.py:1145
+#: src/seedsigner/views/seed_views.py:1189
+#: src/seedsigner/views/seed_views.py:1200
+#: src/seedsigner/views/seed_views.py:1212
 msgid "Confirm SeedQR"
 msgstr "シードQRを確認する"
 
-#: src/seedsigner/views/seed_views.py:1149
+#: src/seedsigner/views/seed_views.py:1150
 msgid "Confirm SeedQR?"
 msgstr "シードQRを確認する？"
 
-#: src/seedsigner/views/seed_views.py:1179
+#: src/seedsigner/views/seed_views.py:1180
 msgid "Scan your SeedQR"
 msgstr "シードQRを読み取る"
 
-#: src/seedsigner/views/seed_views.py:1189
-#: src/seedsigner/views/seed_views.py:1212
+#: src/seedsigner/views/seed_views.py:1190
+#: src/seedsigner/views/seed_views.py:1213
 msgid "Error!"
 msgstr "エラー！"
 
-#: src/seedsigner/views/seed_views.py:1190
+#: src/seedsigner/views/seed_views.py:1191
 msgid "Your transcribed SeedQR does not match your original seed!"
 msgstr "書き写されたシードQRの控えが元のシードと一致しない！"
 
-#: src/seedsigner/views/seed_views.py:1192
-#: src/seedsigner/views/seed_views.py:1215
+#: src/seedsigner/views/seed_views.py:1193
+#: src/seedsigner/views/seed_views.py:1216
 msgid "Review SeedQR"
 msgstr "シードQRを確認"
 
-#: src/seedsigner/views/seed_views.py:1201
+#: src/seedsigner/views/seed_views.py:1202
 msgid ""
 "Your transcribed SeedQR successfully scanned and yielded the same seed."
 msgstr "書き写されたシードQRの控えが無事に読み取られて元のシードと一致する。"
 
-#: src/seedsigner/views/seed_views.py:1213
+#: src/seedsigner/views/seed_views.py:1214
 msgid "Your transcribed SeedQR could not be read!"
 msgstr "書き写されたシードQRの控えを読み取れなかった！"
 
-#: src/seedsigner/views/seed_views.py:1284
+#: src/seedsigner/views/seed_views.py:1285
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr "このアドレスから署名の種類を自動検出できなかったため、署名の種類を指定してください。"
 
-#: src/seedsigner/views/seed_views.py:1325
+#: src/seedsigner/views/seed_views.py:1326
 msgid "Load the seed to verify"
 msgstr "シードを入力して確認する"
 
-#: src/seedsigner/views/seed_views.py:1335
+#: src/seedsigner/views/seed_views.py:1336
 msgid "Select seed to verify"
 msgstr "シードを選択して確認する"
 
-#: src/seedsigner/views/seed_views.py:1387
+#: src/seedsigner/views/seed_views.py:1388
 msgid "Can't validate a single sig addr without specifying a seed"
 msgstr "シングルシグのアドレスを検証するには、シードの指定が必要です。"
 
-#: src/seedsigner/views/seed_views.py:1561
-#: src/seedsigner/views/seed_views.py:1577
+#. Option when scanning for a matching address; skips ten addresses ahead
+#: src/seedsigner/views/seed_views.py:1434
+msgid "Skip 10"
+msgstr "10を飛ばす"
+
+#: src/seedsigner/views/seed_views.py:1435
+#: src/seedsigner/views/seed_views.py:1616
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: src/seedsigner/views/seed_views.py:1563
+#: src/seedsigner/views/seed_views.py:1579
 msgid "Taproot verification not yet implemented!"
 msgstr "タップルート検証が未実施！"
 
-#: src/seedsigner/views/seed_views.py:1573
+#: src/seedsigner/views/seed_views.py:1575
 msgid "Legacy P2PKH verification not implemented!"
 msgstr "レガシーP2PKH検証が未実施！"
 
-#: src/seedsigner/views/seed_views.py:1598
+#: src/seedsigner/views/seed_views.py:1600
 msgid "multisig"
 msgstr "マルチシグ"
 
-#: src/seedsigner/views/seed_views.py:1600
+#: src/seedsigner/views/seed_views.py:1602
 msgid "seed {}"
 msgstr "シード{}"
 
-#: src/seedsigner/views/seed_views.py:1603
+#: src/seedsigner/views/seed_views.py:1605
 msgid "Address Verified"
 msgstr "アドレス確認済み"
 
-#: src/seedsigner/views/seed_views.py:1613
+#: src/seedsigner/views/seed_views.py:1615
 msgid "Scan Descriptor"
 msgstr "descriptorを読み取る"
 
-#: src/seedsigner/views/seed_views.py:1643
+#: src/seedsigner/views/seed_views.py:1645
 msgid "Return to PSBT"
 msgstr "PSBTへ戻る"
 
@@ -1030,6 +1090,6 @@ msgstr "これはやる予定です！"
 msgid "Back to Main Menu"
 msgstr "メニューへ戻る"
 
-#: src/seedsigner/views/view.py:141
+#: src/seedsigner/views/view.py:142
 msgid "System Error"
 msgstr "システムエラー"

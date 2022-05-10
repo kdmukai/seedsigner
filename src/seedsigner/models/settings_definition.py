@@ -59,7 +59,7 @@ class SettingsConstants:
         (LOCALE__GERMAN, "German"),
         (LOCALE__HEBREW, "Hebrew"),
         (LOCALE__JAPANESE, "Japanese"),
-        (LOCALE__PORTUGUESE, "Portuguese"),
+        # (LOCALE__PORTUGUESE, "Portuguese"),
         (LOCALE__RUSSIAN, "Russian"),
         (LOCALE__SPANISH, "Spanish"),
     ]

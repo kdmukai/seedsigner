@@ -1,39 +1,1105 @@
-# Czech translations for PROJECT.
+# Translations template for PROJECT.
 # Copyright (C) 2022 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
-#
+# 
+# Translators:
+# Plasmonic Resonance, 2022
+# Keith Mukai, 2022
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-29 08:48-0500\n"
-"PO-Revision-Date: 2022-04-29 13:53-0500\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: cs\n"
-"Language-Team: cs <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
+"POT-Creation-Date: 2022-05-10 17:32-0500\n"
+"PO-Revision-Date: 2022-04-29 13:50+0000\n"
+"Last-Translator: Keith Mukai, 2022\n"
+"Language-Team: Czech (https://www.transifex.com/seedsigner/teams/135832/cs/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.1\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: src/seedsigner/views/view.py:132
-msgid "Scan"
-msgstr "Skenuj"
+#: src/seedsigner/gui/screens/main_menu_screens.py:12
+#: src/seedsigner/gui/screens/scan_screens.py:140
+msgid "Home"
+msgstr "Nabídka"
 
-#: src/seedsigner/views/view.py:133
-msgid "Seeds"
-msgstr "Seedy"
+#: src/seedsigner/gui/screens/main_menu_screens.py:24
+msgid "Restarting"
+msgstr "Restartuji"
 
-#: src/seedsigner/views/view.py:134
-msgid "Tools"
-msgstr "Nástroje"
+#: src/seedsigner/gui/screens/main_menu_screens.py:29
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+"SeedSigner se restartuje. \n"
+"\n"
+"Veškerá uložená data budou vymazána."
 
-#: src/seedsigner/views/view.py:135
+#: src/seedsigner/gui/screens/main_menu_screens.py:39
+msgid "Powering Off"
+msgstr "Vypínám"
+
+#: src/seedsigner/gui/screens/main_menu_screens.py:44
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr "Vyčkejte minimálně 30 vteřin než odpojíte napájení."
+
+#: src/seedsigner/gui/screens/psbt_screens.py:29
+#: src/seedsigner/views/seed_views.py:352
+msgid "Review PSBT"
+msgstr "Kontrola PSBT"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:31
+msgid "Review Details"
+msgstr "Kontrola detailů"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:88
+msgid "1 input"
+msgstr "1 vstup"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:90
+msgid "input 1"
+msgstr "vstup 1"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:91
+msgid "input 2"
+msgstr "vstup 2"
+
+#. Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...],
+#. 8"
+#: src/seedsigner/gui/screens/psbt_screens.py:93
+#: src/seedsigner/gui/screens/psbt_screens.py:141
+msgid "[ ... ]"
+msgstr "[ ... ]"
+
+#. Input number will be inserted (e.g. "input 3")
+#: src/seedsigner/gui/screens/psbt_screens.py:95
+#: src/seedsigner/gui/screens/psbt_screens.py:96
+#: src/seedsigner/gui/screens/psbt_screens.py:99
+msgid "input {}"
+msgstr "vstup {}"
+
+#. Display a truncated address (e.g. "bc1qabc...")
+#: src/seedsigner/gui/screens/psbt_screens.py:127
+msgid "{}..."
+msgstr "{}..."
+
+#: src/seedsigner/gui/screens/psbt_screens.py:136
+msgid "self-transfer"
+msgstr "převod sobě"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:139
+msgid "recipient 1"
+msgstr "příjemce 1"
+
+#. Inserts the recipient number (e.g. the fifth one is: "recipient 5")
+#: src/seedsigner/gui/screens/psbt_screens.py:143
+msgid "recipient {}"
+msgstr "příjemce/i {}"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:145
+#: src/seedsigner/gui/screens/psbt_screens.py:555
+msgid "fee"
+msgstr "poplatek"
+
+#. Label for a change output in the PSBT Overview flow diagram
+#: src/seedsigner/gui/screens/psbt_screens.py:150
+msgid "change"
+msgstr "nazpátek"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:461
+msgid "PSBT Math"
+msgstr "PSBT rozpis"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:462
+msgid "Review Recipients"
+msgstr "Kontrola příjemců"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:468
+#: src/seedsigner/gui/screens/psbt_screens.py:521
+msgid "btc"
+msgstr "btc"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:480
+msgid "sats"
+msgstr "sats"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:538
+msgid "input"
+msgid_plural "inputs"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py:548
+msgid "recipient"
+msgid_plural "recipients"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#. Denonination is inserted (e.g. your "btc change" or "sats change")
+#: src/seedsigner/gui/screens/psbt_screens.py:566
+msgid "{} change"
+msgstr "{} nazpátek"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:671
+msgid "Address verified!"
+msgstr "Adresa ověřena!"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:683
+msgid "Sign PSBT"
+msgstr "Podepsat PSBT"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:697
+msgid "Click to authorize this transaction"
+msgstr "Klikněte pro potvrzení transakce"
+
+#: src/seedsigner/gui/screens/psbt_screens.py:707
+msgid "Signed PSBT"
+msgstr "Podepsaná PSBT"
+
+#. Prompt to specify which coordinator software to use (e.g. Specter, Sparrow,
+#. etc)
+#: src/seedsigner/gui/screens/psbt_screens.py:713
+msgid "Export as a QR code for:"
+msgstr ""
+
+#: src/seedsigner/gui/screens/scan_screens.py:22
+msgid "Scan a QR code"
+msgstr "Naskenovat QR kód"
+
+#: src/seedsigner/gui/screens/scan_screens.py:138
+msgid "Settings QR"
+msgstr "Nastavení QR"
+
+#: src/seedsigner/gui/screens/scan_screens.py:156
+msgid "Settings imported successfully!"
+msgstr "Nastavení úspěšně načtena!"
+
+#: src/seedsigner/gui/screens/screen.py:731
+#: src/seedsigner/views/seed_views.py:954
+#: src/seedsigner/views/seed_views.py:1201
+msgid "Success!"
+msgstr "Povedlo se!"
+
+#: src/seedsigner/gui/screens/screen.py:735
+#: src/seedsigner/views/seed_views.py:956
+#: src/seedsigner/views/seed_views.py:1204
+#: src/seedsigner/views/seed_views.py:1647 src/seedsigner/views/view.py:145
+msgid "OK"
+msgstr "OK"
+
+#: src/seedsigner/gui/screens/screen.py:852
+#: src/seedsigner/views/psbt_views.py:430
+msgid "Caution"
+msgstr "Pozor"
+
+#: src/seedsigner/gui/screens/screen.py:855
+msgid "I Understand"
+msgstr "Rozumím"
+
+#: src/seedsigner/gui/screens/screen.py:867
+msgid "Classified Info!"
+msgstr "Tajná informace!"
+
+#: src/seedsigner/gui/screens/seed_screens.py:411
+msgid "Finalize Seed"
+msgstr "Dokonči Seed"
+
+#: src/seedsigner/gui/screens/seed_screens.py:424
+#: src/seedsigner/gui/screens/tools_screens.py:291
+msgid "fingerprint"
+msgstr "otisk"
+
+#. Displays the page number and total: (e.g. page 1 of 6)
+#: src/seedsigner/gui/screens/seed_screens.py:461
+msgid "Seed Words: {}/{}"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py:541
+msgid "Verify Backup?"
+msgstr "Ověřit zálohu?"
+
+#: src/seedsigner/gui/screens/seed_screens.py:547
+msgid "Optionally verify that your mnemonic backup is correct."
+msgstr "Volitelně ověřte, že je Vaše záloha správná. "
+
+#: src/seedsigner/gui/screens/seed_screens.py:556
+msgid "Derivation Path"
+msgstr "Odvozovací cesta"
+
+#: src/seedsigner/gui/screens/seed_screens.py:703
+msgid "Xpub Details"
+msgstr "Podrobnosti Xpubu"
+
+#: src/seedsigner/gui/screens/seed_screens.py:709
+#: src/seedsigner/gui/screens/seed_screens.py:713
+#: src/seedsigner/views/seed_views.py:354
+#: src/seedsigner/views/seed_views.py:471
+#: src/seedsigner/views/seed_views.py:504
+#: src/seedsigner/views/seed_views.py:578
+msgid "Export Xpub"
+msgstr "Exportuj Xpub"
+
+#: src/seedsigner/gui/screens/seed_screens.py:722
+msgid "Fingerprint"
+msgstr "Otisk"
+
+#. Short for "Derivation Path"
+#: src/seedsigner/gui/screens/seed_screens.py:732
+msgid "Derivation"
+msgstr "Odvození"
+
+#: src/seedsigner/gui/screens/seed_screens.py:741
+msgid "Xpub"
+msgstr "Xpub"
+
+#: src/seedsigner/gui/screens/seed_screens.py:754
+#: src/seedsigner/views/seed_views.py:217
+msgid "Add Passphrase"
+msgstr "Přidat frázi"
+
+#: src/seedsigner/gui/screens/seed_screens.py:1106
+msgid "Verify Passphrase"
+msgstr "Ověřit frázi"
+
+#. Describes the effect of applying a BIP-39 passphrase; it changes the seed's
+#. fingerprint
+#: src/seedsigner/gui/screens/seed_screens.py:1115
+msgid "changes fingerprint"
+msgstr "změní otisk"
+
+#. Refers to the SeedQR type: Standard or Compact
+#: src/seedsigner/gui/screens/seed_screens.py:1170
+msgid "Standard"
+msgstr "Standart"
+
+#. Briefly explains the Standard SeedQR data format
+#: src/seedsigner/gui/screens/seed_screens.py:1172
+msgid "BIP-39 wordlist indices"
+msgstr "Indexace seznamu slov BIP-39"
+
+#. Refers to the SeedQR type: Standard or Compact
+#: src/seedsigner/gui/screens/seed_screens.py:1180
+msgid "Compact"
+msgstr "Zhutnit"
+
+#. Briefly explains the Compact SeedQR data format
+#: src/seedsigner/gui/screens/seed_screens.py:1182
+msgid "Raw entropy bits"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py:1196
+msgid "Transcribe SeedQR"
+msgstr "Přepis SeedQR"
+
+#. Refers to the QR code size: 21x21, 25x25, or 29x29
+#: src/seedsigner/gui/screens/seed_screens.py:1198
+msgid "Begin {}x{}"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py:1275
+msgid "click to exit"
+msgstr "stiskem odejít"
+
+#: src/seedsigner/gui/screens/seed_screens.py:1411
+msgid ""
+"Optionally scan your transcribed SeedQR to confirm that it reads back "
+"correctly."
+msgstr "Volitelně naskenujte SeedQR pro potvrzení, že je načítán správně."
+
+#: src/seedsigner/gui/screens/seed_screens.py:1468
+#: src/seedsigner/views/seed_views.py:1284
+#: src/seedsigner/views/seed_views.py:1342
+msgid "Verify Address"
+msgstr "Ověřit adresu"
+
+#. Inserts the nth address number (e.g. "Checking address 7")
+#: src/seedsigner/gui/screens/seed_screens.py:1527
+msgid "Checking address {}"
+msgstr "Kontrola adresy {}"
+
+#: src/seedsigner/gui/screens/seed_screens.py:1544
+msgid "Multisig Verification"
+msgstr "Ověření multisigu"
+
+#: src/seedsigner/gui/screens/seed_screens.py:1549
+msgid ""
+"Load your multisig wallet descriptor to verify your receive/self-transfer or"
+" change address."
+msgstr ""
+"Pro ověření přijímací adresy či adresy pro drobné nahrajte deskriptor vaší "
+"multisig peněženky."
+
+#: src/seedsigner/gui/screens/seed_screens.py:1562
+msgid "Descriptor Loaded"
+msgstr "Deskriptor načten"
+
+#. Label for the multisig wallet's signing policy (e.g. 2-of-3)
+#: src/seedsigner/gui/screens/seed_screens.py:1568
+msgid "Policy"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py:1576
+msgid "Signing Keys"
+msgstr "Podpisové klíče"
+
+#: src/seedsigner/gui/screens/settings_screens.py:26
+#: src/seedsigner/views/main_menu_views.py:21
+#: src/seedsigner/views/settings_views.py:36
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/seedsigner/views/view.py:139
-msgid "Home"
-msgstr "Nabídka"
+#. Short for "Input/Output"; screen to make sure the buttons and camera are
+#. working properly
+#: src/seedsigner/gui/screens/settings_screens.py:58
+msgid "I/O Test"
+msgstr "Test ovladačů"
+
+#. Blank the screen
+#: src/seedsigner/gui/screens/settings_screens.py:129
+#: src/seedsigner/gui/screens/settings_screens.py:140
+#: src/seedsigner/gui/screens/settings_screens.py:221
+msgid "Clear"
+msgstr "Vyčistit"
+
+#: src/seedsigner/gui/screens/settings_screens.py:161
+msgid "Exit"
+msgstr "Odejít"
+
+#: src/seedsigner/gui/screens/settings_screens.py:175
+#: src/seedsigner/gui/screens/tools_screens.py:71
+msgid "Capturing image..."
+msgstr "Zachycuji snímek..."
+
+#: src/seedsigner/gui/screens/settings_screens.py:288
+#: src/seedsigner/views/settings_views.py:21
+msgid "Donate"
+msgstr "Podpořit"
+
+#. If your language uses the percent sign ("%"), your translation must also
+#. use
+#. two percent signs ("%%") due to python formatting oddities. "100%%" will be
+#. rendered as "100%".
+#: src/seedsigner/gui/screens/settings_screens.py:293
+#, python-format
+msgid ""
+"SeedSigner is 100%% free & open source, funded solely by the Bitcoin community.\n"
+"\n"
+"Donate onchain or LN at:"
+msgstr ""
+"SeedSigner je 100%% software s otevřeným zdrojovým kódem, financován pouze Bitcoinovou komunitou.\n"
+"\n"
+"Podpořit jej lze on-chain či pomocí LN na:"
+
+#. Instructions when taking a picture; "back" should point left.
+#: src/seedsigner/gui/screens/tools_screens.py:40
+msgid "< back  |  click joystick"
+msgstr "< zpět | stiskni joystick"
+
+#. Instructions when reviewing an image; "reshoot" must point left, "accept"
+#. must point right
+#: src/seedsigner/gui/screens/tools_screens.py:98
+msgid " < reshoot  |  accept > "
+msgstr "< přefotit | přijmout > "
+
+#. current roll number vs total rolls (e.g. roll 7 of 50)
+#: src/seedsigner/gui/screens/tools_screens.py:120
+#: src/seedsigner/gui/screens/tools_screens.py:245
+msgid "Dice Roll {}/{}"
+msgstr "Hod kostkou {}/{}"
+
+#: src/seedsigner/gui/screens/tools_screens.py:274
+msgid "12th Word"
+msgstr "12té slovo"
+
+#: src/seedsigner/gui/screens/tools_screens.py:276
+msgid "24th Word"
+msgstr "24té slovo"
+
+#: src/seedsigner/models/settings_definition.py:14
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: src/seedsigner/models/settings_definition.py:15
+#: src/seedsigner/models/settings_definition.py:20
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: src/seedsigner/models/settings_definition.py:18
+#: src/seedsigner/models/settings_definition.py:26
+msgid "Prompt"
+msgstr "Výzva k akci"
+
+#: src/seedsigner/models/settings_definition.py:19
+#: src/seedsigner/models/settings_definition.py:23
+#: src/seedsigner/models/settings_definition.py:29
+msgid "Required"
+msgstr "Vyžadován"
+
+#: src/seedsigner/models/settings_definition.py:72
+msgid "Btc-only"
+msgstr "pouze BTC"
+
+#: src/seedsigner/models/settings_definition.py:73
+msgid "Sats-only"
+msgstr "pouze Sats"
+
+#: src/seedsigner/models/settings_definition.py:74
+msgid "Threshold at 0.01"
+msgstr "Přechod na 0.01"
+
+#: src/seedsigner/models/settings_definition.py:75
+msgid "Btc | Sats hybrid"
+msgstr "Btc | Sats hybrid"
+
+#: src/seedsigner/models/settings_definition.py:83
+msgid "0°"
+msgstr "0°"
+
+#: src/seedsigner/models/settings_definition.py:84
+msgid "90°"
+msgstr "90°"
+
+#: src/seedsigner/models/settings_definition.py:85
+msgid "180°"
+msgstr "180°"
+
+#: src/seedsigner/models/settings_definition.py:86
+msgid "270°"
+msgstr "270°"
+
+#: src/seedsigner/models/settings_definition.py:94
+msgid "Low"
+msgstr "Nízká"
+
+#: src/seedsigner/models/settings_definition.py:95
+msgid "Medium"
+msgstr "Střední"
+
+#: src/seedsigner/models/settings_definition.py:96
+msgid "High"
+msgstr "Vysoká"
+
+#: src/seedsigner/models/settings_definition.py:104
+msgid "Mainnet"
+msgstr "Mainnet"
+
+#: src/seedsigner/models/settings_definition.py:105
+msgid "Testnet"
+msgstr "Testnet"
+
+#: src/seedsigner/models/settings_definition.py:106
+msgid "Regtest"
+msgstr "Regtest"
+
+#: src/seedsigner/models/settings_definition.py:122
+#: src/seedsigner/views/seed_views.py:466
+msgid "Single Sig"
+msgstr "Single Sig"
+
+#: src/seedsigner/models/settings_definition.py:123
+#: src/seedsigner/views/seed_views.py:467
+msgid "Multisig"
+msgstr "Multisig"
+
+#: src/seedsigner/models/settings_definition.py:354
+msgid "Language"
+msgstr "Jazyk"
+
+#: src/seedsigner/models/settings_definition.py:362
+msgid "Mnemonic language"
+msgstr "Jazyk zálohy"
+
+#: src/seedsigner/models/settings_definition.py:370
+msgid "Persistent settings"
+msgstr "Zapamatovat nastavení"
+
+#: src/seedsigner/models/settings_definition.py:376
+msgid "Coordinator software"
+msgstr "Výběr koordinátora"
+
+#: src/seedsigner/models/settings_definition.py:383
+msgid "Denomination display"
+msgstr "Nastavení jednotek"
+
+#: src/seedsigner/models/settings_definition.py:392
+msgid "Bitcoin network"
+msgstr "Bitcoinová síť"
+
+#: src/seedsigner/models/settings_definition.py:400
+msgid "QR code density"
+msgstr "Hustota QR kodu"
+
+#: src/seedsigner/models/settings_definition.py:408
+msgid "Xpub export"
+msgstr "Export Xpubu"
+
+#: src/seedsigner/models/settings_definition.py:414
+msgid "Sig types"
+msgstr "Podpisový typ"
+
+#: src/seedsigner/models/settings_definition.py:422
+msgid "Script types"
+msgstr "Typy skriptů"
+
+#: src/seedsigner/models/settings_definition.py:430
+msgid "Show xpub details"
+msgstr "Ukázat podrobnosti Xpubu"
+
+#: src/seedsigner/models/settings_definition.py:436
+msgid "BIP-39 passphrase"
+msgstr "BIP-39 bezpečnostní fráze"
+
+#: src/seedsigner/models/settings_definition.py:444
+msgid "Camera rotation"
+msgstr "Rotace kamery"
+
+#: src/seedsigner/models/settings_definition.py:452
+msgid "Compact SeedQR"
+msgstr "Zhutnit SeedQR"
+
+#: src/seedsigner/models/settings_definition.py:458
+msgid "Show privacy warnings"
+msgstr "Zobrzovat bezpečnostní varování"
+
+#: src/seedsigner/models/settings_definition.py:464
+msgid "Show dire warnings"
+msgstr "Zobrazovat kritická varování"
+
+#: src/seedsigner/models/settings_definition.py:470
+msgid "Show partner logos"
+msgstr "Ukazovat loga partnerů"
+
+#: src/seedsigner/models/settings_definition.py:485
+msgid "QR background color"
+msgstr "barva pozadí QR"
+
+#: src/seedsigner/views/main_menu_views.py:18
+msgid "Scan"
+msgstr "Naskenovat"
+
+#: src/seedsigner/views/main_menu_views.py:19
+msgid "Seeds"
+msgstr "Seedy"
+
+#: src/seedsigner/views/main_menu_views.py:20
+#: src/seedsigner/views/tools_views.py:29
+msgid "Tools"
+msgstr "Nástroje"
+
+#: src/seedsigner/views/main_menu_views.py:38
+msgid "Restart"
+msgstr "Restartovat"
+
+#: src/seedsigner/views/main_menu_views.py:39
+msgid "Power Off"
+msgstr "Vypnout"
+
+#: src/seedsigner/views/main_menu_views.py:42
+msgid "Reset / Power"
+msgstr "Možnosti napájení"
+
+#: src/seedsigner/views/psbt_views.py:36
+#: src/seedsigner/views/seed_views.py:1322
+msgid "Scan a seed"
+msgstr "Naskenovat seed"
+
+#: src/seedsigner/views/psbt_views.py:37
+#: src/seedsigner/views/seed_views.py:1323
+msgid "Enter 12/24 words"
+msgstr "Vložit 12/24 slov"
+
+#: src/seedsigner/views/psbt_views.py:53
+msgid "Select Signer"
+msgstr "Vybrat klíč"
+
+#: src/seedsigner/views/psbt_views.py:85
+msgid "Parsing PSBT..."
+msgstr "Rozebírám PSBT"
+
+#: src/seedsigner/views/psbt_views.py:155
+msgid "Unsupported Script Type!"
+msgstr "Nepodporovaný typ skriptu"
+
+#: src/seedsigner/views/psbt_views.py:156
+msgid ""
+"PSBT has unsupported input script type, please verify your change addresses."
+msgstr ""
+"PSBT využívá nepodporovaný typ scriptu na vstupu, ověřte zpáteční adresu "
+
+#: src/seedsigner/views/psbt_views.py:157
+#: src/seedsigner/views/psbt_views.py:176
+msgid "Continue"
+msgstr "Pokračovat"
+
+#. User will receive no change back; the inputs to this transaction are fully
+#. spent
+#: src/seedsigner/views/psbt_views.py:174
+msgid "Full Spend!"
+msgstr "Utratit!"
+
+#: src/seedsigner/views/psbt_views.py:175
+msgid ""
+"This PSBT spends its entire input value. No change is coming back to your "
+"wallet."
+msgstr ""
+"Tato PSBT utrácí úplnou hodnotu vstupu. Nepříjdou žádné drobné nazpět."
+
+#. Future-tense used to indicate that this transaction will send this amount,
+#. as opposed to "Send" on its own which could be misread as an instant
+#. command
+#. (e.g. "Send Now").
+#: src/seedsigner/views/psbt_views.py:242
+msgid "Will Send"
+msgstr "Bude odesláno"
+
+#: src/seedsigner/views/psbt_views.py:248
+msgid "Next Recipient"
+msgstr "Další příjemce"
+
+#. Short for "Next step"
+#: src/seedsigner/views/psbt_views.py:251
+#: src/seedsigner/views/psbt_views.py:320
+#: src/seedsigner/views/seed_views.py:796
+msgid "Next"
+msgstr "Další"
+
+#. The amount you're receiving back from the transaction
+#: src/seedsigner/views/psbt_views.py:324
+msgid "Your Change"
+msgstr "Vaše drobné"
+
+#: src/seedsigner/views/psbt_views.py:325
+msgid "Verify Multisig Change"
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py:327
+msgid "Self-Transfer"
+msgstr "Převod Sobě"
+
+#: src/seedsigner/views/psbt_views.py:328
+msgid "Verify Multisig Addr"
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py:347
+msgid "Verifying Change..."
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py:349
+msgid "Verifying Self-Transfer..."
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py:431
+msgid ""
+"PSBT's {} address could not be verified with your multisig wallet "
+"descriptor."
+msgstr ""
+"PSBT {} adresa nemohla být ověřena s poskytnutým multisig deskriptorem."
+
+#: src/seedsigner/views/psbt_views.py:433
+msgid "Suspicious PSBT"
+msgstr "Podezřelá PSBT"
+
+#: src/seedsigner/views/psbt_views.py:434
+msgid "PSBT's {} address could not be generated from your seed."
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py:438
+msgid "Address Verification Failed"
+msgstr "Selhalo ověření adresy"
+
+#: src/seedsigner/views/psbt_views.py:440
+msgid "Discard PSBT"
+msgstr "Zahodit PSBT"
+
+#: src/seedsigner/views/psbt_views.py:465
+msgid "Approve PSBT"
+msgstr "Schválit PSBT"
+
+#: src/seedsigner/views/psbt_views.py:470
+msgid "Signing PSBT..."
+msgstr "Podepisuji PSBT..."
+
+#: src/seedsigner/views/psbt_views.py:548
+msgid "PSBT Error"
+msgstr "Chyba PSBT"
+
+#: src/seedsigner/views/psbt_views.py:550
+msgid "Signing Failed"
+msgstr "Podepisování se nezdařilo"
+
+#: src/seedsigner/views/psbt_views.py:551
+msgid "Signing with this seed did not add a valid signature."
+msgstr "Podepisování s daným klíčem nepřidalo platný podpis."
+
+#: src/seedsigner/views/psbt_views.py:552
+msgid "Select Diff Seed"
+msgstr "Vyberte jiný seed"
+
+#. This is on the opening splash screen, displayed above the HRF logo
+#: src/seedsigner/views/screensaver.py:74
+msgid "With support from:"
+msgstr "Za podpory:"
+
+#: src/seedsigner/views/seed_views.py:53
+msgid "Load a seed"
+msgstr "Nahrát seed"
+
+#: src/seedsigner/views/seed_views.py:56
+msgid "In-Memory Seeds"
+msgstr "Uložené Seedy"
+
+#: src/seedsigner/views/seed_views.py:77
+msgid "Scan a SeedQR"
+msgstr "Naskenovat SeedQR"
+
+#: src/seedsigner/views/seed_views.py:78
+msgid "Enter 24-word seed"
+msgstr "Vložit seed o 24 slovech"
+
+#: src/seedsigner/views/seed_views.py:79
+msgid "Enter 12-word seed"
+msgstr "Vložit seed o 12 slovech"
+
+#: src/seedsigner/views/seed_views.py:80
+msgid "Create a seed"
+msgstr "Vytvořit Seed"
+
+#: src/seedsigner/views/seed_views.py:89
+msgid "Load A Seed"
+msgstr "Nahrát Seed"
+
+#. Inserts the word number (e.g. "Seed Word #6")
+#: src/seedsigner/views/seed_views.py:126
+msgid "Seed Word #{}"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:187
+msgid "Review & Edit"
+msgstr "Zkontrolovat & Upravit"
+
+#: src/seedsigner/views/seed_views.py:188
+#: src/seedsigner/views/seed_views.py:310
+#: src/seedsigner/views/tools_views.py:259
+msgid "Discard"
+msgstr "Zahodit"
+
+#: src/seedsigner/views/seed_views.py:192
+msgid "Invalid Mnemonic!"
+msgstr "Neplatná záloha!"
+
+#: src/seedsigner/views/seed_views.py:194
+msgid "Checksum failure; not a valid seed phrase."
+msgstr "Kontrolní součet selhal; neplatný seed"
+
+#: src/seedsigner/views/seed_views.py:216
+#: src/seedsigner/views/seed_views.py:268
+#: src/seedsigner/views/seed_views.py:797
+#: src/seedsigner/views/seed_views.py:1146
+msgid "Done"
+msgstr "Hotovo"
+
+#: src/seedsigner/views/seed_views.py:267
+msgid "Edit passphrase"
+msgstr "Upravit frázi"
+
+#: src/seedsigner/views/seed_views.py:309
+msgid "Keep Seed"
+msgstr "Udržet Seed"
+
+#: src/seedsigner/views/seed_views.py:315
+msgid "Discard Seed?"
+msgstr "Zahodit Seed?"
+
+#: src/seedsigner/views/seed_views.py:317
+msgid "Wipe seed {} from the device?"
+msgstr "Odstranit seed {} ze zařízení?"
+
+#: src/seedsigner/views/seed_views.py:351
+msgid "Scan PSBT"
+msgstr "Naskenovat PSBT"
+
+#: src/seedsigner/views/seed_views.py:353
+#: src/seedsigner/views/seed_views.py:1646
+msgid "Verify Addr"
+msgstr "Ověřit adresu"
+
+#: src/seedsigner/views/seed_views.py:355
+#: src/seedsigner/views/seed_views.py:436
+msgid "Backup Seed"
+msgstr "Zálohovat seed"
+
+#: src/seedsigner/views/seed_views.py:356
+msgid "Discard Seed"
+msgstr "Zahodit Seed"
+
+#: src/seedsigner/views/seed_views.py:431
+msgid "View Seed Words"
+msgstr "Zobrazit slova seedu"
+
+#: src/seedsigner/views/seed_views.py:432
+msgid "Export as SeedQR"
+msgstr "Exportovat jako SeedQR"
+
+#: src/seedsigner/views/seed_views.py:620
+msgid "Privacy Leak!"
+msgstr "Únik soukromých informací!"
+
+#: src/seedsigner/views/seed_views.py:621
+msgid "Xpub can be used to view all future transactions."
+msgstr "Xpub lze využít k prohlížení všech budoucích transakcí."
+
+#: src/seedsigner/views/seed_views.py:651
+msgid "Generating xpub..."
+msgstr "Generuji xpub..."
+
+#: src/seedsigner/views/seed_views.py:771
+msgid "You must keep your seed words private & away from all online devices."
+msgstr "Držte svůj seed vždy soukromý & nenahrávejte jej na online zařízení."
+
+#: src/seedsigner/views/seed_views.py:836
+msgid "Verify"
+msgstr "Oveřit"
+
+#: src/seedsigner/views/seed_views.py:837
+msgid "Skip"
+msgstr "Přeskočit"
+
+#: src/seedsigner/views/seed_views.py:886
+msgid "Verify Word #{}"
+msgstr "Ověřit slovo #{}"
+
+#: src/seedsigner/views/seed_views.py:926
+msgid "Review Seed Words"
+msgstr "Zkontrolovat slova Seedu"
+
+#: src/seedsigner/views/seed_views.py:927
+msgid "Try Again"
+msgstr "Zkusit znovu"
+
+#: src/seedsigner/views/seed_views.py:931
+msgid "Verification Error"
+msgstr "Chyba ověření"
+
+#: src/seedsigner/views/seed_views.py:933
+msgid "Wrong Word!"
+msgstr "Špatné slovo!"
+
+#: src/seedsigner/views/seed_views.py:934
+msgid "Word #{} is not \"{}\"!"
+msgstr "Slovo #{} není \"{}\"!"
+
+#: src/seedsigner/views/seed_views.py:952
+msgid "Backup Verified"
+msgstr "Záloha ověřena"
+
+#: src/seedsigner/views/seed_views.py:955
+msgid "All mnemonic backup words were successfully verified!"
+msgstr "Všechna slova zálohy byla úspěšně ověřena!"
+
+#: src/seedsigner/views/seed_views.py:978
+msgid "Standard: 25x25"
+msgstr "Standart: 25x25"
+
+#: src/seedsigner/views/seed_views.py:979
+msgid "Compact: 21x21"
+msgstr "Zhutněný: 21x21"
+
+#: src/seedsigner/views/seed_views.py:983
+msgid "Standard: 29x29"
+msgstr "Standart: 29x29"
+
+#: src/seedsigner/views/seed_views.py:984
+msgid "Compact: 25x25"
+msgstr "Zhutněný: 25x25"
+
+#: src/seedsigner/views/seed_views.py:1003
+msgid "SeedQR Format"
+msgstr "Formát SeedQR"
+
+#: src/seedsigner/views/seed_views.py:1052
+msgid "SeedQR is your private key!"
+msgstr "SeedQR je Váš privátní klíč!"
+
+#: src/seedsigner/views/seed_views.py:1053
+msgid "Never photograph it or scan it into an online device."
+msgstr "Nikdy jej nefoťte či neskenujte do online zařízení."
+
+#: src/seedsigner/views/seed_views.py:1145
+#: src/seedsigner/views/seed_views.py:1189
+#: src/seedsigner/views/seed_views.py:1200
+#: src/seedsigner/views/seed_views.py:1212
+msgid "Confirm SeedQR"
+msgstr "Potvrďte SeedQR"
+
+#: src/seedsigner/views/seed_views.py:1150
+msgid "Confirm SeedQR?"
+msgstr "Potvrďte SeedQR?"
+
+#: src/seedsigner/views/seed_views.py:1180
+msgid "Scan your SeedQR"
+msgstr "Naskenujte svůj SeedQR"
+
+#: src/seedsigner/views/seed_views.py:1190
+#: src/seedsigner/views/seed_views.py:1213
+msgid "Error!"
+msgstr "Chyba!"
+
+#: src/seedsigner/views/seed_views.py:1191
+msgid "Your transcribed SeedQR does not match your original seed!"
+msgstr "Váš přepsaný SeedQR nekoresponduje s původním seedem!"
+
+#: src/seedsigner/views/seed_views.py:1193
+#: src/seedsigner/views/seed_views.py:1216
+msgid "Review SeedQR"
+msgstr "Ověřte SeedQR"
+
+#: src/seedsigner/views/seed_views.py:1202
+msgid ""
+"Your transcribed SeedQR successfully scanned and yielded the same seed."
+msgstr "Váš přepsaný SeedQR byl naskenován a vyprodukoval stejný seed."
+
+#: src/seedsigner/views/seed_views.py:1214
+msgid "Your transcribed SeedQR could not be read!"
+msgstr "Váš přepsaný SeedQR nebyl načten!"
+
+#: src/seedsigner/views/seed_views.py:1285
+msgid "Sig type can't be auto-detected from this address. Please specify:"
+msgstr "Podpisový typ nebyl načten pomocí této adresy. Prosím upřesněte:"
+
+#: src/seedsigner/views/seed_views.py:1326
+msgid "Load the seed to verify"
+msgstr "Načtěte seed pro ověření"
+
+#: src/seedsigner/views/seed_views.py:1336
+msgid "Select seed to verify"
+msgstr "Vyberte seed pro ověření"
+
+#: src/seedsigner/views/seed_views.py:1388
+msgid "Can't validate a single sig addr without specifying a seed"
+msgstr "Nelze potvrdit adresu bez specifikace seedu"
+
+#. Option when scanning for a matching address; skips ten addresses ahead
+#: src/seedsigner/views/seed_views.py:1434
+msgid "Skip 10"
+msgstr "Přeskočit 10"
+
+#: src/seedsigner/views/seed_views.py:1435
+#: src/seedsigner/views/seed_views.py:1616
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: src/seedsigner/views/seed_views.py:1563
+#: src/seedsigner/views/seed_views.py:1579
+msgid "Taproot verification not yet implemented!"
+msgstr "Funkcionalita `ověření taproot` nebyla naimplementována!"
+
+#: src/seedsigner/views/seed_views.py:1575
+msgid "Legacy P2PKH verification not implemented!"
+msgstr "Funkcionalita `ověření P2PKH` nebyla naimplementována!"
+
+#: src/seedsigner/views/seed_views.py:1600
+msgid "multisig"
+msgstr "multisig"
+
+#: src/seedsigner/views/seed_views.py:1602
+msgid "seed {}"
+msgstr "seed {}"
+
+#: src/seedsigner/views/seed_views.py:1605
+msgid "Address Verified"
+msgstr "Adresa ověřena"
+
+#: src/seedsigner/views/seed_views.py:1615
+msgid "Scan Descriptor"
+msgstr "Naskenovat deskriptor"
+
+#: src/seedsigner/views/seed_views.py:1645
+msgid "Return to PSBT"
+msgstr "Zpět k PSBT"
+
+#: src/seedsigner/views/settings_views.py:20
+msgid "I/O test"
+msgstr "Test ovladačů"
+
+#: src/seedsigner/views/settings_views.py:39
+#: src/seedsigner/views/settings_views.py:46
+msgid "Advanced"
+msgstr "Rozšířené"
+
+#: src/seedsigner/views/settings_views.py:54
+msgid "Dev Options"
+msgstr "Možnosti vývojáře"
+
+#: src/seedsigner/views/tools_views.py:24
+msgid " New seed"
+msgstr " Nový seed"
+
+#: src/seedsigner/views/tools_views.py:25
+msgid "New seed"
+msgstr "Nový seed"
+
+#: src/seedsigner/views/tools_views.py:26
+msgid "Calc 12th/24th word"
+msgstr "Spočítat 12/24 slovo"
+
+#: src/seedsigner/views/tools_views.py:102
+#: src/seedsigner/views/tools_views.py:228
+msgid "12 words"
+msgstr "12 slov"
+
+#: src/seedsigner/views/tools_views.py:103
+#: src/seedsigner/views/tools_views.py:229
+msgid "24 words"
+msgstr "24 slov"
+
+#: src/seedsigner/views/tools_views.py:107
+msgid "Mnemonic Length?"
+msgstr "Délka zálohy?"
+
+#: src/seedsigner/views/tools_views.py:174
+msgid "12 words (50 rolls)"
+msgstr "12 slov (50 hodů)"
+
+#: src/seedsigner/views/tools_views.py:175
+msgid "24 words (99 rolls)"
+msgstr "24 slov (99 hodů)"
+
+#: src/seedsigner/views/tools_views.py:179
+#: src/seedsigner/views/tools_views.py:233
+msgid "Mnemonic Length"
+msgstr "Délka zálohy"
+
+#: src/seedsigner/views/tools_views.py:258
+msgid "Load seed"
+msgstr "Nahrát seed"
+
+#: src/seedsigner/views/view.py:124
+msgid "Work In Progress"
+msgstr "Probíhající práce"
+
+#: src/seedsigner/views/view.py:125
+msgid "Not Yet Implemented"
+msgstr "Zatím nenaimplementováno"
+
+#: src/seedsigner/views/view.py:126
+msgid "This is still on our to-do list!"
+msgstr "Tohle máme na seznamů úkolů!"
+
+#: src/seedsigner/views/view.py:127
+msgid "Back to Main Menu"
+msgstr "Návrat do hlavního menu"
+
+#: src/seedsigner/views/view.py:142
+msgid "System Error"
+msgstr "Systémová chyba"
