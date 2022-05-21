@@ -226,7 +226,7 @@ class PSBTAddressDetailsView(View):
     """
         Shows the recipient's address and amount they will receive
     """
-    def __init__(self, address_num, is_change=False):
+    def __init__(self, address_num):
         super().__init__()
         self.address_num = address_num
 

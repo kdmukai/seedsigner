@@ -36,7 +36,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
             text=_(self.display_name),
             font_size=GUIConstants.BODY_FONT_MAX_SIZE,
             is_text_centered=True,
-            auto_line_break=False,
+            auto_line_break=True,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING
         ))
 
@@ -47,6 +47,7 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
                 font_color=GUIConstants.LABEL_FONT_COLOR,
                 is_text_centered=True,
                 screen_y=prev_component_bottom + GUIConstants.COMPONENT_PADDING,
+                auto_line_break=True,
             ))
 
 

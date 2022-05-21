@@ -209,7 +209,20 @@ class SeedFinalizeView(View):
     def __init__(self):
         super().__init__()
         self.seed = self.controller.storage.get_pending_seed()
-        self.fingerprint = self.seed.get_fingerprint(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+
+        if self.seed.get_fingerprint == "":
+            # Expected normal user flow
+            self.fingerprint = self.seed.get_fingerprint(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+
+        else:
+            # This view should display the "naked" seed's fingerprint. Normally the
+            # just-loaded seed would be naked, but this is special handling for the
+            # screenshot generator which creates a pending seed w/a passphrase already
+            # set.
+            passphrase = self.seed.passphrase
+            self.seed.set_passphrase("")
+            self.fingerprint = self.seed.get_fingerprint(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+            self.seed.set_passphrase(passphrase)
 
 
     def run(self):
@@ -232,7 +245,27 @@ class SeedFinalizeView(View):
             return Destination(SeedOptionsView, view_args={"seed_num": seed_num}, clear_history=True)
 
         elif button_data[selected_menu_num] == PASSPHRASE:
+            if self.settings.get_value(attr_name=SettingsConstants.SETTING__PASSPHRASE_WARNING) == SettingsConstants.OPTION__ENABLED:
+                return Destination(SeedPassphraseWarningView)
+
+            else:
+                return Destination(SeedAddPassphraseView)
+
+
+
+class SeedPassphraseWarningView(View):
+    def run(self):
+        selected_menu_num = WarningScreen(
+            status_headline=None,
+            text=_("""BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\nBe sure you know what you're doing!""")
+        ).display()
+
+        if selected_menu_num == 0:
+            # User clicked "I Understand"
             return Destination(SeedAddPassphraseView)
+
+        elif selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
 
 
 
@@ -432,10 +465,9 @@ class SeedBackupView(View):
         EXPORT_SEEDQR = _("Export as SeedQR")
         button_data = [VIEW_WORDS, EXPORT_SEEDQR]
 
-        selected_menu_num = ButtonListScreen(
-            title=_("Backup Seed"),
+        selected_menu_num = seed_screens.SeedBackupScreen(
             button_data=button_data,
-            is_bottom_list=True,
+            has_passphrase=self.seed.has_passphrase,
         ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -998,6 +1030,8 @@ class SeedTranscribeSeedQRFormatView(View):
             )
 
         button_data = [STANDARD, COMPACT]
+
+        print(f"button_data: {button_data}")
 
         selected_menu_num = seed_screens.SeedTranscribeSeedQRFormatScreen(
             title=_("SeedQR Format"),

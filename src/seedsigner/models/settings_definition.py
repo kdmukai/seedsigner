@@ -59,7 +59,7 @@ class SettingsConstants:
         (LOCALE__GERMAN, "German"),
         (LOCALE__HEBREW, "Hebrew"),
         (LOCALE__JAPANESE, "Japanese"),
-        # (LOCALE__PORTUGUESE, "Portuguese"),
+        (LOCALE__PORTUGUESE, "Portuguese"),
         (LOCALE__RUSSIAN, "Russian"),
         (LOCALE__SPANISH, "Spanish"),
     ]
@@ -173,6 +173,7 @@ class SettingsConstants:
     SETTING__COMPACT_SEEDQR = "compact_seedqr"
     SETTING__PRIVACY_WARNINGS = "privacy_warnings"
     SETTING__DIRE_WARNINGS = "dire_warnings"
+    SETTING__PASSPHRASE_WARNING = "passphrase_warning"
     SETTING__PARTNER_LOGOS = "partner_logos"
 
     SETTING__DEBUG = "debug"
@@ -462,6 +463,12 @@ class SettingsDefinition:
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__DIRE_WARNINGS,
                       display_name=_("Show dire warnings"),
+                      visibility=SettingsConstants.VISIBILITY__ADVANCED,
+                      default_value=SettingsConstants.OPTION__ENABLED),
+
+        SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
+                      attr_name=SettingsConstants.SETTING__PASSPHRASE_WARNING,
+                      display_name=_("Show passphrase warning"),
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       default_value=SettingsConstants.OPTION__ENABLED),
 

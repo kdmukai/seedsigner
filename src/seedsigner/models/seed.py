@@ -70,6 +70,11 @@ class Seed:
 
 
     @property
+    def has_passphrase(self):
+        return self._passphrase != ""
+
+
+    @property
     def passphrase(self):
         return self._passphrase
         

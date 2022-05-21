@@ -344,7 +344,7 @@ class PSBTOverviewScreen(ButtonListScreen):
             destination_y += destination_y_spacing
 
         # Resize to target and sharpen final image
-        image = image.resize((self.canvas_width, chart_height), Image.LANCZOS)
+        image = image.resize((self.canvas_width, chart_height), Image.Resampling.LANCZOS)
         self.paste_images.append((image.filter(ImageFilter.SHARPEN), (self.chart_x, self.chart_y)))
 
         # Pass input and output curves to the animation thread
@@ -568,7 +568,7 @@ class PSBTMathScreen(ButtonListScreen):
         )
 
         # Resize to target and sharpen final image
-        image = image.resize((body_width, body_height), Image.LANCZOS)
+        image = image.resize((body_width, body_height), Image.Resampling.LANCZOS)
         self.paste_images.append((image.filter(ImageFilter.SHARPEN), (GUIConstants.EDGE_PADDING, self.top_nav.height + GUIConstants.COMPONENT_PADDING)))
 
 
@@ -685,8 +685,8 @@ class PSBTFinalizeScreen(ButtonListScreen):
         super().__post_init__()
 
         icon = Icon(
-            icon_name=FontAwesomeIconConstants.PAPER_PLANE,
-            icon_color=GUIConstants.SUCCESS_COLOR,
+            icon_name=FontAwesomeIconConstants.FILE_SIGNATURE,
+            icon_color=GUIConstants.LIGHT_BLUE,
             icon_size=GUIConstants.ICON_LARGE_BUTTON_SIZE,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING
         )
@@ -694,8 +694,8 @@ class PSBTFinalizeScreen(ButtonListScreen):
         self.components.append(icon)
 
         self.components.append(TextArea(
-            text=_("Click to authorize this transaction"),
-            screen_y=icon.screen_y + icon.height + GUIConstants.COMPONENT_PADDING
+            text=_("Click to approve this transaction"),
+            screen_y=icon.screen_y + icon.height + 2*GUIConstants.COMPONENT_PADDING
         ))
 
 

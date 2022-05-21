@@ -27,6 +27,7 @@ class GUIConstants:
     ACCENT_COLOR = "orange"
     TESTNET_COLOR = "#00f100"
     REGTEST_COLOR = "#00caf1"
+    LIGHT_BLUE = "#0084ff"
 
     ICON_FONT_NAME__FONT_AWESOME = "Font_Awesome_6_Free-Solid-900.otf"
     ICON_FONT_NAME__SEEDSIGNER = "seedsigner-glyphs.otf"
@@ -163,6 +164,7 @@ class FontAwesomeIconConstants:
     DICE_FOUR = "\uf524"
     DICE_FIVE = "\uf523"
     DICE_SIX = "\uf526"
+    FILE_SIGNATURE = "\uf573"
     GEAR = "\uf013"
     KEY = "\uf084"
     KEYBOARD = "\uf11c"
@@ -348,7 +350,7 @@ class TextArea(BaseComponent):
     is_text_centered: bool = True
     supersampling_factor: int = 1
     auto_line_break: bool = True
-    allow_text_overflow: bool = False
+    allow_text_overflow: bool = True
 
 
     def __post_init__(self):
@@ -390,8 +392,9 @@ class TextArea(BaseComponent):
                 text_x = int((self.supersampled_width - width) / 2)
             else:
                 text_x = self.supersampling_factor * self.edge_padding
-            if self.min_text_x is not None and text_x < self.min_text_x:
-                text_x = self.min_text_x
+
+            if self.min_text_x is not None and text_x < self.supersampling_factor * self.min_text_x:
+                text_x = self.supersampling_factor * self.min_text_x
             self.text_lines.append({"text": text, "text_x": text_x})
 
             if width > self.text_width:
@@ -563,12 +566,12 @@ class IconTextLine(BaseComponent):
     icon_size: int = GUIConstants.ICON_FONT_SIZE
     icon_color: str = GUIConstants.BODY_FONT_COLOR
     label_text: str = None
-    value_text: str = "73c5da0a"
+    value_text: str = ""
     font_name: str = None
     font_size: int = None
     is_text_centered: bool = False
     auto_line_break: bool = False
-    allow_text_overflow: bool = False
+    allow_text_overflow: bool = True
     screen_x: int = 0
     screen_y: int = 0
 
@@ -610,8 +613,7 @@ class IconTextLine(BaseComponent):
                 is_text_centered=self.is_text_centered if not self.icon_name else False,
                 auto_line_break=False,
                 screen_x=text_screen_x,
-                screen_y=self.screen_y,
-                allow_text_overflow=False
+                screen_y=self.screen_y
             )
         else:
             self.label_textarea = None        
@@ -1351,6 +1353,35 @@ class TopNav(BaseComponent):
         if self.show_back_button:
             # Don't let the title intrude on the BACK button
             min_x = self.left_button.screen_x + self.left_button.width + GUIConstants.COMPONENT_PADDING
+        
+        # TODO: Account for the icon's width if there is one
+        max_width = self.width - min_x
+        if self.show_power_button:
+            max_width -= (self.width - self.right_button.screen_x) + GUIConstants.COMPONENT_PADDING
+        else:
+            max_width -= GUIConstants.EDGE_PADDING
+
+        # print(f"width: {self.width}")
+        # print(f"min_x: {min_x}")
+        # print(f"max_width: {max_width}")
+        # print(f"self.font_size: {self.font_size}")
+        
+        # Dynamically size the title font size as needed
+        title_font_size = self.font_size
+        min_title_font_size = GUIConstants.get_body_font_size()
+        while title_font_size >= min_title_font_size:
+            font = Fonts.get_font(self.font_name, title_font_size)
+            (left, top, text_width, bottom) = font.getbbox(self.text, anchor="ls")
+            # print(f"text_width: {text_width}")
+            if text_width > max_width:
+                title_font_size -= 1
+                # print(f"title_font_size: {title_font_size}")
+            else:
+                # It fits!
+                break
+        
+        if title_font_size < min_title_font_size:
+            title_font_size = min_title_font_size
 
         if self.icon_name:
             self.title = IconTextLine(
@@ -1363,7 +1394,7 @@ class TopNav(BaseComponent):
                 value_text=self.text,
                 is_text_centered=True,
                 font_name=self.font_name,
-                font_size=self.font_size,
+                font_size=title_font_size,
             )
         else:
             self.title = TextArea(
@@ -1374,7 +1405,7 @@ class TopNav(BaseComponent):
                 text=self.text,
                 is_text_centered=True,
                 font_name=self.font_name,
-                font_size=self.font_size,
+                font_size=title_font_size,
             )
 
 

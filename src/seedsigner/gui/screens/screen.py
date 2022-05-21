@@ -368,6 +368,9 @@ class ButtonListScreen(BaseTopNavScreen):
         super()._render()
         self._render_visible_buttons()
 
+        # Write the screen updates
+        self.renderer.show_image()
+
 
     def _render_visible_buttons(self):
         if self.has_scroll_arrows:
@@ -723,7 +726,6 @@ class LargeIconStatusScreen(ButtonListScreen):
     status_color: str = GUIConstants.SUCCESS_COLOR
     text: str = ""                          # The body text of the screen
     button_data: list = None
-    allow_text_overflow: bool = False
 
 
     def __post_init__(self):
@@ -751,7 +753,6 @@ class LargeIconStatusScreen(ButtonListScreen):
                 width=self.canvas_width,
                 screen_y=next_y,
                 font_color=self.status_color,
-                allow_text_overflow=self.allow_text_overflow,
             )
             self.components.append(self.warning_headline_textarea)
             next_y = next_y + self.warning_headline_textarea.height
@@ -761,7 +762,6 @@ class LargeIconStatusScreen(ButtonListScreen):
             text=self.text,
             width=self.canvas_width,
             screen_y=next_y,
-            allow_text_overflow=self.allow_text_overflow,
         ))
 
 

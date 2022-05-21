@@ -5,8 +5,8 @@
 # 
 # Translators:
 # Cabildo BTC, 2022
-# Bitcoin Hornet, 2022
 # Keith Mukai, 2022
+# Bitcoin Hornet, 2022
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2022-05-10 17:32-0500\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
-"Last-Translator: Keith Mukai, 2022\n"
+"Last-Translator: Bitcoin Hornet, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/seedsigner/teams/135832/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -354,7 +354,7 @@ msgstr "Normas"
 
 #: src/seedsigner/gui/screens/seed_screens.py:1576
 msgid "Signing Keys"
-msgstr "Claves para firmar"
+msgstr "Llaves de firmado"
 
 #: src/seedsigner/gui/screens/settings_screens.py:26
 #: src/seedsigner/views/main_menu_views.py:21
@@ -366,7 +366,7 @@ msgstr "Ajustes"
 #. working properly
 #: src/seedsigner/gui/screens/settings_screens.py:58
 msgid "I/O Test"
-msgstr "Test de hardware"
+msgstr "Examen de Hardware"
 
 #. Blank the screen
 #: src/seedsigner/gui/screens/settings_screens.py:129
@@ -455,7 +455,7 @@ msgstr "Btc-Solamente"
 
 #: src/seedsigner/models/settings_definition.py:73
 msgid "Sats-only"
-msgstr "Sats-solamente"
+msgstr "Sats-Solamente"
 
 #: src/seedsigner/models/settings_definition.py:74
 msgid "Threshold at 0.01"
@@ -463,7 +463,7 @@ msgstr "Límite a 0.01"
 
 #: src/seedsigner/models/settings_definition.py:75
 msgid "Btc | Sats hybrid"
-msgstr "Btc | Sats híbrido"
+msgstr "Btc | Sats Híbrido"
 
 #: src/seedsigner/models/settings_definition.py:83
 msgid "0°"
@@ -517,11 +517,11 @@ msgstr "Multifirma"
 
 #: src/seedsigner/models/settings_definition.py:354
 msgid "Language"
-msgstr "Lengua"
+msgstr "Idioma"
 
 #: src/seedsigner/models/settings_definition.py:362
 msgid "Mnemonic language"
-msgstr "Lenguaje frase mnemónica"
+msgstr "Idioma de frase mnemónica"
 
 #: src/seedsigner/models/settings_definition.py:370
 msgid "Persistent settings"
@@ -533,7 +533,7 @@ msgstr "Software coordinador"
 
 #: src/seedsigner/models/settings_definition.py:383
 msgid "Denomination display"
-msgstr "Pantalla denominaciones"
+msgstr "Pantalla de Denominaciones"
 
 #: src/seedsigner/models/settings_definition.py:392
 msgid "Bitcoin network"
@@ -771,19 +771,19 @@ msgstr "Escanear SeedQR"
 
 #: src/seedsigner/views/seed_views.py:78
 msgid "Enter 24-word seed"
-msgstr ""
+msgstr "Entrar llave de 24 palabras"
 
 #: src/seedsigner/views/seed_views.py:79
 msgid "Enter 12-word seed"
-msgstr ""
+msgstr "Entrar llave de 12 palabras"
 
 #: src/seedsigner/views/seed_views.py:80
 msgid "Create a seed"
-msgstr ""
+msgstr "Crear una llave"
 
 #: src/seedsigner/views/seed_views.py:89
 msgid "Load A Seed"
-msgstr ""
+msgstr "Carga una Llave"
 
 #. Inserts the word number (e.g. "Seed Word #6")
 #: src/seedsigner/views/seed_views.py:126
@@ -817,7 +817,7 @@ msgstr "Finalizado"
 
 #: src/seedsigner/views/seed_views.py:267
 msgid "Edit passphrase"
-msgstr "Editar contraseña"
+msgstr "Editar frase de contraseña"
 
 #: src/seedsigner/views/seed_views.py:309
 msgid "Keep Seed"
@@ -939,7 +939,7 @@ msgstr "Formato SeedQR"
 
 #: src/seedsigner/views/seed_views.py:1052
 msgid "SeedQR is your private key!"
-msgstr "¡SeedQR es tu clave privada!"
+msgstr "¡SeedQR es tu clave privada/semilla!"
 
 #: src/seedsigner/views/seed_views.py:1053
 msgid "Never photograph it or scan it into an online device."
@@ -1044,7 +1044,7 @@ msgstr "Regresar al PSBT"
 
 #: src/seedsigner/views/settings_views.py:20
 msgid "I/O test"
-msgstr "Test de hardware"
+msgstr "Examen de hardware"
 
 #: src/seedsigner/views/settings_views.py:39
 #: src/seedsigner/views/settings_views.py:46

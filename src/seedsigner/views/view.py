@@ -144,7 +144,6 @@ class UnhandledExceptionView(View):
             text=self.error[1] + "\n" + self.error[2],
             button_data=[_("OK")],
             show_back_button=False,
-            allow_text_overflow=True,  # Fit what we can, let the rest go off the edges
         ).display()
         
         return Destination(MainMenuView, clear_history=True)
