@@ -20,7 +20,8 @@ from seedsigner.views.view import View
 from .utils import ScreenshotComplete, ScreenshotRenderer
 
 
-def test_generate_screenshots():
+
+def test_generate_screenshots(target_locale):
     """
         The `Renderer` class is mocked so that calls in the normal code are ignored
         (necessary to avoid having it trying to wire up hardware dependencies).
@@ -157,22 +158,24 @@ def test_generate_screenshots():
         "Settings Views": settings_views_list,
     }
 
-    main_readme = """# SeedSigner Screenshots \n\n"""
 
-    for locale, display_name in SettingsConstants.ALL_LOCALES:
+    locales = []
+    if target_locale is None:
+        locales = SettingsConstants.ALL_LOCALES
+    else:
+        locales = [locale_tuple for locale_tuple in SettingsConstants.ALL_LOCALES if locale_tuple[0] == target_locale]
+    
+    if not locales:
+        raise Exception(f"Invalid locale: {target_locale}")
+
+    for locale, display_name in locales:
         Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=locale)
         screenshot_renderer.set_screenshot_path(os.path.join(screenshot_root, locale))
 
-        main_readme += f"* [{display_name}]({locale}/README.md)\n"
         locale_readme = f"""# SeedSigner Screenshots: {display_name}\n"""
 
         # Report the translation progress
         if locale != SettingsConstants.LOCALE__ENGLISH:
-
-            # DEBUGGING
-            continue
-            # /DEBUGGING
-
             translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "babel", locale, "LC_MESSAGES", "messages.po") 
             with open(translated_messages_path, 'r') as translation_file:
                 locale_translations = translation_file.read()
@@ -207,6 +210,12 @@ def test_generate_screenshots():
 
         with open(os.path.join(screenshot_renderer.screenshot_path, "README.md"), 'w') as readme_file:
             readme_file.write(locale_readme)
+
+    # Write the main README; ensure it writes all locales, not just the one that may
+    # have been specified for this run.
+    main_readme = """# SeedSigner Screenshots \n\n"""
+    for locale in SettingsConstants.ALL_LOCALES:
+        main_readme += f"* [{display_name}]({locale}/README.md)\n"
 
     with open(os.path.join(screenshot_root, "README.md"), 'w') as readme_file:
         readme_file.write(main_readme)

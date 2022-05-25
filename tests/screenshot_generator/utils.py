@@ -35,7 +35,10 @@ class ScreenshotRenderer(Renderer):
         self.screenshot_path = path
 
 
-    def show_image(self, image=None, alpha_overlay=None):
+    def show_image(self, image=None, alpha_overlay=None, is_background_thread: bool = False):
+        if is_background_thread:
+            return
+
         if alpha_overlay:
             if image == None:
                 image = self.canvas

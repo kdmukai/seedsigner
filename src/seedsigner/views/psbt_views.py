@@ -87,11 +87,15 @@ class PSBTOverviewView(View):
 
         if not self.controller.psbt_parser or self.controller.psbt_parser.seed != self.controller.psbt_seed:
             # Must run the PSBTParser or re-parse
-            self.controller.psbt_parser = PSBTParser(
-                self.controller.psbt,
-                seed=self.controller.psbt_seed,
-                network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)
-            )
+            try:
+                self.controller.psbt_parser = PSBTParser(
+                    self.controller.psbt,
+                    seed=self.controller.psbt_seed,
+                    network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)
+                )
+            except Exception as e:
+                self.loading_screen.stop()
+                raise e
 
 
     def run(self):
@@ -260,7 +264,7 @@ class PSBTAddressDetailsView(View):
         if selected_menu_num == 0:
             if self.address_num < len(psbt_parser.destination_addresses) - 1:
                 # Show the next receive addr
-                return Destination(PSBTAddressDetailsView, view_args={"address_num": self.address_num + 1, "is_change": False})
+                return Destination(PSBTAddressDetailsView, view_args={"address_num": self.address_num + 1})
 
             elif psbt_parser.change_amount > 0:
                 # Move on to display change

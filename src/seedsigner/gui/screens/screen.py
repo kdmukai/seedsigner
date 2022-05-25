@@ -187,7 +187,7 @@ class LoadingScreenThread(BaseThread):
                     width=GUIConstants.COMPONENT_PADDING
                 )
 
-                renderer.show_image()
+                renderer.show_image(is_background_thread=True)
             position += arc_sweep
 
 

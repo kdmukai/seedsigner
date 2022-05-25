@@ -34,7 +34,10 @@ class Renderer(ConfigurableSingleton):
         renderer.draw = ImageDraw.Draw(renderer.canvas)
 
 
-    def show_image(self, image=None, alpha_overlay=None):
+    def show_image(self, image=None, alpha_overlay=None, is_background_thread: bool = False):
+        """
+            is_background_thread: Only used by the ScreenshotRenderer.
+        """
         if alpha_overlay:
             if image == None:
                 image = self.canvas

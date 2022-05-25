@@ -91,7 +91,7 @@ msgstr "{}..."
 
 #: src/seedsigner/gui/screens/psbt_screens.py:136
 msgid "self-transfer"
-msgstr "selbst zahlung"
+msgstr "selbst zahlungs"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:139
 msgid "recipient 1"
@@ -144,7 +144,7 @@ msgstr[1] "Empfänger"
 #. Denonination is inserted (e.g. your "btc change" or "sats change")
 #: src/seedsigner/gui/screens/psbt_screens.py:566
 msgid "{} change"
-msgstr "{} change"
+msgstr "{} wechselg."
 
 #: src/seedsigner/gui/screens/psbt_screens.py:671
 msgid "Address verified!"
@@ -166,7 +166,7 @@ msgstr "Signierte PSBT"
 #. etc)
 #: src/seedsigner/gui/screens/psbt_screens.py:713
 msgid "Export as a QR code for:"
-msgstr "Als QR Code exportieren, für::"
+msgstr "QR Code exportieren für:"
 
 #: src/seedsigner/gui/screens/scan_screens.py:22
 msgid "Scan a QR code"
@@ -174,7 +174,7 @@ msgstr "Scanne einen QR Code"
 
 #: src/seedsigner/gui/screens/scan_screens.py:138
 msgid "Settings QR"
-msgstr "Einstellungs QR"
+msgstr "QR Konfig."
 
 #: src/seedsigner/gui/screens/scan_screens.py:156
 msgid "Settings imported successfully!"
@@ -218,7 +218,7 @@ msgstr "Fingerabruck"
 #. Displays the page number and total: (e.g. page 1 of 6)
 #: src/seedsigner/gui/screens/seed_screens.py:461
 msgid "Seed Words: {}/{}"
-msgstr "Seed-Phrase: {}/{}"
+msgstr "Seed Wörter: {}/{}"
 
 #: src/seedsigner/gui/screens/seed_screens.py:541
 msgid "Verify Backup?"
@@ -261,7 +261,7 @@ msgstr "Xpub"
 #: src/seedsigner/gui/screens/seed_screens.py:754
 #: src/seedsigner/views/seed_views.py:217
 msgid "Add Passphrase"
-msgstr "Passphrase hinzufügen"
+msgstr "Passphrase hinzufüg."
 
 #: src/seedsigner/gui/screens/seed_screens.py:1106
 msgid "Verify Passphrase"
@@ -311,8 +311,8 @@ msgid ""
 "Optionally scan your transcribed SeedQR to confirm that it reads back "
 "correctly."
 msgstr ""
-"Optional können Sie Ihren übersetzten SeedQR scannen um zu verifizieren, "
-"dass er korrekt gelesen wird."
+"Optional, übersetzten SeedQR scannen um zu verifizieren, dass er korrekt "
+"gelesen wird."
 
 #: src/seedsigner/gui/screens/seed_screens.py:1468
 #: src/seedsigner/views/seed_views.py:1284
@@ -344,7 +344,7 @@ msgstr "Deskriptor geladen"
 #. Label for the multisig wallet's signing policy (e.g. 2-of-3)
 #: src/seedsigner/gui/screens/seed_screens.py:1568
 msgid "Policy"
-msgstr "Richtlinie"
+msgstr "Policy"
 
 #: src/seedsigner/gui/screens/seed_screens.py:1576
 msgid "Signing Keys"
@@ -354,7 +354,7 @@ msgstr "Singnier Schlüssel"
 #: src/seedsigner/views/main_menu_views.py:21
 #: src/seedsigner/views/settings_views.py:36
 msgid "Settings"
-msgstr "Einst."
+msgstr "Setup"
 
 #. Short for "Input/Output"; screen to make sure the buttons and camera are
 #. working properly
@@ -412,7 +412,7 @@ msgstr " < wiederholen  |  akzeptieren > "
 #: src/seedsigner/gui/screens/tools_screens.py:120
 #: src/seedsigner/gui/screens/tools_screens.py:245
 msgid "Dice Roll {}/{}"
-msgstr "Würfeln {}/{}"
+msgstr "Wurf {}/{}"
 
 #: src/seedsigner/gui/screens/tools_screens.py:274
 msgid "12th Word"
@@ -526,7 +526,7 @@ msgstr "Koordinator Software"
 
 #: src/seedsigner/models/settings_definition.py:383
 msgid "Denomination display"
-msgstr "Nennwertanzeige"
+msgstr "Sats/Btc anzeige"
 
 #: src/seedsigner/models/settings_definition.py:392
 msgid "Bitcoin network"
@@ -534,7 +534,7 @@ msgstr "Bitcoin Netzwerk"
 
 #: src/seedsigner/models/settings_definition.py:400
 msgid "QR code density"
-msgstr "QR Code Dichte"
+msgstr "Auflösung QR Code"
 
 #: src/seedsigner/models/settings_definition.py:408
 msgid "Xpub export"
@@ -566,11 +566,11 @@ msgstr "Kompakt SeedQR"
 
 #: src/seedsigner/models/settings_definition.py:458
 msgid "Show privacy warnings"
-msgstr "Zeige Privatsphäre Warnungen"
+msgstr "Privatsphäre Warnungen"
 
 #: src/seedsigner/models/settings_definition.py:464
 msgid "Show dire warnings"
-msgstr "Zeige dringliche Warnungen"
+msgstr "dringliche Warnungen"
 
 #: src/seedsigner/models/settings_definition.py:470
 msgid "Show partner logos"
@@ -625,7 +625,7 @@ msgstr "Analysiert PSBT... "
 
 #: src/seedsigner/views/psbt_views.py:155
 msgid "Unsupported Script Type!"
-msgstr "Nicht unterstützter Skipt Typ!"
+msgstr "Skript nicht unterstützt!"
 
 #: src/seedsigner/views/psbt_views.py:156
 msgid ""
@@ -701,9 +701,7 @@ msgstr "Verifiziere Selbstzahlung..."
 msgid ""
 "PSBT's {} address could not be verified with your multisig wallet "
 "descriptor."
-msgstr ""
-"PSBT Adresse {} konnte mit Ihrem Multisig-Wallet Deskriptor nicht "
-"verifiziert werden."
+msgstr "PSBT Adresse {} konnte mit Ihrem Deskriptor nicht verifiziert werden."
 
 #: src/seedsigner/views/psbt_views.py:433
 msgid "Suspicious PSBT"
@@ -711,7 +709,7 @@ msgstr "Verdächtige PSBT"
 
 #: src/seedsigner/views/psbt_views.py:434
 msgid "PSBT's {} address could not be generated from your seed."
-msgstr "PSBT's {} Adresse konnte von Ihrem Seed nicht generiert werden."
+msgstr "PSBT's {}. Adresse konnte vom Seed nicht generiert werden."
 
 #: src/seedsigner/views/psbt_views.py:438
 msgid "Address Verification Failed"
@@ -764,11 +762,11 @@ msgstr "Scanne einen SeedQR"
 
 #: src/seedsigner/views/seed_views.py:78
 msgid "Enter 24-word seed"
-msgstr "24-Wort Seed Eingabe"
+msgstr "24Wort Seed Eingabe"
 
 #: src/seedsigner/views/seed_views.py:79
 msgid "Enter 12-word seed"
-msgstr "12-Wort Seed Eingabe"
+msgstr "12Wort Seed Eingabe"
 
 #: src/seedsigner/views/seed_views.py:80
 msgid "Create a seed"
@@ -799,7 +797,7 @@ msgstr "Ungültiger Seed!"
 
 #: src/seedsigner/views/seed_views.py:194
 msgid "Checksum failure; not a valid seed phrase."
-msgstr "Prüfsumme fehlerhaft, keine valide Seedphrase."
+msgstr "Prüfsumme fehlerhaft, kein valider Seed."
 
 #: src/seedsigner/views/seed_views.py:216
 #: src/seedsigner/views/seed_views.py:268
@@ -866,7 +864,7 @@ msgstr "Generiere xpub..."
 #: src/seedsigner/views/seed_views.py:771
 msgid "You must keep your seed words private & away from all online devices."
 msgstr ""
-"Halten Sie Ihre Seed-Phrase privat & geben sie diese NIE in ein Gerät mit "
+"Halten Sie Ihren Seed privat & geben sie diese NIE in ein Gerät mit "
 "Internetzugang ein."
 
 #: src/seedsigner/views/seed_views.py:836
@@ -931,24 +929,22 @@ msgstr "SeedQR Format"
 
 #: src/seedsigner/views/seed_views.py:1052
 msgid "SeedQR is your private key!"
-msgstr "SeedQR ist Ihr privater Schlüssel!"
+msgstr "Der SeedQR ist dein privater Schlüssel!"
 
 #: src/seedsigner/views/seed_views.py:1053
 msgid "Never photograph it or scan it into an online device."
-msgstr ""
-"Fotografieren Sie diesen niemals und scannen Sie Ihn auch niemals mit einem "
-"Online-Gerät."
+msgstr "Niemals mit einem online Gerät scannen bzw. fotografieren!"
 
 #: src/seedsigner/views/seed_views.py:1145
 #: src/seedsigner/views/seed_views.py:1189
 #: src/seedsigner/views/seed_views.py:1200
 #: src/seedsigner/views/seed_views.py:1212
 msgid "Confirm SeedQR"
-msgstr "SeedQR bestätigen"
+msgstr "SeedQR verifizieren"
 
 #: src/seedsigner/views/seed_views.py:1150
 msgid "Confirm SeedQR?"
-msgstr "SeedQR bestätigen?"
+msgstr "SeedQR verifizieren?"
 
 #: src/seedsigner/views/seed_views.py:1180
 msgid "Scan your SeedQR"
@@ -1050,15 +1046,15 @@ msgstr "Entwickler Optionen"
 
 #: src/seedsigner/views/tools_views.py:24
 msgid " New seed"
-msgstr "Neuer Seed"
+msgstr "Generiere Seed"
 
 #: src/seedsigner/views/tools_views.py:25
 msgid "New seed"
-msgstr "Neuer Seed"
+msgstr "Würfle Seed"
 
 #: src/seedsigner/views/tools_views.py:26
 msgid "Calc 12th/24th word"
-msgstr "Berechne 12./24. Wort"
+msgstr "Ber. 12./24. Wort"
 
 #: src/seedsigner/views/tools_views.py:102
 #: src/seedsigner/views/tools_views.py:228
@@ -1076,16 +1072,16 @@ msgstr "Seedphrasen Länge?"
 
 #: src/seedsigner/views/tools_views.py:174
 msgid "12 words (50 rolls)"
-msgstr "12 Wörter (50 würfe)"
+msgstr "12 Wörter (50 Würfe)"
 
 #: src/seedsigner/views/tools_views.py:175
 msgid "24 words (99 rolls)"
-msgstr "24 Wörter (99 würfe)"
+msgstr "24 Wörter (99 Würfe)"
 
 #: src/seedsigner/views/tools_views.py:179
 #: src/seedsigner/views/tools_views.py:233
 msgid "Mnemonic Length"
-msgstr "Seedphrasen länge"
+msgstr "Seedphrasen Länge"
 
 #: src/seedsigner/views/tools_views.py:258
 msgid "Load seed"
