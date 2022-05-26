@@ -80,13 +80,13 @@ class PSBTOverviewView(View):
     def __init__(self):
         super().__init__()
 
-        # The PSBTParser takes a while to read the PSBT. Run the loading screen while we
-        # wait.
-        self.loading_screen = LoadingScreenThread(text=_("Parsing PSBT..."))
-        self.loading_screen.start()
+        self.loading_screen = None
 
         if not self.controller.psbt_parser or self.controller.psbt_parser.seed != self.controller.psbt_seed:
-            # Must run the PSBTParser or re-parse
+            # The PSBTParser takes a while to read the PSBT. Run the loading screen while
+            # we wait.
+            self.loading_screen = LoadingScreenThread(text=_("Parsing PSBT..."))
+            self.loading_screen.start()
             try:
                 self.controller.psbt_parser = PSBTParser(
                     self.controller.psbt,
@@ -132,7 +132,8 @@ class PSBTOverviewView(View):
         )
 
         # Everything is set. Stop the loading screen
-        self.loading_screen.stop()
+        if self.loading_screen:
+            self.loading_screen.stop()
 
         # Run the overview screen
         selected_menu_num = screen.display()

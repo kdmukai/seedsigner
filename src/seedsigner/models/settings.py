@@ -175,12 +175,8 @@ class Settings(Singleton):
         locale = self.get_value(SettingsConstants.SETTING__LOCALE)
         os.environ['LANGUAGE'] = locale
 
-        print(f""""Settings" = {gettext.gettext("Settings")}""")
-
         # Re-initialize with the new locale
-
         print(f"Set LANGUAGE locale to {os.environ['LANGUAGE']}")
-        print(f""""Settings" = {gettext.gettext("Settings")}""")
 
 
 
