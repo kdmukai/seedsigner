@@ -893,7 +893,7 @@ class KeyboardScreen(BaseTopNavScreen):
     rows: int = None
     cols: int = None
     keyboard_font_name: str = GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME
-    keyboard_font_size: int = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2
+    keyboard_font_size: int = None
     key_height: int = None
     keys_charset: str = None
     keys_to_values: dict = None
@@ -902,6 +902,9 @@ class KeyboardScreen(BaseTopNavScreen):
     initial_value: str = ""
 
     def __post_init__(self):
+        if self.keyboard_font_size is None:
+            self.keyboard_font_size = GUIConstants.get_top_nav_title_font_size() + 2
+
         super().__post_init__()
 
         if self.initial_value:
@@ -1075,6 +1078,6 @@ class KeyboardScreen(BaseTopNavScreen):
             Optionally update the self.title after each completed key input.
             
             e.g. to increment the dice roll count:
-                self.title = f"Roll {self.cursor_position + 1}"
+                self.title = _("Roll {}".format(self.cursor_position + 1))
         """
         return False
