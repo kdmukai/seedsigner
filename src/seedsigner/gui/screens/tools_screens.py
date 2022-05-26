@@ -112,9 +112,10 @@ class ToolsImageEntropyFinalImageScreen(BaseScreen):
 
 @dataclass
 class ToolsDiceEntropyEntryScreen(KeyboardScreen):
+
     def __post_init__(self):
         # TRANSLATOR_NOTE: current roll number vs total rolls (e.g. roll 7 of 50)
-        self.title = _("Dice Roll {}/{}").format(1, self.total_rolls)
+        self.title = _("Dice Roll {}/{}").format(1, self.return_after_n_chars)
 
         # Specify the keys in the keyboard
         self.rows = 3
