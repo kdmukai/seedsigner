@@ -991,19 +991,6 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
 
         super().__post_init__()
 
-        # self.components.append(IconTextLine(
-        #     icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
-        #     icon_color="blue",
-        #     # TRANSLATOR_NOTE: Describes the effect of applying a BIP-39 passphrase; it changes the seed's fingerprint
-        #     label_text=_("changes seed:"),
-        #     value_text=f"{self.fingerprint_without} > {self.fingerprint_with}",
-        #     font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
-        #     font_size=GUIConstants.get_body_font_size() + 4,
-        #     is_text_centered=False,
-        #     screen_x=GUIConstants.EDGE_PADDING,
-        #     screen_y=self.buttons[0].screen_y - GUIConstants.COMPONENT_PADDING - int(GUIConstants.get_body_font_size()*2.5)
-        # ))
-
         fingerprint_change_label = TextArea(
             # TRANSLATOR_NOTE: Describes the effect of applying a BIP-39 passphrase; it changes the seed's fingerprint
             text=_("changes seed:"),

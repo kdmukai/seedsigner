@@ -48,6 +48,7 @@ class SettingsConstants:
     LOCALE__GERMAN = "de"
     LOCALE__HEBREW = "he"
     LOCALE__JAPANESE = "ja"
+    LOCALE__KOREAN = "kr"
     LOCALE__PORTUGUESE = "pt"
     LOCALE__RUSSIAN = "ru"
     LOCALE__SPANISH = "es"
@@ -59,6 +60,7 @@ class SettingsConstants:
         (LOCALE__GERMAN, "German"),
         (LOCALE__HEBREW, "Hebrew"),
         (LOCALE__JAPANESE, "Japanese"),
+        (LOCALE__KOREAN, "Korean"),
         (LOCALE__PORTUGUESE, "Portuguese"),
         (LOCALE__RUSSIAN, "Russian"),
         (LOCALE__SPANISH, "Spanish"),
@@ -369,7 +371,7 @@ class SettingsDefinition:
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__PERSISTENT_SETTINGS,
                       display_name=_("Persistent settings"),
-                      help_text="Store Settings on SD card.",
+                      help_text=_("Store Settings on SD card."),
                       default_value=SettingsConstants.OPTION__DISABLED),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__WALLET,

@@ -41,6 +41,7 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "kr": "multilanguage/NotoSansKR-Regular.otf",
         "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     TOP_NAV_TITLE_FONT_SIZE = {
@@ -54,6 +55,7 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "kr": "multilanguage/NotoSansKR-Regular.otf",
         "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     BODY_FONT_SIZE = {
@@ -76,6 +78,7 @@ class GUIConstants:
         "ar": "multilanguage/NotoSansAR-Regular.ttf",
         "he": "multilanguage/NotoSansHE-Regular.ttf",
         "ja": "multilanguage/NotoSansJP-Regular.otf",
+        "kr": "multilanguage/NotoSansKR-Regular.otf",
         "ru": "multilanguage/NotoSans-Regular.ttf",
     }
     BUTTON_FONT_SIZE = {

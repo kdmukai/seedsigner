@@ -658,7 +658,8 @@ class PSBTChangeDetailsScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
             icon_color="blue",
-            value_text=f"""{"Multisig" if self.is_multisig else self.fingerprint}: {"Change" if self.is_change_derivation_path else "Addr"} #{self.derivation_path_addr_index}""",
+            # TRANSLATOR_NOTE: First variable is either "Multisig" or the fingerprint for single sig; Second is "Change" or "Addr" (change vs receive addr); Third is the address index number (e.g. your #4 receive addr).
+            value_text="""{}: {} #{}""".format(_("Multisig") if self.is_multisig else self.fingerprint, _("Change") if self.is_change_derivation_path else _("Addr"), self.derivation_path_addr_index),
             is_text_centered=False,
             screen_x=GUIConstants.EDGE_PADDING,
             screen_y=screen_y,
