@@ -131,13 +131,19 @@ class PSBTParser():
                     if len(out.bip32_derivations.values()) > 0:
                         der = list(out.bip32_derivations.values())[0].derivation
                         my_pubkey = self.root.derive(der)
-                    if self.policy["type"] == "p2wpkh" and my_pubkey is not None:
-                        sc = script.p2wpkh(my_pubkey)
-                    elif self.policy["type"] == "p2sh-p2wpkh" and my_pubkey is not None:
-                        sc = script.p2sh(script.p2wpkh(my_pubkey))
+                    
+                        if my_pubkey is not None:
+                            if self.policy["type"] == "p2wpkh":
+                                sc = script.p2wpkh(my_pubkey)
+                            elif self.policy["type"] == "p2sh-p2wpkh":
+                                sc = script.p2sh(script.p2wpkh(my_pubkey))
 
-                    if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
-                        is_change = True
+                            if sc.data:
+                                if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
+                                    is_change = True
+                                else:
+                                    bad_address = self.psbt.tx.vout[i].script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
+                                    raise Exception(f"Output {i} ({bad_address[:7]}...{bad_address[-7:]}) failed verification for {self.seed.get_fingerprint(self.network)}")
 
                 if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
                     is_change = True
