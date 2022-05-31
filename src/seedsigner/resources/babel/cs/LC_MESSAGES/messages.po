@@ -115,7 +115,7 @@ msgstr "poplatek"
 #: src/seedsigner/views/psbt_views.py:437
 #: src/seedsigner/views/psbt_views.py:441
 msgid "change"
-msgstr "nazpátek"
+msgstr "nazpět"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:461
 msgid "PSBT Math"
@@ -153,7 +153,7 @@ msgstr[3] "příjemci"
 #. Denonination is inserted (e.g. your "btc change" or "sats change")
 #: src/seedsigner/gui/screens/psbt_screens.py:566
 msgid "{} change"
-msgstr "{} nazpátek"
+msgstr "{} nazpět"
 
 #. First variable is either "Multisig" or the fingerprint for single sig;
 #. Second is "Change" or "Addr" (change vs receive addr); Third is the address
@@ -166,11 +166,11 @@ msgstr "Multisig"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:662
 msgid "Change"
-msgstr ""
+msgstr "Nazpět"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:662
 msgid "Addr"
-msgstr ""
+msgstr "Adr"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:672
 msgid "Address verified!"
@@ -182,7 +182,7 @@ msgstr "Podepsat PSBT"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:698
 msgid "Click to approve this transaction"
-msgstr ""
+msgstr "Klikněte pro potvrzení"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:708
 msgid "Signed PSBT"
@@ -196,7 +196,7 @@ msgstr "Exportovat QR kod pro:"
 
 #: src/seedsigner/gui/screens/scan_screens.py:22
 msgid "Scan a QR code"
-msgstr "Naskenovat QR kód"
+msgstr "Skenovat QR kód"
 
 #: src/seedsigner/gui/screens/scan_screens.py:138
 msgid "Settings QR"
@@ -250,7 +250,7 @@ msgstr "Zálohovat seed"
 #. SeedQR).
 #: src/seedsigner/gui/screens/seed_screens.py:462
 msgid "Backups do not include your passphrase."
-msgstr ""
+msgstr "Zálohy neobsahují bezpečnostní fráze"
 
 #. Displays the page number and total: (e.g. page 1 of 6)
 #: src/seedsigner/gui/screens/seed_screens.py:479
@@ -308,7 +308,7 @@ msgstr "Ověřit frázi"
 #. fingerprint
 #: src/seedsigner/gui/screens/seed_screens.py:996
 msgid "changes seed:"
-msgstr ""
+msgstr "změní seed:"
 
 #. Refers to the SeedQR type: Standard or Compact
 #: src/seedsigner/gui/screens/seed_screens.py:1083
@@ -552,7 +552,7 @@ msgstr "Zapamatovat nastavení"
 
 #: src/seedsigner/models/settings_definition.py:374
 msgid "Store Settings on SD card."
-msgstr ""
+msgstr "Uložit nastavení na SD kartu."
 
 #: src/seedsigner/models/settings_definition.py:379
 msgid "Coordinator software"
@@ -608,7 +608,7 @@ msgstr "Zobrazovat kritická varování"
 
 #: src/seedsigner/models/settings_definition.py:473
 msgid "Show passphrase warning"
-msgstr ""
+msgstr "Ukázovat varování při použití bezpečnostní fráze"
 
 #: src/seedsigner/models/settings_definition.py:479
 msgid "Show partner logos"
@@ -797,7 +797,7 @@ msgstr "Uložené Seedy"
 
 #: src/seedsigner/views/seed_views.py:77
 msgid "Scan a SeedQR"
-msgstr "Naskenovat SeedQR"
+msgstr "Skenovat SeedQR"
 
 #: src/seedsigner/views/seed_views.py:78
 msgid "Enter 24-word seed"
@@ -850,6 +850,8 @@ msgid ""
 "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
 "Be sure you know what you're doing!"
 msgstr ""
+"BIP-39. bezpečnostní fráze změní seed, dojde ke změně veřejných klíčů, peněženek etc.\n"
+"Ujistěte se, že víte co děláte!"
 
 #: src/seedsigner/views/seed_views.py:300
 msgid "Edit passphrase"
@@ -1059,7 +1061,7 @@ msgstr "Adresa ověřena"
 
 #: src/seedsigner/views/seed_views.py:1658
 msgid "Scan Descriptor"
-msgstr "Naskenovat deskriptor"
+msgstr "Skenovat deskriptor"
 
 #: src/seedsigner/views/seed_views.py:1688
 msgid "Return to PSBT"
