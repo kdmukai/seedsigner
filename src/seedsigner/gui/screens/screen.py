@@ -726,6 +726,7 @@ class LargeIconStatusScreen(ButtonListScreen):
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_CHECK
     status_icon_size: int = GUIConstants.ICON_PRIMARY_SCREEN_SIZE
     status_color: str = GUIConstants.SUCCESS_COLOR
+    status_headline: str = None
     text: str = ""                          # The body text of the screen
     button_data: list = None
 
@@ -846,7 +847,6 @@ class WarningEdgesMixin:
 @dataclass
 class WarningScreen(WarningEdgesMixin, LargeIconStatusScreen):
     status_icon_name: str = SeedSignerCustomIconConstants.CIRCLE_EXCLAMATION
-    status_headline: str = None  # The colored text under the large icon
     status_color: str = "yellow"
 
     def __post_init__(self):

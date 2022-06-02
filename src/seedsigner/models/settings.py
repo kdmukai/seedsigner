@@ -92,11 +92,8 @@ class Settings(Singleton):
                 # TODO: If value is not in entry.selection_options...
 
 
-        # Can't just merge the _data dict; have to replace keys they have in common
-        #   (otherwise list values will be merged instead of replaced).
         for key, value in new_settings.items():
-            self._data.pop(key, None)
-            self._data[key] = value
+            self.set_value(key, value)
 
 
     def set_value(self, attr_name: str, value: any):
@@ -106,7 +103,9 @@ class Settings(Singleton):
             Note that for multiselect, the value must be a List.
         """
         if attr_name not in self._data:
-            raise Exception(f"Setting for {attr_name} not found")
+            # Outdated settings
+            print(f"Setting {attr_name} not recognized. Ignoring.")
+            return
 
         if SettingsDefinition.get_settings_entry(attr_name).type == SettingsConstants.TYPE__MULTISELECT:
             if type(value) != list:
