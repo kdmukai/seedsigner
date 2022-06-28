@@ -34,7 +34,8 @@ class PSBTSelectSeedView(View):
         seeds = self.controller.storage.seeds
 
         SCAN_SEED = (_("Scan a seed"), FontAwesomeIconConstants.QRCODE)
-        ENTER_WORDS = _("Enter 12/24 words")
+        TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
         button_data = []
         for seed in seeds:
             button_str = seed.get_fingerprint(self.settings.get_value(SettingsConstants.SETTING__NETWORK))
@@ -47,7 +48,8 @@ class PSBTSelectSeedView(View):
                 pass
             button_data.append((button_str, SeedSignerCustomIconConstants.FINGERPRINT, "blue"))
         button_data.append(SCAN_SEED)
-        button_data.append(ENTER_WORDS)
+        button_data.append(TYPE_12WORD)
+        button_data.append(TYPE_24WORD)
 
         selected_menu_num = ButtonListScreen(
             title=_("Select Signer"),
@@ -70,8 +72,12 @@ class PSBTSelectSeedView(View):
             from seedsigner.views.scan_views import ScanView
             return Destination(ScanView)
 
-        elif button_data[selected_menu_num] == ENTER_WORDS:
+        elif button_data[selected_menu_num] in [TYPE_12WORD, TYPE_24WORD]:
             from seedsigner.views.seed_views import SeedMnemonicEntryView
+            if button_data[selected_menu_num] == TYPE_12WORD:
+                self.controller.storage.init_pending_mnemonic(num_words=12)
+            else:
+                self.controller.storage.init_pending_mnemonic(num_words=24)
             return Destination(SeedMnemonicEntryView)
 
 

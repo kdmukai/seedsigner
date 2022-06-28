@@ -80,8 +80,8 @@ class LoadSeedView(View):
         CREATE = (_("Create a seed"), FontAwesomeIconConstants.PLUS)
         button_data=[
             SEED_QR,
-            TYPE_24WORD,
             TYPE_12WORD,
+            TYPE_24WORD,
             CREATE,
         ]
 
@@ -98,12 +98,12 @@ class LoadSeedView(View):
             from .scan_views import ScanView
             return Destination(ScanView)
         
-        elif button_data[selected_menu_num] == TYPE_24WORD:
-            self.controller.storage.init_pending_mnemonic(num_words=24)
-            return Destination(SeedMnemonicEntryView)
-
         elif button_data[selected_menu_num] == TYPE_12WORD:
             self.controller.storage.init_pending_mnemonic(num_words=12)
+            return Destination(SeedMnemonicEntryView)
+
+        elif button_data[selected_menu_num] == TYPE_24WORD:
+            self.controller.storage.init_pending_mnemonic(num_words=24)
             return Destination(SeedMnemonicEntryView)
 
         elif button_data[selected_menu_num] == CREATE:
@@ -130,13 +130,14 @@ class SeedMnemonicEntryView(View):
 
         if ret == RET_CODE__BACK_BUTTON:
             if self.cur_word_index > 0:
-                return Destination(
-                    SeedMnemonicEntryView,
-                    view_args={
-                        "cur_word_index": self.cur_word_index - 1,
-                        "is_calc_final_word": self.is_calc_final_word
-                    }
-                )
+                return Destination(BackStackView)
+                # return Destination(
+                #     SeedMnemonicEntryView,
+                #     view_args={
+                #         "cur_word_index": self.cur_word_index - 1,
+                #         "is_calc_final_word": self.is_calc_final_word
+                #     }
+                # )
             else:
                 self.controller.storage.discard_pending_mnemonic()
                 return Destination(MainMenuView)
@@ -145,17 +146,15 @@ class SeedMnemonicEntryView(View):
         self.controller.storage.update_pending_mnemonic(ret, self.cur_word_index)
 
         if self.is_calc_final_word and self.cur_word_index == self.controller.storage.pending_mnemonic_length - 2:
-            # Time to calculate the last word
-            # TODO: Option to add missing entropy for the last word:
-            #   * 3 bits for a 24-word seed
-            #   * 7 bits for a 12-word seed
-            from seedsigner.helpers import mnemonic_generation
+            # Time to calculate the last word. User must decide how they want to specify
+            # the last bits of entropy for the final word.
+            from seedsigner.views.tools_views import ToolsCalcFinalWordFinalizePromptView
+            return Destination(ToolsCalcFinalWordFinalizePromptView)
+
+        if self.is_calc_final_word and self.cur_word_index == self.controller.storage.pending_mnemonic_length - 1:
+            # Time to calculate the last word. User must either select a final word to
+            # contribute entropy to the checksum word OR we assume 0 ("abandon").
             from seedsigner.views.tools_views import ToolsCalcFinalWordShowFinalWordView
-            full_mnemonic = mnemonic_generation.calculate_checksum(
-                self.controller.storage.pending_mnemonic[:-1],  # Must omit the last word's empty value
-                wordlist_language_code=self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE)
-            )
-            self.controller.storage.update_pending_mnemonic(full_mnemonic[-1], self.cur_word_index+1)
             return Destination(ToolsCalcFinalWordShowFinalWordView)
 
         if self.cur_word_index < self.controller.storage.pending_mnemonic_length - 1:
@@ -679,60 +678,48 @@ class SeedExportXpubDetailsView(View):
 
 
     def run(self):
-        # The calc_derivation takes a few moments. Run the loading screen while we wait.
-        self.loading_screen = LoadingScreenThread(text=_("Generating xpub..."))
-        self.loading_screen.start()
+        if self.script_type == SettingsConstants.CUSTOM_DERIVATION:
+            derivation_path = self.custom_derivation
+        else:
+            derivation_path = PSBTParser.calc_derivation(
+                network=self.settings.get_value(SettingsConstants.SETTING__NETWORK),
+                wallet_type=self.sig_type,
+                script_type=self.script_type
+            )
 
-        try:
-            if self.script_type == SettingsConstants.CUSTOM_DERIVATION:
-                derivation_path = self.custom_derivation
-            else:
-                derivation_path = PSBTParser.calc_derivation(
-                    network=self.settings.get_value(SettingsConstants.SETTING__NETWORK),
-                    wallet_type=self.sig_type,
-                    script_type=self.script_type
-                )
+        if self.settings.get_value(SettingsConstants.SETTING__XPUB_DETAILS) == SettingsConstants.OPTION__ENABLED:
+            embit_network = NETWORKS[SettingsConstants.map_network_to_embit(self.settings.get_value(SettingsConstants.SETTING__NETWORK))]
+            version = embit.bip32.detect_version(
+                derivation_path,
+                default="xpub",
+                network=embit_network
+            )
 
-            if self.settings.get_value(SettingsConstants.SETTING__XPUB_DETAILS) == SettingsConstants.OPTION__ENABLED:
-                embit_network = NETWORKS[SettingsConstants.map_network_to_embit(self.settings.get_value(SettingsConstants.SETTING__NETWORK))]
-                version = embit.bip32.detect_version(
-                    derivation_path,
-                    default="xpub",
-                    network=embit_network
-                )
+            root = embit.bip32.HDKey.from_seed(
+                self.seed.seed_bytes,
+                version=embit_network["xprv"]
+            )
 
-                root = embit.bip32.HDKey.from_seed(
-                    self.seed.seed_bytes,
-                    version=embit_network["xprv"]
-                )
+            fingerprint = hexlify(root.child(0).fingerprint).decode('utf-8')
+            xprv = root.derive(derivation_path)
+            xpub = xprv.to_public()
+            xpub_base58 = xpub.to_string(version=version)
 
-                fingerprint = hexlify(root.child(0).fingerprint).decode('utf-8')
-                xprv = root.derive(derivation_path)
-                xpub = xprv.to_public()
-                xpub_base58 = xpub.to_string(version=version)
+            selected_menu_num = seed_screens.SeedExportXpubDetailsScreen(
+                fingerprint=fingerprint,
+                has_passphrase=self.seed.passphrase is not None,
+                derivation_path=derivation_path,
+                xpub=xpub_base58,
+            ).display()
 
-                screen = seed_screens.SeedExportXpubDetailsScreen(
-                    fingerprint=fingerprint,
-                    has_passphrase=self.seed.passphrase is not None,
-                    derivation_path=derivation_path,
-                    xpub=xpub_base58,
-                )
-
-                self.loading_screen.stop()
-                selected_menu_num = screen.display()
-            else:
-                selected_menu_num = 0
-
-        finally:
-            self.loading_screen.stop()
+        else:
+            selected_menu_num = 0
 
         if selected_menu_num == 0:
             return Destination(
                 SeedExportXpubQRDisplayView,
                 {
                     "seed_num": self.seed_num,
-                    "sig_type": self.sig_type,
-                    "script_type": self.script_type,
                     "coordinator": self.coordinator,
                     "derivation_path": derivation_path,
                 }
@@ -744,7 +731,7 @@ class SeedExportXpubDetailsView(View):
 
 
 class SeedExportXpubQRDisplayView(View):
-    def __init__(self, seed_num: int, sig_type: str, script_type: str, coordinator: str, derivation_path: str):
+    def __init__(self, seed_num: int, coordinator: str, derivation_path: str):
         super().__init__()
         self.seed = self.controller.get_seed(seed_num)
 
@@ -1363,7 +1350,8 @@ class SeedSingleSigAddressVerificationSelectSeedView(View):
         seeds = self.controller.storage.seeds
 
         SCAN_SEED = (_("Scan a seed"), FontAwesomeIconConstants.QRCODE)
-        ENTER_WORDS = _("Enter 12/24 words")
+        TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
         button_data = []
 
         text = _("Load the seed to verify")
@@ -1379,7 +1367,8 @@ class SeedSingleSigAddressVerificationSelectSeedView(View):
             text = _("Select seed to verify")
 
         button_data.append(SCAN_SEED)
-        button_data.append(ENTER_WORDS)
+        button_data.append(TYPE_12WORD)
+        button_data.append(TYPE_24WORD)
 
         selected_menu_num = seed_screens.SeedSingleSigAddressVerificationSelectSeedScreen(
             title=_("Verify Address"),
@@ -1406,7 +1395,12 @@ class SeedSingleSigAddressVerificationSelectSeedView(View):
             from seedsigner.views.scan_views import ScanView
             return Destination(ScanView)
 
-        elif button_data[selected_menu_num] == ENTER_WORDS:
+        elif button_data[selected_menu_num] in [TYPE_12WORD, TYPE_24WORD]:
+            from seedsigner.views.seed_views import SeedMnemonicEntryView
+            if button_data[selected_menu_num] == TYPE_12WORD:
+                self.controller.storage.init_pending_mnemonic(num_words=12)
+            else:
+                self.controller.storage.init_pending_mnemonic(num_words=24)
             return Destination(SeedMnemonicEntryView)
 
 

@@ -121,10 +121,14 @@ class PSBTOverviewScreen(ButtonListScreen):
         #     max_destination_col_width += curve_width
         
         # Now let's maximize the actual destination col by adjusting our addr truncation
-        def calculate_destination_col_width(truncate_at: int):
+        def calculate_destination_col_width(truncate_at: int = 0):
             def truncate_destination_addr(addr):
-                # TRANSLATOR_NOTE: Display a truncated address (e.g. "bc1qabc...")
-                return _("{}...").format(addr[:truncate_at])
+                # TRANSLATOR_NOTE: Ellipsis ("...") characters used to truncate an address (e.g. "bc1qabc...")
+                if len(addr) <= truncate_at + len(_("...")):
+                    # No point in truncating
+                    return addr
+
+                return addr[:truncate_at] + _("...")
             
             destination_column = []
 
@@ -133,7 +137,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                     destination_column.append(truncate_destination_addr(addr))
 
                 for i in range(0, self.num_self_transfer_outputs):
-                    destination_column.append(_("self-transfer"))
+                    destination_column.append(truncate_destination_addr(_("self-transfer")))
             else:
                 # destination_column.append(f"{len(self.destination_addresses)} recipients")
                 destination_column.append(_("recipient 1"))
@@ -158,10 +162,10 @@ class PSBTOverviewScreen(ButtonListScreen):
         
         if len(self.destination_addresses) + self.num_self_transfer_outputs > 3:
             # We're not going to display any destination addrs so truncation doesn't matter
-            (destination_text_width, destination_column) = calculate_destination_col_width(truncate_at=0)
+            (destination_text_width, destination_column) = calculate_destination_col_width()
         else:
             # Steadliy widen out the destination column until we run out of space
-            for i in range(6, 13):
+            for i in range(6, 14):
                 (new_width, new_col_text) = calculate_destination_col_width(truncate_at=i)
                 if new_width > max_destination_col_width:
                     break
