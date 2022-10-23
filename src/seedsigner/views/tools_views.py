@@ -627,6 +627,8 @@ class ToolsAddressExplorerAddressListView(View):
 
             button_data.append(("Next {}".format(addrs_per_screen), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
 
+            # TODO: Add a "Done" button here to exit the explorer?
+
             screen = ButtonListScreen(
                 title="{} Addrs".format("Receive" if not self.is_change else "Change"),
                 button_data=button_data,
