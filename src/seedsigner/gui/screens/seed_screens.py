@@ -1290,7 +1290,7 @@ class AddressVerificationSigTypeScreen(ButtonListScreen):
 
 
 @dataclass
-class SeedSingleSigAddressVerificationSelectSeedScreen(ButtonListScreen):
+class SeedSelectSeedScreen(ButtonListScreen):
     text: str = ""
 
     def __post_init__(self):
@@ -1445,3 +1445,40 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
             auto_line_break=True,
             allow_text_overflow=True,
         ))
+
+
+
+@dataclass
+class SeedSignMessageScreen(ButtonListScreen):
+    derivation_path: int = None
+    message: int = None
+
+    def __post_init__(self):
+        self.title = "Sign Message"
+        self.is_bottom_list = True
+        self.is_button_text_centered = True
+        self.button_data = ["Sign"]
+        super().__post_init__()
+
+        derivation_path_display = IconTextLine(
+            icon_name=SeedSignerCustomIconConstants.PATH,
+            label_text="derivation path",
+            value_text=self.derivation_path,
+            is_text_centered=True,
+            screen_y=self.top_nav.height,
+        )
+        self.components.append(derivation_path_display)
+
+        message_display = TextArea(
+            text=self.message,
+            is_text_centered=False,
+        )
+        start_y = derivation_path_display.screen_y + derivation_path_display.height
+        end_y = self.buttons[0].screen_y
+
+        message_display.screen_y = start_y + int((end_y - start_y - message_display.height)/2)
+        if message_display.screen_y < start_y:
+            # full message text doesn't fit; let it run long.
+            # TODO: Add scrollable UI so whole message will be viewable.
+            message_display.screen_y = start_y + GUIConstants.COMPONENT_PADDING
+        self.components.append(message_display)
