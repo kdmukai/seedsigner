@@ -434,7 +434,6 @@ class SeedFinalizeScreen(ButtonListScreen):
 @dataclass
 class SeedOptionsScreen(ButtonListScreen):
     # Customize defaults
-    is_bottom_list: bool = True
     fingerprint: str = None
     has_passphrase: bool = False
 
@@ -443,6 +442,8 @@ class SeedOptionsScreen(ButtonListScreen):
         self.top_nav_icon_color = "blue"
         self.title = self.fingerprint
         self.is_button_text_centered = False
+        self.is_bottom_list = True
+
         super().__post_init__()
 
 
@@ -1415,6 +1416,9 @@ class SeedAddressVerificationScreen(ButtonListScreen):
         print(f"verified_index: {self.verified_index.cur_count}")
         if self.verified_index.cur_count is not None:
             print("Screen callback returning success!")
+            self.threads[-1].stop()
+            while self.threads[-1].is_alive():
+                time.sleep(0.01)
             return 1
 
 
@@ -1428,10 +1432,12 @@ class SeedAddressVerificationScreen(ButtonListScreen):
         
 
         def run(self):
-            font = Fonts.get_font(GUIConstants.get_body_font_name(), GUIConstants.get_body_font_size())
             while self.keep_running:
                 if self.verified_index.cur_count is not None:
-                    # Have to trigger a hw_input event to break the Screen out of the wait_for loop
+                    # This thread will detect the success state while its parent Screen
+                    # holds in its `wait_for`. Have to trigger a hw_input event to break
+                    # the Screen._run out of the `wait_for` state. The Screen will then
+                    # call its `_run_callback` and detect the success state and exit.
                     HardwareButtons.get_instance().trigger_override(force_release=True)
                     return
 

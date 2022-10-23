@@ -1,3 +1,5 @@
+from typing import List
+import RPi.GPIO as GPIO
 import time
 
 from seedsigner.models.singleton import Singleton
@@ -17,7 +19,6 @@ class HardwareButtons(Singleton):
 
     @classmethod
     def get_instance(cls):
-        import RPi.GPIO as GPIO
         # This is the only way to access the one and only instance
         if cls._instance is None:
             cls._instance = cls.__new__(cls)
@@ -59,7 +60,6 @@ class HardwareButtons(Singleton):
 
     def wait_for(self, keys=[], check_release=True, release_keys=[]) -> int:
         # TODO: Refactor to keep control in the Controller and not here
-        import RPi.GPIO as GPIO
         from seedsigner.controller import Controller
         controller = Controller.get_instance()
 
@@ -134,7 +134,6 @@ class HardwareButtons(Singleton):
 
 
     def add_events(self, keys=[]):
-        import RPi.GPIO as GPIO
         for key in keys:
             GPIO.add_event_detect(key, self.GPIO.RISING, callback=HardwareButtons.rising_callback)
 
@@ -156,16 +155,17 @@ class HardwareButtons(Singleton):
         HardwareButtonsConstants.release_lock = True
         return True
 
-    def check_for_low(self, key) -> bool:
-        import RPi.GPIO as GPIO
-        if self.GPIO.input(key) == self.GPIO.LOW:
-            self.update_last_input_time()
-            return True
+    def check_for_low(self, key: int = None, keys: List[int] = None) -> bool:
+        if key:
+            keys = [key]
+        for key in keys:
+            if self.GPIO.input(key) == self.GPIO.LOW:
+                self.update_last_input_time()
+                return True
         else:
             return False
 
     def has_any_input(self) -> bool:
-        import RPi.GPIO as GPIO
         for key in HardwareButtonsConstants.ALL_KEYS:
             if self.GPIO.input(key) == GPIO.LOW:
                 return True
