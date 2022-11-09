@@ -1378,11 +1378,12 @@ class AddressVerificationStartView(View):
                 destination = Destination(SeedSelectSeedView, view_args=dict(flow=Controller.FLOW__VERIFY_SINGLESIG_ADDR), skip_current_view=True)
 
         elif self.controller.unverified_address["script_type"] == SettingsConstants.TAPROOT:
-            destination = Destination(NotYetImplementedView, skip_current_view=True)
+            # TODO: add Taproot support
+            return Destination(NotYetImplementedView)
 
         elif self.controller.unverified_address["script_type"] == SettingsConstants.LEGACY_P2PKH:
             # TODO: detect single sig vs multisig or have to prompt?
-            destination = Destination(NotYetImplementedView, skip_current_view=True)
+            return Destination(NotYetImplementedView)
 
         derivation_path = embit_utils.get_standard_derivation_path(
             network=self.controller.unverified_address["network"],
