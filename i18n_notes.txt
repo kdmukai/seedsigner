@@ -1,0 +1,59 @@
+# i18n notes
+#
+# Format is "filename space-separated-list-of-line-numbers" as of mid November 2022
+#
+# Common coding patterns noted:
+#
+# * literal text: easy ... msg = 'Hello world!' becomes something like msg = _('_MSG:Greetings')
+#
+# * f-strings with placeholders: 
+#     think these over, 
+#     localizations get goofy w/ '1,2 or many apples'. 
+#     consider refactoring from f"Some words {bound_variables}" to f"Some words {}".format(bound_variables)
+#
+# * default variables like "Button Label": is it necessary? user should never see these, else complain?
+#
+# * exception messages: is it really necessary? only if frequent, else let user complain?
+#
+# * print() debug messages to the console or /dev/null do not need translations? Not even included here.
+#
+# * Proper names, partner logos, Coordinators... is it really of any concern at all?
+#
+
+seedsigner/controller 113 157 164
+
+seedsigner/gui/components.py 197 236 361 386 475 981 1190
+seedsigner/gui/keyboard.py 204 207 483 584
+seedsigner/gui/renderer.py 144
+
+seedsigner/gui/screens/screens.py 193 524 736 740 749 860 862 863 867 875 883 888 898 903
+seedsigner/gui/screens/psbt_screens.py 29 32 88 90 91 93 94 97 137 140 142 144 148 459 460 437 448 661 671 683 697
+seedsigner/gui/screens/scan_screens.py 21 134 139 155 413 426 537 543 553 569 575 579 588 597 606 619 1007 1015 1070 1071 1078 1079 1093 1094 1171 1307 1364 1399 1401 1428 1445 1450 1463 1468 1476 
+seedsigner/gui/screens/settings_screens.py 24 56 126 136 157 171 217 284 288
+seedsigner/gui/screens/tools_screens.py 19 44 75 101 120 151 162 168 190 194 200 242 275 312 352 367 383 392 400 408 416
+
+seedsigner/hardware/camera.py 37 65
+seedsigner/hardware/ST7789.py 154
+
+seedsigner/helpers/embit_utils.py 25 35 43 45 47 91 95
+seedsigner/helpers/mnemonic_generation.py
+seedsigner/helpers/ur2/DID-NOT-LOOK
+
+seedsigner/views/psbt_views.py 30 34 35 36 53 92 164 165 166 182 183 184 247 255 257 326 329 330 332 333 352 354 435 436 438 439 443 445 470 522 524 525 526
+seedsigner/views/scan_views.py 30
+seedsigner/views/screensaver.py 72
+seedsigner/views/seed_views.py 52 55 76 77 78 79 88 124 184 185 189 191 213 214 264 265 306 307 312 314 348 349 350 351 352 353 354 384 440 441 445 475 476 480 519 521 606 648 649 693 795 820 821 836 867 868 917 957 958 962 964 965 983 985 1009 1010 1014 1015 1034 1083 1084 1176 1177 1181 1209 1217 1218 1219 1221 1228 1229 1230 1232 1240 1241 1242 1244 1313 1314 1351 1352 1353 1356 1366 1373 1424 1469 1470 1601 1611 1612 1641 1642 1643 1644
+seedsigner/views/settings_views.py 19 20 35 38 45 53
+seedsigner/views/tools_views.py 28 29 30 31 34 111 112 116 183 184 188 219 221 237 238 242 274 275 276 375 378 400 401 429 430 431 432 450 537 538 587 604 615 627 630
+seedsigner/views/view.py 66 84 92 131 132 133 134 155 156 159 221 222 223 224 238 241
+
+seedsigner/models/encode_qr.py 46 104 143 146 150 153 273 356
+seedsigner/models/psbt_parser.py 96 226 229 232 241 245 255 269
+seedsigner/models/seed.py 26 42 103 68
+seedsigner/models/settings_definition.py 13 14 17 18 19 22 25 28 37 38 39 40 53 54 55 56 75 76 77 85 86 87 103 104 113 114 115 116 336 345 353 354 359 366 375 383 391 397 405 413 419 427 434 442 447 453 468 493
+seedsigner/models/settings.py 95 99 117 133 136 145 148 
+seedsigner/models/singleton.py 6 24 31
+seedsigner/models/threads.py 23
+
+
+
