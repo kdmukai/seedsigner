@@ -272,9 +272,9 @@ class ToolsCalcFinalWordFinalizePromptView(View):
         else:
             num_entropy_bits = 3
 
-        COIN_FLIPS = "Coin flip entropy"
-        SELECT_WORD = f"Word selection entropy"
-        ZEROS = "Finalize with zeros"
+        COIN_FLIPS = _("Coin flip entropy")
+        SELECT_WORD = _("Word selection entropy")
+        ZEROS = _("Finalize with zeros")
 
         button_data = [COIN_FLIPS, SELECT_WORD, ZEROS]
         selected_menu_num = ToolsCalcFinalWordFinalizePromptScreen(
@@ -373,10 +373,10 @@ class ToolsCalcFinalWordShowFinalWordView(View):
         else:
             checksum_bits = format(wordlist.index(actual_final_word), '011b')[-8:]
 
-        NEXT = "Next"
+        NEXT = _("Next")
         button_data = [NEXT]
         selected_menu_num = ToolsCalcFinalWordScreen(
-            title="Final Word Calc",
+            title=_("Final Word Calc"),
             button_data=button_data,
             selected_final_word=selected_final_word,
             selected_final_bits=selected_final_bits,
@@ -427,10 +427,10 @@ class ToolsCalcFinalWordDoneView(View):
 ****************************************************************************"""
 class ToolsAddressExplorerSelectSourceView(View):
     def run(self):
-        SCAN_SEED = ("Scan a seed", FontAwesomeIconConstants.QRCODE)
-        SCAN_DESCRIPTOR = ("Scan wallet descriptor", FontAwesomeIconConstants.QRCODE)
-        TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
-        TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)
+        SCAN_SEED = (_("Scan a seed"), FontAwesomeIconConstants.QRCODE)
+        SCAN_DESCRIPTOR = (_("Scan wallet descriptor"), FontAwesomeIconConstants.QRCODE)
+        TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
         button_data = []
 
         seeds = self.controller.storage.seeds
@@ -448,7 +448,7 @@ class ToolsAddressExplorerSelectSourceView(View):
         button_data.append(TYPE_24WORD)
 
         selected_menu_num = ButtonListScreen(
-            title="Address Explorer",
+            title=_("Address Explorer"),
             button_data=button_data,
             is_button_text_centered=False,
             is_bottom_list=True,
@@ -535,8 +535,8 @@ class ToolsAddressExplorerAddressTypeView(View):
     def run(self):
         data = self.controller.address_explorer_data
 
-        RECEIVE = "Receive Addresses"
-        CHANGE = "Change Addresses"
+        RECEIVE = _("Receive Addresses")
+        CHANGE = _("Change Addresses")
         button_data = [RECEIVE, CHANGE]
 
         wallet_descriptor_display_name = None
@@ -586,7 +586,7 @@ class ToolsAddressExplorerAddressListView(View):
                 addresses = data[addr_storage_key][self.start_index:self.start_index + addrs_per_screen]
 
             else:
-                self.loading_screen = LoadingScreenThread(text="Calculating addrs...")
+                self.loading_screen = LoadingScreenThread(text=_("Calculating addrs..."))
                 self.loading_screen.start()
 
                 if addr_storage_key not in data:
@@ -625,10 +625,10 @@ class ToolsAddressExplorerAddressListView(View):
                     end_digits = -4
                 button_data.append(f"{cur_index}:{address[:8]}...{address[end_digits:]}")
 
-            button_data.append(("Next {}".format(addrs_per_screen), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
+            button_data.append((_("Next {}").format(addrs_per_screen), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
 
             screen = ButtonListScreen(
-                title="{} Addrs".format("Receive" if not self.is_change else "Change"),
+                title=_("Receive Addrs") if not self.is_change else _("Change Addrs"),
                 button_data=button_data,
                 button_font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
                 button_font_size=GUIConstants.BUTTON_FONT_SIZE + 4,

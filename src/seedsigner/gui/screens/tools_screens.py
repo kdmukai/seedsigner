@@ -147,7 +147,7 @@ class ToolsDiceEntropyEntryScreen(KeyboardScreen):
     
 
     def update_title(self) -> bool:
-        self.title = f"Dice Roll {self.cursor_position + 1}/{self.return_after_n_chars}"
+        self.title = _("Dice Roll {}/{}").format(self.cursor_position + 1, self.return_after_n_chars)
         return True
 
 
@@ -158,13 +158,13 @@ class ToolsCalcFinalWordFinalizePromptScreen(ButtonListScreen):
     num_entropy_bits: int = None
 
     def __post_init__(self):
-        self.title = "Build Final Word"
+        self.title = _("Build Final Word")
         self.is_bottom_list = True
         self.is_button_text_centered = True
         super().__post_init__()
 
         self.components.append(TextArea(
-            text=f"The {self.mnemonic_length}th word is built from {self.num_entropy_bits} more entropy bits plus auto-calculated checksum.",
+            text=_("The {}th word is built from {} more entropy bits plus auto-calculated checksum.").format(self.mnemonic_length, self.num_entropy_bits),
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
         ))
 
@@ -174,7 +174,7 @@ class ToolsCalcFinalWordFinalizePromptScreen(ButtonListScreen):
 class ToolsCoinFlipEntryScreen(KeyboardScreen):
     def __post_init__(self):
         # Override values set by the parent class
-        self.title = f"Coin Flip 1/{self.return_after_n_chars}"
+        self.title = _("Coin Flip {}/{}").format(1, self.return_after_n_chars)
 
         # Specify the keys in the keyboard
         self.rows = 1
@@ -186,17 +186,17 @@ class ToolsCoinFlipEntryScreen(KeyboardScreen):
         super().__post_init__()
     
         self.components.append(TextArea(
-            text="Heads = 1",
+            text=_("Heads = 1"),
             screen_y = self.keyboard.rect[3] + 4*GUIConstants.COMPONENT_PADDING,
         ))
         self.components.append(TextArea(
-            text="Tails = 0",
+            text=_("Tails = 0"),
             screen_y = self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING,
         ))
 
 
     def update_title(self) -> bool:
-        self.title = f"Coin Flip {self.cursor_position + 1}/{self.return_after_n_chars}"
+        self.title = _("Coin Flip {}/{}").format(self.cursor_position + 1, self.return_after_n_chars)
         return True
 
 
@@ -238,7 +238,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
             discard_selected_bits = "_" * (len(self.checksum_bits))
 
         self.components.append(TextArea(
-            text=f"""Your input: \"{selection_text}\"""",
+            text=_('Your input: "{}"').format(selection_text),
             screen_y=self.top_nav.height,
         ))
 
@@ -271,7 +271,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
 
         # Show the checksum..
         self.components.append(TextArea(
-            text="Checksum",
+            text=_("Checksum"),
             edge_padding=0,
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
         ))
@@ -308,7 +308,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
 
         # And now the *actual* final word after merging the bit data
         self.components.append(TextArea(
-            text=f"""Final Word: \"{self.actual_final_word}\"""",
+            text=_('Final Word: "{}"').format(self.actual_final_word),
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
         ))
 
@@ -382,7 +382,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
     custom_derivation_path: str = None
 
     def __post_init__(self):
-        self.title = "Address Explorer"
+        self.title = _("Address Explorer")
         self.is_bottom_list = True
         super().__post_init__()
 
@@ -390,7 +390,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             self.components.append(IconTextLine(
                 icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
                 icon_color="blue",
-                label_text="Fingerprint",
+                label_text=_("Fingerprint"),
                 value_text=self.fingerprint,
                 screen_x=GUIConstants.EDGE_PADDING,
                 screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
@@ -399,7 +399,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             if self.script_type != SettingsConstants.CUSTOM_DERIVATION:
                 self.components.append(IconTextLine(
                     icon_name=SeedSignerCustomIconConstants.PATH,
-                    label_text="Derivation",
+                    label_text=_("Derivation"),
                     value_text=SettingsDefinition.get_settings_entry(attr_name=SettingsConstants.SETTING__SCRIPT_TYPES).get_selection_option_display_name_by_value(value=self.script_type),
                     screen_x=GUIConstants.EDGE_PADDING,
                     screen_y=self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING,
@@ -407,7 +407,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             else:
                 self.components.append(IconTextLine(
                     icon_name=SeedSignerCustomIconConstants.PATH,
-                    label_text="Derivation",
+                    label_text=_("Derivation"),
                     value_text=self.custom_derivation_path,
                     screen_x=GUIConstants.EDGE_PADDING,
                     screen_y=self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING,
@@ -415,7 +415,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
 
         else:
             self.components.append(IconTextLine(
-                label_text="Wallet descriptor",
+                label_text=_("Wallet descriptor"),
                 value_text=self.wallet_descriptor_display_name,
                 is_text_centered=False,
                 screen_x=GUIConstants.EDGE_PADDING,

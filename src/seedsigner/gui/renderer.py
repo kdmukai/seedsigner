@@ -1,4 +1,5 @@
 import os
+from gettext import gettext as _
 from PIL import Image, ImageDraw
 from threading import Lock
 
@@ -144,7 +145,7 @@ class Renderer(ConfigurableSingleton):
 
     # TODO: Should probably move this to templates.py
     def draw_prompt_yes_no(self, lines = [], title = "", bottom = "") -> None:
-        self.draw_prompt_custom("", "Yes ", "No ", lines, title, bottom)
+        self.draw_prompt_custom("", _("Yes "), _("No "), lines, title, bottom)
         return
 
 

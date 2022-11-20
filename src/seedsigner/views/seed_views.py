@@ -381,13 +381,13 @@ class SeedOptionsView(View):
     def run(self):
         from seedsigner.views.psbt_views import PSBTOverviewView
 
-        SCAN_PSBT = ("Scan PSBT", FontAwesomeIconConstants.QRCODE)
-        REVIEW_PSBT = "Review PSBT"
-        VERIFY_ADDRESS = "Verify Addr"
-        EXPORT_XPUB = "Export Xpub"
-        EXPLORER = "Address Explorer"
-        BACKUP = ("Backup Seed", None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT)
-        DISCARD = ("Discard Seed", None, None, "red")
+        SCAN_PSBT = (_("Scan PSBT"), FontAwesomeIconConstants.QRCODE)
+        REVIEW_PSBT = _("Review PSBT")
+        VERIFY_ADDRESS = _("Verify Addr")
+        EXPORT_XPUB = _("Export Xpub")
+        EXPLORER = _("Address Explorer")
+        BACKUP = (_("Backup Seed"), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT)
+        DISCARD = (_("Discard Seed"), None, None, "red")
 
         button_data = []
 
@@ -417,7 +417,7 @@ class SeedOptionsView(View):
             else:
                 # This seed does not seem to be a signer for this PSBT
                 # TODO: How sure are we? Should disable this entirely if we're 100% sure?
-                REVIEW_PSBT += " (?)"
+                REVIEW_PSBT += _(" (?)")
             button_data.append(REVIEW_PSBT)
         else:
             button_data.append(SCAN_PSBT)
@@ -725,7 +725,7 @@ class SeedExportXpubDetailsView(View):
 
         else:
             # The derivation calc takes a few moments. Run the loading screen while we wait.
-            self.loading_screen = LoadingScreenThread(text="Generating xpub...")
+            self.loading_screen = LoadingScreenThread(text=_("Generating xpub..."))
             self.loading_screen.start()
 
             try:
@@ -868,7 +868,7 @@ class SeedWordsView(View):
             button_data.append(DONE)
 
         selected_menu_num = seed_screens.SeedWordsScreen(
-            title=f"Seed Words: {self.page_index+1}/{self.num_pages}",
+            title=_("Seed Words: {}/{}").format(self.page_index+1, self.num_pages),
             words=words,
             page_index=self.page_index,
             num_pages=self.num_pages,

@@ -131,10 +131,10 @@ class SettingsConstants:
     TAPROOT = "tr"
     CUSTOM_DERIVATION = "cus"
     ALL_SCRIPT_TYPES = [
-        (NATIVE_SEGWIT, "Native Segwit"),
-        (NESTED_SEGWIT, "Nested Segwit (legacy)"),
-        (TAPROOT, "Taproot"),
-        (CUSTOM_DERIVATION, "Custom Derivation"),
+        (NATIVE_SEGWIT, _("Native Segwit")),
+        (NESTED_SEGWIT, _("Nested Segwit (legacy)")),
+        (TAPROOT, _("Taproot")),
+        (CUSTOM_DERIVATION, _("Custom Derivation")),
     ]
 
     WORDLIST_LANGUAGE__ENGLISH = "en"
