@@ -1,59 +1,70 @@
 # i18n notes
 #
-# Format is "filename space-separated-list-of-line-numbers" as of mid November 2022
+# Format is "Pattern filename space-separated-list-of-line-numbers-with-pattern-prefixes" as of 20 November 2022
 #
-# Common coding patterns noted:
+#   kdmukai/intial_multilanguage branch already has plenty of work
+#   * copied kdmukai's branch
+#   * merged dev in into his branch. 
+#   * following his lead to change text literals and f-string substitutions.
+#   * NOTE: TODO: add TranslatorNotes once I understand when they are needed!!!
 #
-# * literal text: easy ... msg = 'Hello world!' becomes something like msg = _('_MSG:Greetings')
+# Common coding patterns noted: (source code lines below are prefixed w/[LFDECP) to identify pattern)
 #
-# * f-strings with placeholders: 
-#     think these over, 
-#     localizations get goofy w/ '1,2 or many apples'. 
-#     consider refactoring from f"Some words {bound_variables}" to f"Some words {}".format(bound_variables)
+# * L) Literal text strings.
 #
-# * default variables like "Button Label": is it necessary? user should never see these, else complain?
+# * F) F-strings with placeholders. 
 #
-# * exception messages: is it really necessary? only if frequent, else let user complain?
+# * D) Default variables in baseclasses like "Button Label": is it necessary? user should never see these, else complain?
 #
-# * print() debug messages to the console or /dev/null do not need translations? Not even included here.
+# * E) Exception messages: is it really necessary? only if frequent, else let user complain?
 #
-# * Proper names, partner logos, Coordinators... is it really of any concern at all?
+# * P) Proper names, partner logos, Coordinators... is it really of any concern at all?
+#
+# * print() debug messages to the C)onsole or /dev/null do not need translations? Not even included here.
+#
+#
+# While reading the notes below:
+# Each file and line-number are preceded by the type of i18n change needed, if truly 'needed'
+# A preceding # indicates there is nothing left to do, it's already i18n-ized.
+# A preceding ? indicates that I should give this another look, or a deeper look.
+# A preceding [DEP] might indicate nothing to do... if we really don't want to i18n these patterns.
 #
 
-seedsigner/controller 113 157 164
 
-seedsigner/gui/components.py 197 236 361 386 475 981 1190
-seedsigner/gui/keyboard.py 204 207 483 584
-seedsigner/gui/renderer.py 144
+E 	seedsigner/controller.py 	E117 E161 E168
 
-seedsigner/gui/screens/screens.py 193 524 736 740 749 860 862 863 867 875 883 888 898 903
-seedsigner/gui/screens/psbt_screens.py 29 32 88 90 91 93 94 97 137 140 142 144 148 459 460 437 448 661 671 683 697
-seedsigner/gui/screens/scan_screens.py 21 134 139 155 413 426 537 543 553 569 575 579 588 597 606 619 1007 1015 1070 1071 1078 1079 1093 1094 1171 1307 1364 1399 1401 1428 1445 1450 1463 1468 1476 
-seedsigner/gui/screens/settings_screens.py 24 56 126 136 157 171 217 284 288
-seedsigner/gui/screens/tools_screens.py 19 44 75 101 120 151 162 168 190 194 200 242 275 312 352 367 383 392 400 408 416
+ED 	seedsigner/gui/components.py 	E285 E324 E457 E498 E591 D1096 D1311
+E 	seedsigner/gui/keyboard.py 	E204 E207 E485 E587
+#L 	seedsigner/gui/renderer.py 	#L144
 
-seedsigner/hardware/camera.py 37 65
-seedsigner/hardware/ST7789.py 154
+?DE#LF	seedsigner/gui/screens/screen.py 	?740? D193 E524 #L756 #L771 #L885 #L888 #L900 #F1112
+?#LF	seedsigner/gui/screens/psbt_screens.py 	?526? ?543? ?553? #L30 #L32 #L89 #L91 #L92 #L94 #F96 #F97 #F100 #L128 #L132 #L141 #L144 #L146 #F148 #L150 #L155 #L466 #L467 #L473 #L485 #L560 #F571 #FL667 #L677 #L689 #L703 
+#L 	seedsigner/gui/screens/scan_screens.py 	#L22 #L138 #L139 #L140 #L156 
+?#L	seedsigner/gui/screens/settings_screens.py	?#L294 #L26 #L59 #L130 #L141 #L162 #L176 #L222 #L289
+#LF	seedsigner/gui/screens/tools_screens.py	#L41 #L72 #L99 #L119 #F150 #L161 #F167 #F177 #F189 #F193 #F200 #F241 #L274 #F311 #L352 #L354 #L369 #L385 #L393 #F402 #F410 #F418
+??? 	437 448 661 671 683 697
+??? 	413 426 537 543 553 569 575 579 588 597 606 619 1007 1015 1070 1071 1078 1079 1093 1094 1171 1307 1364 1399 1401 1428 1445 1450 1463 1468 1476 
 
-seedsigner/helpers/embit_utils.py 25 35 43 45 47 91 95
-seedsigner/helpers/mnemonic_generation.py
-seedsigner/helpers/ur2/DID-NOT-LOOK
+E 	seedsigner/hardware/camera.py 	E36 E65
+E 	seedsigner/hardware/ST7789.py 	E154
 
-seedsigner/views/psbt_views.py 30 34 35 36 53 92 164 165 166 182 183 184 247 255 257 326 329 330 332 333 352 354 435 436 438 439 443 445 470 522 524 525 526
-seedsigner/views/scan_views.py 30
-seedsigner/views/screensaver.py 72
-seedsigner/views/seed_views.py 52 55 76 77 78 79 88 124 184 185 189 191 213 214 264 265 306 307 312 314 348 349 350 351 352 353 354 384 440 441 445 475 476 480 519 521 606 648 649 693 795 820 821 836 867 868 917 957 958 962 964 965 983 985 1009 1010 1014 1015 1034 1083 1084 1176 1177 1181 1209 1217 1218 1219 1221 1228 1229 1230 1232 1240 1241 1242 1244 1313 1314 1351 1352 1353 1356 1366 1373 1424 1469 1470 1601 1611 1612 1641 1642 1643 1644
-seedsigner/views/settings_views.py 19 20 35 38 45 53
-seedsigner/views/tools_views.py 28 29 30 31 34 111 112 116 183 184 188 219 221 237 238 242 274 275 276 375 378 400 401 429 430 431 432 450 537 538 587 604 615 627 630
-seedsigner/views/view.py 66 84 92 131 132 133 134 155 156 159 221 222 223 224 238 241
+E 	seedsigner/helpers/embit_utils.py 	E25 E35 E43 E45 E47 E91 E95
+E 	seedsigner/helpers/mnemonic_generation.py 	E22
+? 	seedsigner/helpers/ur2/DID-NOT-LOOK
 
-seedsigner/models/encode_qr.py 46 104 143 146 150 153 273 356
-seedsigner/models/psbt_parser.py 96 226 229 232 241 245 255 269
-seedsigner/models/seed.py 26 42 103 68
-seedsigner/models/settings_definition.py 13 14 17 18 19 22 25 28 37 38 39 40 53 54 55 56 75 76 77 85 86 87 103 104 113 114 115 116 336 345 353 354 359 366 375 383 391 397 405 413 419 427 434 442 447 453 468 493
-seedsigner/models/settings.py 95 99 117 133 136 145 148 
-seedsigner/models/singleton.py 6 24 31
-seedsigner/models/threads.py 23
+E#LF	seedsigner/views/psbt_views.py 	E30 #L36 #L37 #L38 #L55 #L94 #L166 #L167 #L168 #L185 #L186 #L187 #L253 #259 #L262 #L331 #L335 #L336 #L338 #L339 #L358 #L360 #L441 #F443 #L445 #FL447 #L451 #L453 #L478 #L530 #L532 #L533 #L534
+#L	seedsigner/views/screensaver.py 	#L74
+?E#LF	seedsigner/views/seed_views.py	?#E1464 ?#L1637 #L54 #L57 #L78 #L79 #L80 #L81 #L90 #F127 #L187 #L188 #L192 #L194 #L229 #L230 #L260 #L300 #L301 #L342 #L343 #L348 #F350 #L384 #L385 #L386 #L387 #L388 #L389 #L390 #L420 #L476 #L477 #L510 #L511 #L515 #L554 #L556 #L641 #L683 #L684 #L693 #L830 #L855 #L856 #F836 #L902 #L903 #F952 #L992 #L993 #L997 #L999 #F1000 #L1018 #L1020 #L1021 #L1022 #L1044 #L1045 #L1049 #L1050 #L1071 #L1120 #L1121 #L1213 #L1214 #L1218 #L1248 #L1257 #L1258 #L1259 #L1221 #L1268 #L1269 #L1270 #L1272 #L1280 #L1281 #L1282 #L1284 #L1353 #L1354 #L1391 #L1392 #L1393 #L1396 #L1406 #L1413 #L1510 #L1511 #F1639 #L1642 #L1652 #L1653 #L1682 #L1683 #L1684 #L1685
+?#L	seedsigner/views/settings_views.py ?26? #L20 #L21 #L36 #L39 #L46 #L54
+E#LF	seedsigner/views/tools_views.py E605 E616 #L29 #L30 #L31 #L32 #L35 #L112 #L113 #L117 #L184 #L185 #L189 #L238 #L239 #L243 #L275 #L276 #L277 #L376 #L379 #L401 #L402 #L430 #L431 #L432 #L433 #L451 #L538 #L539 #L589 #F628 #FL631
+?E#L	seedsigner/views/view.py ?84? E66 #L124 #L125 #L126 #L127 #L142 #L145 
 
-
+E 	seedsigner/models/encode_qr.py 	E46 E104 E143 E146 E150 E153 E273 E356
+E 	seedsigner/models/psbt_parser.py 	E96 E226 E229 E232 E241 E245 E255 E269
+E 	seedsigner/models/seed.py 	E26 E42
+E 	seedsigner/models/seed_storage.py 	E68
+?P#L	seedsigner/models/settings_definition.py 	P37 P38 P39 P40 ?288? #L14 #L15 #L18 #L19 #L20 #L23 #L26 #L29 #L74 #L55 #L76 #L77 #L96 #L97 #L98 #L106 #L107 #L108 #L124 #L125 #L134 #L135 #L136 #L137 #L357 #L365 #L373 #L374 #L379 #L386 #L395 #L403 #L411 #L417 #L425 #L433 #L439 #L447 #L455 #L461 #L467 #L473
+E 	seedsigner/models/settings.py 	E112 E134 E150 E153 E162 E165
+E 	seedsigner/models/singleton.py 	E6 E24 E31
+E 	seedsigner/models/threads.py 	E23
 
