@@ -3,6 +3,7 @@ from gettext import gettext as _
 from gettext import ngettext
 from PIL import Image, ImageDraw, ImageFilter
 from typing import List
+import time
 
 from seedsigner.gui.renderer import Renderer
 from seedsigner.models.threads import BaseThread
@@ -446,7 +447,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                     self.renderer.show_image()
 
                 # No need to CPU limit when running in its own thread?
-                # time.sleep(0.02)
+                time.sleep(0.02)
 
 
 
@@ -701,21 +702,4 @@ class PSBTFinalizeScreen(ButtonListScreen):
         self.components.append(TextArea(
             text=_("Click to approve this transaction"),
             screen_y=icon.screen_y + icon.height + 2*GUIConstants.COMPONENT_PADDING
-        ))
-
-
-
-@dataclass
-class PSBTSelectCoordinatorScreen(ButtonListScreen):
-    def __post_init__(self):
-        # Customize defaults
-        self.title = _("Signed PSBT")
-        self.is_bottom_list = True
-        super().__post_init__()
-
-        self.components.append(TextArea(
-            # TRANSLATOR_NOTE: Prompt to specify which coordinator software to use (e.g. Specter, Sparrow, etc)
-            text=_("Export as a QR code for:"),
-            is_text_centered=True,
-            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
         ))
