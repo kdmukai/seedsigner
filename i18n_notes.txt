@@ -14,6 +14,8 @@
 #
 # * F) F-strings with placeholders. 
 #
+# * V) variables with values set to a previously translated constant, ie _(display_name)
+#
 # * D) Default variables in baseclasses like "Button Label": is it necessary? user should never see these, else complain?
 #
 # * E) Exception messages: is it really necessary? only if frequent, else let user complain?
@@ -37,13 +39,13 @@ ED 	seedsigner/gui/components.py 	E285 E324 E457 E498 E591 D1096 D1311
 E 	seedsigner/gui/keyboard.py 	E204 E207 E485 E587
 #L 	seedsigner/gui/renderer.py 	#L144
 
-?DE#LF	seedsigner/gui/screens/screen.py 	?740? D193 E524 #L756 #L771 #L885 #L888 #L900 #F1112
-?#LF	seedsigner/gui/screens/psbt_screens.py 	?526? ?543? ?553? #L30 #L32 #L89 #L91 #L92 #L94 #F96 #F97 #F100 #L128 #L132 #L141 #L144 #L146 #F148 #L150 #L155 #L466 #L467 #L473 #L485 #L560 #F571 #FL667 #L677 #L689 #L703 
+DE#LF	seedsigner/gui/screens/screen.py 	D193 E524 #L756 #L771 #L885 #L888 #L900 #F1112
+#LF	seedsigner/gui/screens/psbt_screens.py 	#L526 #L543? #L553 #L30 #L32 #L89 #L91 #L92 #L94 #F96 #F97 #F100 #L128 #L132 #L141 #L144 #L146 #F148 #L150 #L155 #L466 #L467 #L473 #L485 #L560 #F571 #FL667 #L677 #L689 #L703 
 #L 	seedsigner/gui/screens/scan_screens.py 	#L22 #L138 #L139 #L140 #L156 
-?#L	seedsigner/gui/screens/settings_screens.py	?#L294 #L26 #L59 #L130 #L141 #L162 #L176 #L222 #L289
+?#L	seedsigner/gui/screens/settings_screens.py	(_().replace() hmmm ?#L294) #L26 #L59 #L130 #L141 #L162 #L176 #L222 #L289
 #LF	seedsigner/gui/screens/tools_screens.py	#L41 #L72 #L99 #L119 #F150 #L161 #F167 #F177 #F189 #F193 #F200 #F241 #L274 #F311 #L352 #L354 #L369 #L385 #L393 #F402 #F410 #F418
-??? 	437 448 661 671 683 697
-??? 	413 426 537 543 553 569 575 579 588 597 606 619 1007 1015 1070 1071 1078 1079 1093 1094 1171 1307 1364 1399 1401 1428 1445 1450 1463 1468 1476 
+#L	seedsigner/gui/screens/main_menu_screens.py	#L12 #L24 #L29 #L39 #L44
+?#L 	seedsigner/gui/screens/seed_screens.py	(why colon ?#L1033) #L411 #L424 #L555 #L561 #L571 #L587 #L593 #L597 #L606 #L616 #L625 #L638 #L1026 #L1121 #L1123 #L1131 #L1133 #L1147 #L1149 #L1226 #L1362 #L1419 #L1483 #L1500 #L1505 #L1518 #L1524 #L1532
 
 E 	seedsigner/hardware/camera.py 	E36 E65
 E 	seedsigner/hardware/ST7789.py 	E154
@@ -54,16 +56,16 @@ E 	seedsigner/helpers/mnemonic_generation.py 	E22
 
 E#LF	seedsigner/views/psbt_views.py 	E30 #L36 #L37 #L38 #L55 #L94 #L166 #L167 #L168 #L185 #L186 #L187 #L253 #259 #L262 #L331 #L335 #L336 #L338 #L339 #L358 #L360 #L441 #F443 #L445 #FL447 #L451 #L453 #L478 #L530 #L532 #L533 #L534
 #L	seedsigner/views/screensaver.py 	#L74
-?E#LF	seedsigner/views/seed_views.py	?#E1464 ?#L1637 #L54 #L57 #L78 #L79 #L80 #L81 #L90 #F127 #L187 #L188 #L192 #L194 #L229 #L230 #L260 #L300 #L301 #L342 #L343 #L348 #F350 #L384 #L385 #L386 #L387 #L388 #L389 #L390 #L420 #L476 #L477 #L510 #L511 #L515 #L554 #L556 #L641 #L683 #L684 #L693 #L830 #L855 #L856 #F836 #L902 #L903 #F952 #L992 #L993 #L997 #L999 #F1000 #L1018 #L1020 #L1021 #L1022 #L1044 #L1045 #L1049 #L1050 #L1071 #L1120 #L1121 #L1213 #L1214 #L1218 #L1248 #L1257 #L1258 #L1259 #L1221 #L1268 #L1269 #L1270 #L1272 #L1280 #L1281 #L1282 #L1284 #L1353 #L1354 #L1391 #L1392 #L1393 #L1396 #L1406 #L1413 #L1510 #L1511 #F1639 #L1642 #L1652 #L1653 #L1682 #L1683 #L1684 #L1685
-?#L	seedsigner/views/settings_views.py ?26? #L20 #L21 #L36 #L39 #L46 #L54
+E#LF	seedsigner/views/seed_views.py	(Why this one ?#E1464) #L1637 #L54 #L57 #L78 #L79 #L80 #L81 #L90 #F127 #L187 #L188 #L192 #L194 #L229 #L230 #L260 #L300 #L301 #L342 #L343 #L348 #F350 #L384 #L385 #L386 #L387 #L388 #L389 #L390 #L420 #L476 #L477 #L510 #L511 #L515 #L554 #L556 #L641 #L683 #L684 #L693 #L830 #L855 #L856 #F836 #L902 #L903 #F952 #L992 #L993 #L997 #L999 #F1000 #L1018 #L1020 #L1021 #L1022 #L1044 #L1045 #L1049 #L1050 #L1071 #L1120 #L1121 #L1213 #L1214 #L1218 #L1248 #L1257 #L1258 #L1259 #L1221 #L1268 #L1269 #L1270 #L1272 #L1280 #L1281 #L1282 #L1284 #L1353 #L1354 #L1391 #L1392 #L1393 #L1396 #L1406 #L1413 #L1510 #L1511 #F1639 #L1642 #L1652 #L1653 #L1682 #L1683 #L1684 #L1685
+#V	seedsigner/views/settings_views.py #V26 #L20 #L21 #L36 #L39 #L46 #L54
 E#LF	seedsigner/views/tools_views.py E605 E616 #L29 #L30 #L31 #L32 #L35 #L112 #L113 #L117 #L184 #L185 #L189 #L238 #L239 #L243 #L275 #L276 #L277 #L376 #L379 #L401 #L402 #L430 #L431 #L432 #L433 #L451 #L538 #L539 #L589 #F628 #FL631
-?E#L	seedsigner/views/view.py ?84? E66 #L124 #L125 #L126 #L127 #L142 #L145 
+E#L	seedsigner/views/view.py E66 #L124 #L125 #L126 #L127 #L142 #L145 
 
 E 	seedsigner/models/encode_qr.py 	E46 E104 E143 E146 E150 E153 E273 E356
 E 	seedsigner/models/psbt_parser.py 	E96 E226 E229 E232 E241 E245 E255 E269
 E 	seedsigner/models/seed.py 	E26 E42
 E 	seedsigner/models/seed_storage.py 	E68
-?P#L	seedsigner/models/settings_definition.py 	P37 P38 P39 P40 ?288? #L14 #L15 #L18 #L19 #L20 #L23 #L26 #L29 #L74 #L55 #L76 #L77 #L96 #L97 #L98 #L106 #L107 #L108 #L124 #L125 #L134 #L135 #L136 #L137 #L357 #L365 #L373 #L374 #L379 #L386 #L395 #L403 #L411 #L417 #L425 #L433 #L439 #L447 #L455 #L461 #L467 #L473
+P#L	seedsigner/models/settings_definition.py 	P37 P38 P39 P40 #V288 #L14 #L15 #L18 #L19 #L20 #L23 #L26 #L29 #L74 #L55 #L76 #L77 #L96 #L97 #L98 #L106 #L107 #L108 #L124 #L125 #L134 #L135 #L136 #L137 #L357 #L365 #L373 #L374 #L379 #L386 #L395 #L403 #L411 #L417 #L425 #L433 #L439 #L447 #L455 #L461 #L467 #L473
 E 	seedsigner/models/settings.py 	E112 E134 E150 E153 E162 E165
 E 	seedsigner/models/singleton.py 	E6 E24 E31
 E 	seedsigner/models/threads.py 	E23
