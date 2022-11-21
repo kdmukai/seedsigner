@@ -272,8 +272,11 @@ class ToolsCalcFinalWordFinalizePromptView(View):
         else:
             num_entropy_bits = 3
 
+        # TRANSLATOR_NOTE: Label to gather entropy through coin tosses
         COIN_FLIPS = _("Coin flip entropy")
+        # TRANSLATOR_NOTE: Label to gather entropy through user specified BIP-39 word
         SELECT_WORD = _("Word selection entropy")
+        # TRANSLATOR_NOTE: Label to allow user to default entropy as all-zeros
         ZEROS = _("Finalize with zeros")
 
         button_data = [COIN_FLIPS, SELECT_WORD, ZEROS]
@@ -373,9 +376,11 @@ class ToolsCalcFinalWordShowFinalWordView(View):
         else:
             checksum_bits = format(wordlist.index(actual_final_word), '011b')[-8:]
 
+        # l10n_note already exists.
         NEXT = _("Next")
         button_data = [NEXT]
         selected_menu_num = ToolsCalcFinalWordScreen(
+            # TRANSLATOR_NOTE: label to calculate the last word of a BIP-39 mnemonic seed phrase
             title=_("Final Word Calc"),
             button_data=button_data,
             selected_final_word=selected_final_word,
@@ -535,7 +540,9 @@ class ToolsAddressExplorerAddressTypeView(View):
     def run(self):
         data = self.controller.address_explorer_data
 
+        # TRANSLATOR_NOTE: label for addresses where others send us incoming payments
         RECEIVE = _("Receive Addresses")
+        # TRANSLATOR_NOTE: label for addresses that collect the change from our own outgoing payments
         CHANGE = _("Change Addresses")
         button_data = [RECEIVE, CHANGE]
 
@@ -586,6 +593,7 @@ class ToolsAddressExplorerAddressListView(View):
                 addresses = data[addr_storage_key][self.start_index:self.start_index + addrs_per_screen]
 
             else:
+                # TRANSLATOR_NOTE: a status message that our payment addresses are being calculated
                 self.loading_screen = LoadingScreenThread(text=_("Calculating addrs..."))
                 self.loading_screen.start()
 

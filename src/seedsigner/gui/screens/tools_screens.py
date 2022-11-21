@@ -158,12 +158,14 @@ class ToolsCalcFinalWordFinalizePromptScreen(ButtonListScreen):
     num_entropy_bits: int = None
 
     def __post_init__(self):
+        # TRANSLATOR_NOTE: Build the last word in a 12 or 24 word BIP-39 mnemonic seed phrase.
         self.title = _("Build Final Word")
         self.is_bottom_list = True
         self.is_button_text_centered = True
         super().__post_init__()
 
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: Number of BIP-39 seed words, and the entropy -- in bits, contained within.
             text=_("The {}th word is built from {} more entropy bits plus auto-calculated checksum.").format(self.mnemonic_length, self.num_entropy_bits),
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
         ))
@@ -174,6 +176,7 @@ class ToolsCalcFinalWordFinalizePromptScreen(ButtonListScreen):
 class ToolsCoinFlipEntryScreen(KeyboardScreen):
     def __post_init__(self):
         # Override values set by the parent class
+        # TRANSLATOR_NOTE: current coin-flip number vs total flips (e.g. flip 3 of 4)
         self.title = _("Coin Flip {}/{}").format(1, self.return_after_n_chars)
 
         # Specify the keys in the keyboard
@@ -186,16 +189,19 @@ class ToolsCoinFlipEntryScreen(KeyboardScreen):
         super().__post_init__()
     
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: How we call the "front" side result during a coin toss.
             text=_("Heads = 1"),
             screen_y = self.keyboard.rect[3] + 4*GUIConstants.COMPONENT_PADDING,
         ))
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: How we call the "back" side result during a coin toss.
             text=_("Tails = 0"),
             screen_y = self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING,
         ))
 
 
     def update_title(self) -> bool:
+        # l10n_note already done.
         self.title = _("Coin Flip {}/{}").format(self.cursor_position + 1, self.return_after_n_chars)
         return True
 
@@ -238,6 +244,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
             discard_selected_bits = "_" * (len(self.checksum_bits))
 
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: A labeled presentation of a user-supplied value
             text=_('Your input: "{}"').format(selection_text),
             screen_y=self.top_nav.height,
         ))
@@ -271,6 +278,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
 
         # Show the checksum..
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: A function of "x" to be used for detecting errors in "x"
             text=_("Checksum"),
             edge_padding=0,
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
@@ -308,6 +316,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
 
         # And now the *actual* final word after merging the bit data
         self.components.append(TextArea(
+            # TRANSLATOR_NOTE: labeled presentation of the last word in a BIP-39 mnemonic seed phrase.
             text=_('Final Word: "{}"').format(self.actual_final_word),
             screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
         ))
@@ -349,8 +358,10 @@ class ToolsCalcFinalWordDoneScreen(ButtonListScreen):
     def __post_init__(self):
         # Manually specify 12 vs 24 case for easier ordinal translation
         if self.mnemonic_word_length == 12:
+            # TRANSLATOR_NOTE: a label for the last word of a 12-word BIP-39 mnemonic seed phrase
             self.title = _("12th Word")
         else:
+            # TRANSLATOR_NOTE: a label for the last word of a 24-word BIP-39 mnemonic seed phrase
             self.title = _("24th Word")
         self.is_bottom_list = True
 
@@ -366,6 +377,7 @@ class ToolsCalcFinalWordDoneScreen(ButtonListScreen):
         self.components.append(IconTextLine(
             icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
             icon_color="blue",
+            # TRANSLATOR_NOTE: a label for the shortened Key-id of a BIP-32 master HD wallet
             label_text=_("fingerprint"),
             value_text=self.fingerprint,
             is_text_centered=True,
@@ -382,6 +394,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
     custom_derivation_path: str = None
 
     def __post_init__(self):
+        # TRANSLATOR_NOTE: a label for the tool to explore public addresses for this seed.
         self.title = _("Address Explorer")
         self.is_bottom_list = True
         super().__post_init__()
@@ -390,6 +403,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             self.components.append(IconTextLine(
                 icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
                 icon_color="blue",
+                # TRANSLATOR_NOTE: a label for the shortened Key-id of a BIP-32 master HD wallet
                 label_text=_("Fingerprint"),
                 value_text=self.fingerprint,
                 screen_x=GUIConstants.EDGE_PADDING,
@@ -399,6 +413,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             if self.script_type != SettingsConstants.CUSTOM_DERIVATION:
                 self.components.append(IconTextLine(
                     icon_name=SeedSignerCustomIconConstants.PATH,
+                    # TRANSLATOR_NOTE: a label for the derivation-path into a BIP-32 HD wallet
                     label_text=_("Derivation"),
                     value_text=SettingsDefinition.get_settings_entry(attr_name=SettingsConstants.SETTING__SCRIPT_TYPES).get_selection_option_display_name_by_value(value=self.script_type),
                     screen_x=GUIConstants.EDGE_PADDING,
@@ -407,6 +422,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
             else:
                 self.components.append(IconTextLine(
                     icon_name=SeedSignerCustomIconConstants.PATH,
+                    # l10n_note already exists.
                     label_text=_("Derivation"),
                     value_text=self.custom_derivation_path,
                     screen_x=GUIConstants.EDGE_PADDING,
@@ -415,6 +431,7 @@ class ToolsAddressExplorerAddressTypeScreen(ButtonListScreen):
 
         else:
             self.components.append(IconTextLine(
+                # TRANSLATOR_NOTE: a label for a BIP-380-ish Output Descriptor
                 label_text=_("Wallet descriptor"),
                 value_text=self.wallet_descriptor_display_name,
                 is_text_centered=False,
