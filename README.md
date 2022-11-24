@@ -1,3 +1,9 @@
+# jdlcdl branch: i18n
+
+Just a place to keep notes I had made regarding Internationalization of the seedsigner codebase before realizing kdmukai had done so much work already.  Afterwards, using it as a place to keep notes on code review of same topic.  Just see the kdmukai/initial_multilanguage branch to see that work!
+
+---------------
+
 # Build an offline, airgapped Bitcoin signing device for less than $50!
 
 ![Image of SeedSigners in Open Pill Enclosures](docs/img/Open_Pill_Star.JPG)![Image of SeedSigner in an Orange Pill enclosure](docs/img/Orange_Pill.JPG)
