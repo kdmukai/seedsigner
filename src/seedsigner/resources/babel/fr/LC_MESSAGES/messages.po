@@ -167,7 +167,7 @@ msgstr "{} rendu"
 #: src/seedsigner/models/settings_definition.py:132
 #: src/seedsigner/views/seed_views.py:651
 msgid "Multisig"
-msgstr "Multisig"
+msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py:667
 msgid "Change"
@@ -587,23 +587,23 @@ msgstr "Regtest"
 #: src/seedsigner/models/settings_definition.py:131
 #: src/seedsigner/views/seed_views.py:650
 msgid "Single Sig"
-msgstr "Single Sig"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:141
 msgid "Native Segwit"
-msgstr "Segwit Natif"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:142
 msgid "Nested Segwit (legacy)"
-msgstr "Segwit Envelopé (hérité)"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:143
 msgid "Taproot"
-msgstr "Taproot"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:144
 msgid "Custom Derivation"
-msgstr "Dérivation Particulière"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py:375
 msgid "Language"

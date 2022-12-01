@@ -569,6 +569,8 @@ class SeedExportXpubScriptTypeView(View):
             script_types_settings_entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__SCRIPT_TYPES)
             selected_display_name = button_data[selected_menu_num]
             args["script_type"] = script_types_settings_entry.get_selection_option_value_by_display_name(selected_display_name)
+            print('selected_display_name=%s' % selected_display_name)
+            print('script_type=%s' % args['script_type'])
 
             if args["script_type"] == SettingsConstants.CUSTOM_DERIVATION:
                 return Destination(SeedExportXpubCustomDerivationView, view_args=args)
