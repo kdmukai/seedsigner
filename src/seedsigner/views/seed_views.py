@@ -548,8 +548,9 @@ class SeedExportXpubScriptTypeView(View):
                 return Destination(SeedExportXpubCoordinatorView, view_args=args, skip_current_view=True)
 
         button_data = []
-        for script_type in self.settings.get_multiselect_value_display_names(SettingsConstants.SETTING__SCRIPT_TYPES):
-            button_data.append(script_type)
+        for script_type, display_name in SettingsConstants.ALL_SCRIPT_TYPES:
+            if script_type in self.settings.get_value(SettingsConstants.SETTING__SCRIPT_TYPES):
+                button_data.append((script_type, _(display_name)))
         
         title = _("Export Xpub")
         if self.controller.resume_main_flow == Controller.FLOW__ADDRESS_EXPLORER:
@@ -558,7 +559,7 @@ class SeedExportXpubScriptTypeView(View):
         selected_menu_num = ButtonListScreen(
             title=title,
             is_button_text_centered=False,
-            button_data=button_data,
+            button_data=[x[1] for x in button_data],
             is_bottom_list=True,
         ).display()
 
@@ -566,11 +567,7 @@ class SeedExportXpubScriptTypeView(View):
             return Destination(BackStackView)
 
         else:
-            script_types_settings_entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__SCRIPT_TYPES)
-            selected_display_name = button_data[selected_menu_num]
-            args["script_type"] = script_types_settings_entry.get_selection_option_value_by_display_name(selected_display_name)
-            print('selected_display_name=%s' % selected_display_name)
-            print('script_type=%s' % args['script_type'])
+            args["script_type"] = button_data[selected_menu_num][0]
 
             if args["script_type"] == SettingsConstants.CUSTOM_DERIVATION:
                 return Destination(SeedExportXpubCustomDerivationView, view_args=args)
