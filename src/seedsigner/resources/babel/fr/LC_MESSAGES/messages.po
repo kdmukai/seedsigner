@@ -6,6 +6,7 @@
 # Translators:
 # Keith Mukai, 2022
 # Jp Prudhomme <jpprudhomme@gmail.com>, 2022
+# jdlcdl, 2022
 #, fuzzy
 msgid ""
 msgstr ""
@@ -24,11 +25,11 @@ msgstr ""
 
 #: src/seedsigner/gui/renderer.py:148
 msgid "Yes "
-msgstr ""
+msgstr "Oui "
 
 #: src/seedsigner/gui/renderer.py:148
 msgid "No "
-msgstr ""
+msgstr "Non "
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:12
 #: src/seedsigner/gui/screens/scan_screens.py:140
@@ -96,7 +97,7 @@ msgstr "entrée {}"
 #: src/seedsigner/gui/screens/psbt_screens.py:128
 #: src/seedsigner/gui/screens/psbt_screens.py:132
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #: src/seedsigner/gui/screens/psbt_screens.py:141
 #: src/seedsigner/views/psbt_views.py:443
@@ -123,7 +124,7 @@ msgstr "frais"
 #: src/seedsigner/views/psbt_views.py:443
 #: src/seedsigner/views/psbt_views.py:447
 msgid "change"
-msgstr "monnaie"
+msgstr "rendu"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:466
 msgid "PSBT Math"
@@ -157,7 +158,7 @@ msgstr[1] "destinataires"
 #. Denonination is inserted (e.g. your "btc change" or "sats change")
 #: src/seedsigner/gui/screens/psbt_screens.py:571
 msgid "{} change"
-msgstr "{} rendu de monnaie"
+msgstr "{} rendu"
 
 #. First variable is either "Multisig" or the fingerprint for single sig;
 #. Second is "Change" or "Addr" (change vs receive addr); Third is the address
@@ -170,11 +171,11 @@ msgstr "Multisig"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:667
 msgid "Change"
-msgstr ""
+msgstr "Rendu"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:667
 msgid "Addr"
-msgstr ""
+msgstr "Adr"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:677
 msgid "Address verified!"
@@ -186,7 +187,7 @@ msgstr "Signer la PSBT"
 
 #: src/seedsigner/gui/screens/psbt_screens.py:703
 msgid "Click to approve this transaction"
-msgstr ""
+msgstr "Cliquer pour approuver cette transaction"
 
 #: src/seedsigner/gui/screens/scan_screens.py:22
 msgid "Scan a QR code"
@@ -245,7 +246,7 @@ msgstr "Sauvegarde de la seed"
 #. SeedQR).
 #: src/seedsigner/gui/screens/seed_screens.py:463
 msgid "Backups do not include your passphrase."
-msgstr ""
+msgstr "la sauvegarde n'inclut pas votre phrase secrète"
 
 #. Displays the page number and total: (e.g. page 1 of 6)
 #: src/seedsigner/gui/screens/seed_screens.py:480
@@ -309,7 +310,7 @@ msgstr "Verifier la phrase secrète"
 #. fingerprint
 #: src/seedsigner/gui/screens/seed_screens.py:1033
 msgid "changes seed:"
-msgstr ""
+msgstr "change l'empreinte:"
 
 #. Refers to the SeedQR type: Standard or Compact
 #: src/seedsigner/gui/screens/seed_screens.py:1121
@@ -444,53 +445,53 @@ msgstr "Lancé de Dé {}/{}"
 #. Build the last word in a 12 or 24 word BIP-39 mnemonic seed phrase.
 #: src/seedsigner/gui/screens/tools_screens.py:162
 msgid "Build Final Word"
-msgstr ""
+msgstr "Calculer Dernier Mot"
 
 #. Number of BIP-39 seed words, and the entropy -- in bits, contained within.
 #: src/seedsigner/gui/screens/tools_screens.py:169
 msgid "The {}th word is built from {} more entropy bits plus auto-calculated checksum."
-msgstr ""
+msgstr "Le {}ème mot contient {} bits entropie plus la somme de contrôle."
 
 #. current coin-flip number vs total flips (e.g. flip 3 of 4)
 #: src/seedsigner/gui/screens/tools_screens.py:180
 #: src/seedsigner/gui/screens/tools_screens.py:205
 msgid "Coin Flip {}/{}"
-msgstr ""
+msgstr "Pile ou Face {}/{}"
 
 #. How we call the "front" side result during a coin toss.
 #: src/seedsigner/gui/screens/tools_screens.py:193
 msgid "Heads = 1"
-msgstr ""
+msgstr "Pile = 1"
 
 #. How we call the "back" side result during a coin toss.
 #: src/seedsigner/gui/screens/tools_screens.py:198
 msgid "Tails = 0"
-msgstr ""
+msgstr "Face = 0"
 
 #. A labeled presentation of a user-supplied value
 #: src/seedsigner/gui/screens/tools_screens.py:248
 msgid "Your input: \"{}\""
-msgstr ""
+msgstr "Votre entrée: \"{}\""
 
 #. A function of "x" to be used for detecting errors in "x"
 #: src/seedsigner/gui/screens/tools_screens.py:282
 msgid "Checksum"
-msgstr ""
+msgstr "Somme de contrôle"
 
 #. labeled presentation of the last word in a BIP-39 mnemonic seed phrase.
 #: src/seedsigner/gui/screens/tools_screens.py:320
 msgid "Final Word: \"{}\""
-msgstr ""
+msgstr "Dernier Mot: \"{}\""
 
 #. a label for the last word of a 12-word BIP-39 mnemonic seed phrase
 #: src/seedsigner/gui/screens/tools_screens.py:362
 msgid "12th Word"
-msgstr "12ème Mots"
+msgstr "12ème Mot"
 
 #. a label for the last word of a 24-word BIP-39 mnemonic seed phrase
 #: src/seedsigner/gui/screens/tools_screens.py:365
 msgid "24th Word"
-msgstr "24ème Mots"
+msgstr "24ème Mot"
 
 #. a label for the tool to explore public addresses for this seed.
 #: src/seedsigner/gui/screens/tools_screens.py:398
@@ -500,12 +501,12 @@ msgstr "24ème Mots"
 #: src/seedsigner/views/tools_views.py:32
 #: src/seedsigner/views/tools_views.py:456
 msgid "Address Explorer"
-msgstr ""
+msgstr "Explorateur d'Adresses"
 
 #. a label for a BIP-380-ish Output Descriptor
 #: src/seedsigner/gui/screens/tools_screens.py:435
 msgid "Wallet descriptor"
-msgstr ""
+msgstr "Descripteur portefeuille"
 
 #: src/seedsigner/models/settings_definition.py:14
 msgid "Enabled"
@@ -590,19 +591,19 @@ msgstr "Single Sig"
 
 #: src/seedsigner/models/settings_definition.py:134
 msgid "Native Segwit"
-msgstr ""
+msgstr "Segwit Natif"
 
 #: src/seedsigner/models/settings_definition.py:135
 msgid "Nested Segwit (legacy)"
-msgstr ""
+msgstr "Segwit Envelopé (hérité)"
 
 #: src/seedsigner/models/settings_definition.py:136
 msgid "Taproot"
-msgstr ""
+msgstr "Taproot"
 
 #: src/seedsigner/models/settings_definition.py:137
 msgid "Custom Derivation"
-msgstr ""
+msgstr "Dérivation Particulière"
 
 #: src/seedsigner/models/settings_definition.py:357
 msgid "Language"
@@ -618,7 +619,7 @@ msgstr "Paramètres persistent"
 
 #: src/seedsigner/models/settings_definition.py:374
 msgid "Store Settings on SD card."
-msgstr ""
+msgstr "Enregistrer Paramètres sur carte SD."
 
 #: src/seedsigner/models/settings_definition.py:379
 msgid "Coordinator software"
@@ -674,7 +675,7 @@ msgstr "Montrer les avertissements terribles"
 
 #: src/seedsigner/models/settings_definition.py:473
 msgid "Show passphrase warning"
-msgstr ""
+msgstr "Afficher avertissements phrase secrèt"
 
 #: src/seedsigner/models/settings_definition.py:479
 msgid "Show partner logos"
@@ -904,6 +905,8 @@ msgid ""
 "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
 "Be sure you know what you're doing!"
 msgstr ""
+"La phrase secrète BIP-39 change votre seed, creant de nouvaux xpubs, portefeuilles, etc.\n"
+"Assurez vous de savoir ce que vous faites !"
 
 #: src/seedsigner/views/seed_views.py:300
 msgid "Edit passphrase"
@@ -936,7 +939,7 @@ msgstr "Rejeter la seed"
 
 #: src/seedsigner/views/seed_views.py:420
 msgid " (?)"
-msgstr ""
+msgstr " (?)"
 
 #: src/seedsigner/views/seed_views.py:476
 msgid "View Seed Words"
@@ -1168,22 +1171,22 @@ msgstr "Longueur de la mnémonique"
 #. Label to gather entropy through coin tosses
 #: src/seedsigner/views/tools_views.py:276
 msgid "Coin flip entropy"
-msgstr ""
+msgstr "Entropie de pile ou face"
 
 #. Label to gather entropy through user specified BIP-39 word
 #: src/seedsigner/views/tools_views.py:278
 msgid "Word selection entropy"
-msgstr ""
+msgstr "Entropie de sélection de mots"
 
 #. Label to allow user to default entropy as all-zeros
 #: src/seedsigner/views/tools_views.py:280
 msgid "Finalize with zeros"
-msgstr ""
+msgstr "Finaliser avec des zéros"
 
 #. label to calculate the last word of a BIP-39 mnemonic seed phrase
 #: src/seedsigner/views/tools_views.py:384
 msgid "Final Word Calc"
-msgstr ""
+msgstr "Calculer Dernier Mot"
 
 #: src/seedsigner/views/tools_views.py:406
 msgid "Load seed"
@@ -1191,34 +1194,34 @@ msgstr "Charger la seed"
 
 #: src/seedsigner/views/tools_views.py:436
 msgid "Scan wallet descriptor"
-msgstr ""
+msgstr "Scanner descripteur portefeuille"
 
 #. label for addresses where others send us incoming payments
 #: src/seedsigner/views/tools_views.py:544
 msgid "Receive Addresses"
-msgstr ""
+msgstr "Adresses de reception"
 
 #. label for addresses that collect the change from our own outgoing payments
 #: src/seedsigner/views/tools_views.py:546
 msgid "Change Addresses"
-msgstr ""
+msgstr "Adresses du Rendu"
 
 #. a status message that our payment addresses are being calculated
 #: src/seedsigner/views/tools_views.py:597
 msgid "Calculating addrs..."
-msgstr ""
+msgstr "Calcul adrs..."
 
 #: src/seedsigner/views/tools_views.py:636
 msgid "Next {}"
-msgstr ""
+msgstr "Prochain {}"
 
 #: src/seedsigner/views/tools_views.py:639
 msgid "Receive Addrs"
-msgstr ""
+msgstr "Adrs Reception"
 
 #: src/seedsigner/views/tools_views.py:639
 msgid "Change Addrs"
-msgstr ""
+msgstr "Adrs Rendu"
 
 #: src/seedsigner/views/view.py:124
 msgid "Work In Progress"
