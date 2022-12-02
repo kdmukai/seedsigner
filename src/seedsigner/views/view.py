@@ -5,6 +5,7 @@ from typing import List
 from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants
 from seedsigner.gui.screens import RET_CODE__POWER_BUTTON
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, DireWarningScreen, WarningScreen
+from seedsigner.models.threads import BaseThread
 
 
 
