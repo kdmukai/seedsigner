@@ -1,6 +1,7 @@
 import logging
 import traceback
 import gettext
+import os
 
 from embit.descriptor import Descriptor
 from embit.psbt import PSBT
@@ -9,6 +10,7 @@ from typing import List
 
 from seedsigner.gui.renderer import Renderer
 from seedsigner.hardware.buttons import HardwareButtons
+from seedsigner.hardware.microsd import MicroSD
 from seedsigner.views.screensaver import ScreensaverScreen
 from seedsigner.views.view import Destination, NotYetImplementedView, UnhandledExceptionView
 
@@ -130,6 +132,9 @@ class Controller(Singleton):
         # TODO: Rename "storage" to something more indicative of its temp, in-memory state
         controller.storage = SeedStorage()
         controller.settings = Settings.get_instance()
+        
+        controller.microsd = MicroSD.get_instance()
+        controller.microsd.start_detection()
 
         # Store one working psbt in memory
         controller.psbt = None

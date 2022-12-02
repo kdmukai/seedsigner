@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from gettext import gettext as _
 from typing import List
 
+from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants
 from seedsigner.gui.screens import RET_CODE__POWER_BUTTON
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, DireWarningScreen, WarningScreen
 
@@ -112,6 +113,102 @@ class Destination:
     def __ne__(self, obj):
         return not obj == self
 
+
+
+#########################################################################################
+#
+# Root level Views don't have a sub-module home so they live at the top level here.
+#
+#########################################################################################
+class MainMenuView(View):
+    def run(self):
+        from .seed_views import SeedsMenuView
+        from .settings_views import SettingsMenuView
+        from .scan_views import ScanView
+        from .tools_views import ToolsMenuView
+        from seedsigner.gui.screens import LargeButtonScreen
+        menu_items = [
+            (("Scan", FontAwesomeIconConstants.QRCODE), ScanView),
+            (("Seeds", FontAwesomeIconConstants.KEY), SeedsMenuView),
+            (("Tools", FontAwesomeIconConstants.SCREWDRIVER_WRENCH), ToolsMenuView),
+            (("Settings", FontAwesomeIconConstants.GEAR), SettingsMenuView),
+        ]
+
+        screen = LargeButtonScreen(
+            title="Home",
+            title_font_size=26,
+            button_data=[entry[0] for entry in menu_items],
+            show_back_button=False,
+            show_power_button=True,
+        )
+        selected_menu_num = screen.display()
+
+        if selected_menu_num == RET_CODE__POWER_BUTTON:
+            return Destination(PowerOptionsView)
+
+        return Destination(menu_items[selected_menu_num][1])
+
+
+
+class PowerOptionsView(View):
+    def run(self):
+        RESET = ("Restart", FontAwesomeIconConstants.ROTATE_RIGHT)
+        POWER_OFF = ("Power Off", FontAwesomeIconConstants.POWER_OFF)
+        button_data = [RESET, POWER_OFF]
+        selected_menu_num = LargeButtonScreen(
+            title="Reset / Power",
+            show_back_button=True,
+            button_data=button_data
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        elif button_data[selected_menu_num] == RESET:
+            return Destination(RestartView)
+        
+        elif button_data[selected_menu_num] == POWER_OFF:
+            return Destination(PowerOffView)
+
+
+
+class RestartView(View):
+    def run(self):
+        thread = RestartView.DoResetThread()
+        thread.start()
+        ResetScreen().display()
+
+
+    class DoResetThread(BaseThread):
+        def run(self):
+            import time
+            from subprocess import call
+
+            # Give the screen just enough time to display the reset message before
+            # exiting.
+            time.sleep(0.25)
+
+            # Kill the SeedSigner process; Running the process again.
+            # `.*` is a wildcard to detect either `python`` or `python3`.
+            # jdlcdl: pidof wildcard not working for me
+            call("kill $(pidof python python3) & python /opt/src/main.py", shell=True)
+
+
+
+class PowerOffView(View):
+    def run(self):
+        thread = PowerOffView.PowerOffThread()
+        thread.start()
+        PowerOffScreen().display()
+
+
+    class PowerOffThread(BaseThread):
+        def run(self):
+            import time
+            from subprocess import call
+            while self.keep_running:
+                time.sleep(5)
+                call("poweroff", shell=True)
 
 
 class NotYetImplementedView(View):
