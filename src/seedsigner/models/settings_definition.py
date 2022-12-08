@@ -56,17 +56,18 @@ class SettingsConstants:
     LOCALE__RUSSIAN = "ru"
     LOCALE__SPANISH = "es"
     ALL_LOCALES = [
-        (LOCALE__ARABIC, "Arabic"),
-        (LOCALE__CZECH, "Czech"),
+        # TRANSLATOR_NOTE: Translator is expected ONLY to change their own locale below
+        (LOCALE__ARABIC, _("Arabic")),
+        (LOCALE__CZECH, _("Czech")),
         (LOCALE__ENGLISH, "English"),
-        (LOCALE__FRENCH, "French"),
-        (LOCALE__GERMAN, "German"),
-        (LOCALE__HEBREW, "Hebrew"),
-        (LOCALE__JAPANESE, "Japanese"),
-        (LOCALE__KOREAN, "Korean"),
-        (LOCALE__PORTUGUESE, "Portuguese"),
-        (LOCALE__RUSSIAN, "Russian"),
-        (LOCALE__SPANISH, "Spanish"),
+        (LOCALE__FRENCH, _("French")),
+        (LOCALE__GERMAN, _("German")),
+        (LOCALE__HEBREW, _("Hebrew")),
+        (LOCALE__JAPANESE, _("Japanese")),
+        (LOCALE__KOREAN, _("Korean")),
+        (LOCALE__PORTUGUESE, _("Portuguese")),
+        (LOCALE__RUSSIAN, _("Russian")),
+        (LOCALE__SPANISH, _("Spanish")),
     ]
 
     BTC_DENOMINATION__BTC = "btc"

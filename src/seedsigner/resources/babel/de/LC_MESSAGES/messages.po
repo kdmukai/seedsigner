@@ -6,12 +6,13 @@
 # Translators:
 # Keith Mukai, 2022
 # SeedMint, 2022
+# jdlcdl, 2022
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-01 14:53-0400\n"
+"POT-Creation-Date: 2022-12-08 08:14-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: SeedMint, 2022\n"
 "Language: de\n"
@@ -57,7 +58,7 @@ msgid "Please wait about 30 seconds before disconnecting power."
 msgstr "Vor dem Entfernen des Stromkabels, bitte ca. 30 Sekunden warten."
 
 #: src/seedsigner/gui/screens/psbt_screens.py:30
-#: src/seedsigner/views/seed_views.py:517
+#: src/seedsigner/views/seed_views.py:385
 msgid "Review PSBT"
 msgstr "Kontrolle PSBT"
 
@@ -162,8 +163,8 @@ msgstr "{} change"
 #. Second is "Change" or "Addr" (change vs receive addr); Third is the address
 #. index number (e.g. your #4 receive addr).
 #: src/seedsigner/gui/screens/psbt_screens.py:667
-#: src/seedsigner/models/settings_definition.py:132
-#: src/seedsigner/views/seed_views.py:651
+#: src/seedsigner/models/settings_definition.py:129
+#: src/seedsigner/views/seed_views.py:511
 msgid "Multisig"
 msgstr "Multisig"
 
@@ -199,29 +200,29 @@ msgstr "QR Konfig."
 msgid "Settings imported successfully!"
 msgstr "Einstellungen erfolgreich importiert!"
 
-#: src/seedsigner/gui/screens/screen.py:767
-#: src/seedsigner/views/seed_views.py:1166
-#: src/seedsigner/views/seed_views.py:1417
+#: src/seedsigner/gui/screens/screen.py:766
+#: src/seedsigner/views/seed_views.py:1019
+#: src/seedsigner/views/seed_views.py:1268
 msgid "Success!"
 msgstr "Erfolg!"
 
-#: src/seedsigner/gui/screens/screen.py:771
-#: src/seedsigner/views/seed_views.py:1168
-#: src/seedsigner/views/seed_views.py:1420
-#: src/seedsigner/views/seed_views.py:1836 src/seedsigner/views/view.py:145
+#: src/seedsigner/gui/screens/screen.py:770
+#: src/seedsigner/views/seed_views.py:1021
+#: src/seedsigner/views/seed_views.py:1271
+#: src/seedsigner/views/seed_views.py:1684 src/seedsigner/views/view.py:243
 msgid "OK"
 msgstr "OK"
 
-#: src/seedsigner/gui/screens/screen.py:885
+#: src/seedsigner/gui/screens/screen.py:884
 #: src/seedsigner/views/psbt_views.py:441
 msgid "Caution"
 msgstr "Achtung"
 
-#: src/seedsigner/gui/screens/screen.py:888
+#: src/seedsigner/gui/screens/screen.py:887
 msgid "I Understand"
 msgstr "Verstanden"
 
-#: src/seedsigner/gui/screens/screen.py:900
+#: src/seedsigner/gui/screens/screen.py:899
 msgid "Classified Info!"
 msgstr "Geheime Info!"
 
@@ -236,7 +237,7 @@ msgid "fingerprint"
 msgstr "Fingerabruck"
 
 #: src/seedsigner/gui/screens/seed_screens.py:456
-#: src/seedsigner/views/seed_views.py:521
+#: src/seedsigner/views/seed_views.py:389
 msgid "Backup Seed"
 msgstr "Seed Backup"
 
@@ -248,7 +249,7 @@ msgstr "Backups enthalten deine Passphrase NICHT"
 
 #. Displays the page number and total: (e.g. page 1 of 6)
 #: src/seedsigner/gui/screens/seed_screens.py:480
-#: src/seedsigner/views/seed_views.py:1017
+#: src/seedsigner/views/seed_views.py:870
 msgid "Seed Words: {}/{}"
 msgstr "Seed Wörter: {}/{}"
 
@@ -270,10 +271,10 @@ msgstr "Xpub Details"
 
 #: src/seedsigner/gui/screens/seed_screens.py:593
 #: src/seedsigner/gui/screens/seed_screens.py:597
-#: src/seedsigner/views/seed_views.py:519
-#: src/seedsigner/views/seed_views.py:659
-#: src/seedsigner/views/seed_views.py:698
-#: src/seedsigner/views/seed_views.py:785
+#: src/seedsigner/views/seed_views.py:387
+#: src/seedsigner/views/seed_views.py:515
+#: src/seedsigner/views/seed_views.py:555
+#: src/seedsigner/views/seed_views.py:640
 msgid "Export Xpub"
 msgstr "Export Xpub"
 
@@ -296,7 +297,7 @@ msgid "Xpub"
 msgstr "Xpub"
 
 #: src/seedsigner/gui/screens/seed_screens.py:638
-#: src/seedsigner/views/seed_views.py:315
+#: src/seedsigner/views/seed_views.py:230
 msgid "Add Passphrase"
 msgstr "Passphrase hinzufüg."
 
@@ -347,35 +348,35 @@ msgstr "zum verlassen, klicken"
 msgid "Optionally scan your transcribed SeedQR to confirm that it reads back correctly."
 msgstr "Optional, übersetzten SeedQR scannen um zu verifizieren, dass er korrekt gelesen wird."
 
-#: src/seedsigner/gui/screens/seed_screens.py:1433
-#: src/seedsigner/views/seed_views.py:1504
-#: src/seedsigner/views/seed_views.py:1564
+#: src/seedsigner/gui/screens/seed_screens.py:1419
+#: src/seedsigner/views/seed_views.py:1352
+#: src/seedsigner/views/seed_views.py:1412
 msgid "Verify Address"
 msgstr "Adresse verifizieren"
 
 #. Inserts the nth address number (e.g. "Checking address 7")
-#: src/seedsigner/gui/screens/seed_screens.py:1497
+#: src/seedsigner/gui/screens/seed_screens.py:1483
 msgid "Checking address {}"
 msgstr "überprüfe Adresse {}"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1514
+#: src/seedsigner/gui/screens/seed_screens.py:1500
 msgid "Multisig Verification"
 msgstr "Multisig Verifikation"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1519
+#: src/seedsigner/gui/screens/seed_screens.py:1505
 msgid "Load your multisig wallet descriptor to verify your receive/self-transfer or change address."
 msgstr "Laden Sie Ihren Multisig Deskriptor um Ihre Empfangs-/ change- und Selbstzahlungsadressen zu verifizieren."
 
-#: src/seedsigner/gui/screens/seed_screens.py:1532
+#: src/seedsigner/gui/screens/seed_screens.py:1518
 msgid "Descriptor Loaded"
 msgstr "Deskriptor geladen"
 
 #. Label for the multisig wallet's signing policy (e.g. 2-of-3)
-#: src/seedsigner/gui/screens/seed_screens.py:1538
+#: src/seedsigner/gui/screens/seed_screens.py:1524
 msgid "Policy"
 msgstr "Policy"
 
-#: src/seedsigner/gui/screens/seed_screens.py:1546
+#: src/seedsigner/gui/screens/seed_screens.py:1532
 msgid "Signing Keys"
 msgstr "Singnier Schlüssel"
 
@@ -495,11 +496,11 @@ msgstr "24. Wort"
 
 #. a label for the tool to explore public addresses for this seed.
 #: src/seedsigner/gui/screens/tools_screens.py:398
-#: src/seedsigner/views/seed_views.py:520
-#: src/seedsigner/views/seed_views.py:700
-#: src/seedsigner/views/seed_views.py:1835
-#: src/seedsigner/views/tools_views.py:32
-#: src/seedsigner/views/tools_views.py:458
+#: src/seedsigner/views/seed_views.py:388
+#: src/seedsigner/views/seed_views.py:557
+#: src/seedsigner/views/seed_views.py:1683
+#: src/seedsigner/views/tools_views.py:33
+#: src/seedsigner/views/tools_views.py:454
 msgid "Address Explorer"
 msgstr ""
 
@@ -513,175 +514,216 @@ msgid "Enabled"
 msgstr "Aktiviert"
 
 #: src/seedsigner/models/settings_definition.py:15
-#: src/seedsigner/models/settings_definition.py:20
+#: src/seedsigner/models/settings_definition.py:23
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: src/seedsigner/models/settings_definition.py:18
-#: src/seedsigner/models/settings_definition.py:26
+#: src/seedsigner/models/settings_definition.py:21
+#: src/seedsigner/models/settings_definition.py:29
 msgid "Prompt"
 msgstr "Aufforderung"
 
-#: src/seedsigner/models/settings_definition.py:19
-#: src/seedsigner/models/settings_definition.py:23
-#: src/seedsigner/models/settings_definition.py:29
+#: src/seedsigner/models/settings_definition.py:22
+#: src/seedsigner/models/settings_definition.py:26
+#: src/seedsigner/models/settings_definition.py:32
 msgid "Required"
 msgstr "Erforderlich"
 
-#: src/seedsigner/models/settings_definition.py:74
+#. Translator is expected ONLY to change their own locale below
+#: src/seedsigner/models/settings_definition.py:60
+msgid "Arabic"
+msgstr "عربي"
+
+#: src/seedsigner/models/settings_definition.py:61
+msgid "Czech"
+msgstr "čeština"
+
+#: src/seedsigner/models/settings_definition.py:63
+msgid "French"
+msgstr "Français"
+
+#: src/seedsigner/models/settings_definition.py:64
+msgid "German"
+msgstr "Deutsch"
+
+#: src/seedsigner/models/settings_definition.py:65
+msgid "Hebrew"
+msgstr "עִברִית"
+
+#: src/seedsigner/models/settings_definition.py:66
+msgid "Japanese"
+msgstr "日本"
+
+#: src/seedsigner/models/settings_definition.py:67
+msgid "Korean"
+msgstr "한국인"
+
+#: src/seedsigner/models/settings_definition.py:68
+msgid "Portuguese"
+msgstr "Português"
+
+#: src/seedsigner/models/settings_definition.py:69
+msgid "Russian"
+msgstr "Русский"
+
+#: src/seedsigner/models/settings_definition.py:70
+msgid "Spanish"
+msgstr "Español"
+
+#: src/seedsigner/models/settings_definition.py:78
 msgid "Btc-only"
 msgstr "Nur in Btc"
 
-#: src/seedsigner/models/settings_definition.py:75
+#: src/seedsigner/models/settings_definition.py:79
 msgid "Sats-only"
 msgstr "Nur in Sats"
 
-#: src/seedsigner/models/settings_definition.py:76
+#: src/seedsigner/models/settings_definition.py:80
 msgid "Threshold at 0.01"
 msgstr "Grenzwert bei 0.01"
 
-#: src/seedsigner/models/settings_definition.py:77
+#: src/seedsigner/models/settings_definition.py:81
 msgid "Btc | Sats hybrid"
 msgstr "Btc | Sats Hybrid"
 
-#: src/seedsigner/models/settings_definition.py:85
+#: src/seedsigner/models/settings_definition.py:89
 msgid "0°"
 msgstr "0°"
 
-#: src/seedsigner/models/settings_definition.py:86
+#: src/seedsigner/models/settings_definition.py:90
 msgid "90°"
 msgstr "90°"
 
-#: src/seedsigner/models/settings_definition.py:87
+#: src/seedsigner/models/settings_definition.py:91
 msgid "180°"
 msgstr "180°"
 
-#: src/seedsigner/models/settings_definition.py:88
+#: src/seedsigner/models/settings_definition.py:92
 msgid "270°"
 msgstr "270°"
 
-#: src/seedsigner/models/settings_definition.py:103
+#: src/seedsigner/models/settings_definition.py:100
 msgid "Low"
 msgstr "Gering"
 
-#: src/seedsigner/models/settings_definition.py:104
+#: src/seedsigner/models/settings_definition.py:101
 msgid "Medium"
 msgstr "Mittel"
 
-#: src/seedsigner/models/settings_definition.py:105
+#: src/seedsigner/models/settings_definition.py:102
 msgid "High"
 msgstr "Hoch"
 
-#: src/seedsigner/models/settings_definition.py:113
+#: src/seedsigner/models/settings_definition.py:110
 msgid "Mainnet"
 msgstr "Mainnet"
 
-#: src/seedsigner/models/settings_definition.py:114
+#: src/seedsigner/models/settings_definition.py:111
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/seedsigner/models/settings_definition.py:115
+#: src/seedsigner/models/settings_definition.py:112
 msgid "Regtest"
 msgstr "Regtest"
 
-#: src/seedsigner/models/settings_definition.py:131
-#: src/seedsigner/views/seed_views.py:650
+#: src/seedsigner/models/settings_definition.py:128
+#: src/seedsigner/views/seed_views.py:510
 msgid "Single Sig"
 msgstr "Single Sig"
 
-#: src/seedsigner/models/settings_definition.py:141
+#: src/seedsigner/models/settings_definition.py:138
 msgid "Native Segwit"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:142
+#: src/seedsigner/models/settings_definition.py:139
 msgid "Nested Segwit (legacy)"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:143
+#: src/seedsigner/models/settings_definition.py:140
 msgid "Taproot"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:144
+#: src/seedsigner/models/settings_definition.py:141
 msgid "Custom Derivation"
 msgstr ""
 
-#: src/seedsigner/models/settings_definition.py:375
+#: src/seedsigner/models/settings_definition.py:361
 msgid "Language"
 msgstr "Sprache"
 
-#: src/seedsigner/models/settings_definition.py:383
+#: src/seedsigner/models/settings_definition.py:369
 msgid "Mnemonic language"
 msgstr "Seedphrasen Sprache"
 
-#: src/seedsigner/models/settings_definition.py:391
+#: src/seedsigner/models/settings_definition.py:377
 msgid "Persistent settings"
 msgstr "dauerhafte Einstellungen"
 
-#: src/seedsigner/models/settings_definition.py:392
+#: src/seedsigner/models/settings_definition.py:378
 msgid "Store Settings on SD card."
 msgstr "Einstellungen auf SD Karte speichern"
 
-#: src/seedsigner/models/settings_definition.py:397
+#: src/seedsigner/models/settings_definition.py:383
 msgid "Coordinator software"
 msgstr "Koordinator Software"
 
-#: src/seedsigner/models/settings_definition.py:404
+#: src/seedsigner/models/settings_definition.py:390
 msgid "Denomination display"
 msgstr "Sats/Btc Anzeige"
 
-#: src/seedsigner/models/settings_definition.py:413
+#: src/seedsigner/models/settings_definition.py:399
 msgid "Bitcoin network"
 msgstr "Bitcoin Netzwerk"
 
-#: src/seedsigner/models/settings_definition.py:421
+#: src/seedsigner/models/settings_definition.py:407
 msgid "QR code density"
 msgstr "Auflösung QR Code"
 
-#: src/seedsigner/models/settings_definition.py:429
+#: src/seedsigner/models/settings_definition.py:415
 msgid "Xpub export"
 msgstr "Xpub Export"
 
-#: src/seedsigner/models/settings_definition.py:435
+#: src/seedsigner/models/settings_definition.py:421
 msgid "Sig types"
 msgstr "Signatur Arten"
 
-#: src/seedsigner/models/settings_definition.py:443
+#: src/seedsigner/models/settings_definition.py:429
 msgid "Script types"
 msgstr "Skript Typen"
 
-#: src/seedsigner/models/settings_definition.py:451
+#: src/seedsigner/models/settings_definition.py:437
 msgid "Show xpub details"
 msgstr "Zeige xpub Details"
 
-#: src/seedsigner/models/settings_definition.py:475
+#: src/seedsigner/models/settings_definition.py:443
 msgid "BIP-39 passphrase"
 msgstr "BIP-39 Passphrase"
 
-#: src/seedsigner/models/settings_definition.py:483
+#: src/seedsigner/models/settings_definition.py:451
 msgid "Camera rotation"
 msgstr "Kamera Rotation"
 
-#: src/seedsigner/models/settings_definition.py:491
+#: src/seedsigner/models/settings_definition.py:459
 msgid "Compact SeedQR"
 msgstr "Kompakt SeedQR"
 
-#: src/seedsigner/models/settings_definition.py:497
+#: src/seedsigner/models/settings_definition.py:465
 msgid "Show privacy warnings"
 msgstr "Privatsphäre Warnungen"
 
-#: src/seedsigner/models/settings_definition.py:511
+#: src/seedsigner/models/settings_definition.py:471
 msgid "Show dire warnings"
 msgstr "dringliche Warnungen"
 
-#: src/seedsigner/models/settings_definition.py:517
+#: src/seedsigner/models/settings_definition.py:477
 msgid "Show passphrase warning"
 msgstr "Passphrasen Warnmeldung anzeigen"
 
-#: src/seedsigner/models/settings_definition.py:523
+#: src/seedsigner/models/settings_definition.py:483
 msgid "Show partner logos"
 msgstr "zeige Partnerlogos"
 
-#: src/seedsigner/models/settings_definition.py:538
+#: src/seedsigner/models/settings_definition.py:498
 msgid "QR background color"
 msgstr "QR Hintergrundfarbe"
 
@@ -694,7 +736,7 @@ msgid "Seeds"
 msgstr "Seeds"
 
 #: src/seedsigner/views/main_menu_views.py:20
-#: src/seedsigner/views/tools_views.py:37
+#: src/seedsigner/views/tools_views.py:36
 msgid "Tools"
 msgstr "Tools"
 
@@ -711,20 +753,20 @@ msgid "Reset / Power"
 msgstr "Reset / Power"
 
 #: src/seedsigner/views/psbt_views.py:36
-#: src/seedsigner/views/seed_views.py:1542
-#: src/seedsigner/views/tools_views.py:437
+#: src/seedsigner/views/seed_views.py:1390
+#: src/seedsigner/views/tools_views.py:433
 msgid "Scan a seed"
 msgstr "Scanne einen Seed"
 
-#: src/seedsigner/views/psbt_views.py:37 src/seedsigner/views/seed_views.py:164
-#: src/seedsigner/views/seed_views.py:1543
-#: src/seedsigner/views/tools_views.py:439
+#: src/seedsigner/views/psbt_views.py:37 src/seedsigner/views/seed_views.py:80
+#: src/seedsigner/views/seed_views.py:1391
+#: src/seedsigner/views/tools_views.py:435
 msgid "Enter 12-word seed"
 msgstr "12Wort Seed Eingabe"
 
-#: src/seedsigner/views/psbt_views.py:38 src/seedsigner/views/seed_views.py:163
-#: src/seedsigner/views/seed_views.py:1544
-#: src/seedsigner/views/tools_views.py:440
+#: src/seedsigner/views/psbt_views.py:38 src/seedsigner/views/seed_views.py:79
+#: src/seedsigner/views/seed_views.py:1392
+#: src/seedsigner/views/tools_views.py:436
 msgid "Enter 24-word seed"
 msgstr "24Wort Seed Eingabe"
 
@@ -773,8 +815,8 @@ msgstr "nächster Empfänger"
 #. Short for "Next step"
 #: src/seedsigner/views/psbt_views.py:262
 #: src/seedsigner/views/psbt_views.py:331
-#: src/seedsigner/views/seed_views.py:1001
-#: src/seedsigner/views/tools_views.py:382
+#: src/seedsigner/views/seed_views.py:854
+#: src/seedsigner/views/tools_views.py:379
 msgid "Next"
 msgstr "weiter"
 
@@ -825,23 +867,23 @@ msgstr "Adressen Verifikation gescheitert"
 msgid "Discard PSBT"
 msgstr "PSBT verwerfen"
 
-#: src/seedsigner/views/psbt_views.py:492
+#: src/seedsigner/views/psbt_views.py:478
 msgid "Approve PSBT"
 msgstr "PSBT bestätigen"
 
-#: src/seedsigner/views/psbt_views.py:544
+#: src/seedsigner/views/psbt_views.py:530
 msgid "PSBT Error"
 msgstr "PSBT Fehler"
 
-#: src/seedsigner/views/psbt_views.py:546
+#: src/seedsigner/views/psbt_views.py:532
 msgid "Signing Failed"
 msgstr "Fehler beim signieren"
 
-#: src/seedsigner/views/psbt_views.py:547
+#: src/seedsigner/views/psbt_views.py:533
 msgid "Signing with this seed did not add a valid signature."
 msgstr "Die Signatur mit diesem Seed ergab keine gültige Signatur"
 
-#: src/seedsigner/views/psbt_views.py:548
+#: src/seedsigner/views/psbt_views.py:534
 msgid "Select Diff Seed"
 msgstr "Wähle anderen Seed"
 
@@ -858,53 +900,49 @@ msgstr "Seed Eingabe"
 msgid "In-Memory Seeds"
 msgstr "gespeicherte Seeds"
 
-#: src/seedsigner/views/seed_views.py:162
+#: src/seedsigner/views/seed_views.py:78
 msgid "Scan a SeedQR"
 msgstr "Scanne einen SeedQR"
 
-#: src/seedsigner/views/seed_views.py:165
+#: src/seedsigner/views/seed_views.py:81
 msgid "Create a seed"
 msgstr "Seed erzeugen"
 
-#: src/seedsigner/views/seed_views.py:174
+#: src/seedsigner/views/seed_views.py:90
 msgid "Load A Seed"
 msgstr "Seed Eingabe"
 
 #. Inserts the word number (e.g. "Seed Word #6")
-#: src/seedsigner/views/seed_views.py:211
+#: src/seedsigner/views/seed_views.py:127
 msgid "Seed Word #{}"
 msgstr "Seed Wort #{}"
 
-#: src/seedsigner/views/seed_views.py:271
+#: src/seedsigner/views/seed_views.py:187
 msgid "Review & Edit"
 msgstr "Prüfen & bearbeiten"
 
-#: src/seedsigner/views/seed_views.py:272
-#: src/seedsigner/views/seed_views.py:475
-#: src/seedsigner/views/tools_views.py:409
+#: src/seedsigner/views/seed_views.py:188
+#: src/seedsigner/views/seed_views.py:343
+#: src/seedsigner/views/tools_views.py:406
 msgid "Discard"
 msgstr "Verwerfen"
 
-#: src/seedsigner/views/seed_views.py:276
+#: src/seedsigner/views/seed_views.py:192
 msgid "Invalid Mnemonic!"
 msgstr "Ungültiger Seed!"
 
-#: src/seedsigner/views/seed_views.py:278
+#: src/seedsigner/views/seed_views.py:194
 msgid "Checksum failure; not a valid seed phrase."
 msgstr "Prüfsumme fehlerhaft, kein valider Seed."
 
-#: src/seedsigner/views/seed_views.py:313
-#: src/seedsigner/views/seed_views.py:390
-#: src/seedsigner/views/seed_views.py:1002
-#: src/seedsigner/views/seed_views.py:1362
+#: src/seedsigner/views/seed_views.py:229
+#: src/seedsigner/views/seed_views.py:301
+#: src/seedsigner/views/seed_views.py:855
+#: src/seedsigner/views/seed_views.py:1213
 msgid "Done"
 msgstr "Fertig"
 
-#: src/seedsigner/views/seed_views.py:314
-msgid "More entropy"
-msgstr ""
-
-#: src/seedsigner/views/seed_views.py:350
+#: src/seedsigner/views/seed_views.py:260
 msgid ""
 "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
 "Be sure you know what you're doing!"
@@ -912,211 +950,211 @@ msgstr ""
 "Eine BIP-39 Passphrase verändert deinen Seed --> neue xpubs, wallets, etc.\n"
 "Bitte vorher informieren!"
 
-#: src/seedsigner/views/seed_views.py:389
+#: src/seedsigner/views/seed_views.py:300
 msgid "Edit passphrase"
 msgstr "Passphrase bearbeiten"
 
-#: src/seedsigner/views/seed_views.py:474
+#: src/seedsigner/views/seed_views.py:342
 msgid "Keep Seed"
 msgstr "Seed behalten"
 
-#: src/seedsigner/views/seed_views.py:480
+#: src/seedsigner/views/seed_views.py:348
 msgid "Discard Seed?"
 msgstr "Seed verwerfen?"
 
-#: src/seedsigner/views/seed_views.py:482
+#: src/seedsigner/views/seed_views.py:350
 msgid "Wipe seed {} from the device?"
 msgstr "Seed {} vom Gerät löschen?"
 
-#: src/seedsigner/views/seed_views.py:516
+#: src/seedsigner/views/seed_views.py:384
 msgid "Scan PSBT"
 msgstr "PSBT scannen"
 
-#: src/seedsigner/views/seed_views.py:518
-#: src/seedsigner/views/seed_views.py:1834
+#: src/seedsigner/views/seed_views.py:386
+#: src/seedsigner/views/seed_views.py:1682
 msgid "Verify Addr"
 msgstr "Verifiziere Addr"
 
-#: src/seedsigner/views/seed_views.py:522
+#: src/seedsigner/views/seed_views.py:390
 msgid "Discard Seed"
 msgstr "Seed verwerfen"
 
-#: src/seedsigner/views/seed_views.py:552
+#: src/seedsigner/views/seed_views.py:420
 msgid " (?)"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:616
+#: src/seedsigner/views/seed_views.py:476
 msgid "View Seed Words"
 msgstr "Seed-Phrase zeigen"
 
-#: src/seedsigner/views/seed_views.py:617
+#: src/seedsigner/views/seed_views.py:477
 msgid "Export as SeedQR"
 msgstr "Als SeedQR exportieren"
 
-#: src/seedsigner/views/seed_views.py:827
+#: src/seedsigner/views/seed_views.py:682
 msgid "Privacy Leak!"
 msgstr "Privatsphäreleck!"
 
-#: src/seedsigner/views/seed_views.py:828
+#: src/seedsigner/views/seed_views.py:683
 msgid "Xpub can be used to view all future transactions."
 msgstr "Der Xpub kann verwendet werden um alle künftigen Transaktionen einzusehen."
 
-#: src/seedsigner/views/seed_views.py:871
+#: src/seedsigner/views/seed_views.py:727
 msgid "Generating xpub..."
 msgstr "Generiere xpub..."
 
-#: src/seedsigner/views/seed_views.py:975
+#: src/seedsigner/views/seed_views.py:829
 msgid "You must keep your seed words private & away from all online devices."
 msgstr "Halte deinen Seed privat & gib Ihn  NIEMALS in ein Gerät mit Internetzugang ein."
 
-#: src/seedsigner/views/seed_views.py:1048
+#: src/seedsigner/views/seed_views.py:901
 msgid "Verify"
 msgstr "Verifizieren"
 
-#: src/seedsigner/views/seed_views.py:1049
+#: src/seedsigner/views/seed_views.py:902
 msgid "Skip"
 msgstr "Überspringen"
 
-#: src/seedsigner/views/seed_views.py:1098
+#: src/seedsigner/views/seed_views.py:951
 msgid "Verify Word #{}"
 msgstr "Verifiziere Wort #{}"
 
-#: src/seedsigner/views/seed_views.py:1138
+#: src/seedsigner/views/seed_views.py:991
 msgid "Review Seed Words"
 msgstr "Seed Phrase überprüfen"
 
-#: src/seedsigner/views/seed_views.py:1139
+#: src/seedsigner/views/seed_views.py:992
 msgid "Try Again"
 msgstr "Erneut versuchen"
 
-#: src/seedsigner/views/seed_views.py:1143
+#: src/seedsigner/views/seed_views.py:996
 msgid "Verification Error"
 msgstr "Verifikationsfehler"
 
-#: src/seedsigner/views/seed_views.py:1145
+#: src/seedsigner/views/seed_views.py:998
 msgid "Wrong Word!"
 msgstr "Falsches Wort!"
 
-#: src/seedsigner/views/seed_views.py:1146
+#: src/seedsigner/views/seed_views.py:999
 msgid "Word #{} is not \"{}\"!"
 msgstr "Wort #{} ist nicht \"{}\"!"
 
-#: src/seedsigner/views/seed_views.py:1164
+#: src/seedsigner/views/seed_views.py:1017
 msgid "Backup Verified"
 msgstr "Backup überprüft"
 
-#: src/seedsigner/views/seed_views.py:1167
+#: src/seedsigner/views/seed_views.py:1020
 msgid "All mnemonic backup words were successfully verified!"
 msgstr "Alle Seed Wörter wurden erfolgreich überprüft"
 
-#: src/seedsigner/views/seed_views.py:1190
+#: src/seedsigner/views/seed_views.py:1043
 msgid "Standard: 25x25"
 msgstr "Standart: 25x25"
 
-#: src/seedsigner/views/seed_views.py:1191
+#: src/seedsigner/views/seed_views.py:1044
 msgid "Compact: 21x21"
 msgstr "Kompakt: 21x21"
 
-#: src/seedsigner/views/seed_views.py:1195
+#: src/seedsigner/views/seed_views.py:1048
 msgid "Standard: 29x29"
 msgstr "Standart: 29x29"
 
-#: src/seedsigner/views/seed_views.py:1196
+#: src/seedsigner/views/seed_views.py:1049
 msgid "Compact: 25x25"
 msgstr "Kompakt: 25x25"
 
-#: src/seedsigner/views/seed_views.py:1217
+#: src/seedsigner/views/seed_views.py:1070
 msgid "SeedQR Format"
 msgstr "SeedQR Format"
 
-#: src/seedsigner/views/seed_views.py:1266
+#: src/seedsigner/views/seed_views.py:1119
 msgid "SeedQR is your private key!"
 msgstr "Der SeedQR ist dein privater Schlüssel!"
 
-#: src/seedsigner/views/seed_views.py:1267
+#: src/seedsigner/views/seed_views.py:1120
 msgid "Never photograph it or scan it into an online device."
 msgstr "Niemals mit einem online Gerät scannen bzw. fotografieren!"
 
-#: src/seedsigner/views/seed_views.py:1361
-#: src/seedsigner/views/seed_views.py:1405
-#: src/seedsigner/views/seed_views.py:1416
-#: src/seedsigner/views/seed_views.py:1428
+#: src/seedsigner/views/seed_views.py:1212
+#: src/seedsigner/views/seed_views.py:1256
+#: src/seedsigner/views/seed_views.py:1267
+#: src/seedsigner/views/seed_views.py:1279
 msgid "Confirm SeedQR"
 msgstr "SeedQR verifizieren"
 
-#: src/seedsigner/views/seed_views.py:1366
+#: src/seedsigner/views/seed_views.py:1217
 msgid "Confirm SeedQR?"
 msgstr "SeedQR verifizieren?"
 
-#: src/seedsigner/views/seed_views.py:1396
+#: src/seedsigner/views/seed_views.py:1247
 msgid "Scan your SeedQR"
 msgstr "Scannen Sie Ihren SeedQR"
 
-#: src/seedsigner/views/seed_views.py:1406
-#: src/seedsigner/views/seed_views.py:1429
+#: src/seedsigner/views/seed_views.py:1257
+#: src/seedsigner/views/seed_views.py:1280
 msgid "Error!"
 msgstr "Fehler!"
 
-#: src/seedsigner/views/seed_views.py:1407
+#: src/seedsigner/views/seed_views.py:1258
 msgid "Your transcribed SeedQR does not match your original seed!"
 msgstr "Ihr übersetzer SeedQR stimmt nicht mit dem originalen Seed überein!"
 
-#: src/seedsigner/views/seed_views.py:1409
-#: src/seedsigner/views/seed_views.py:1432
+#: src/seedsigner/views/seed_views.py:1260
+#: src/seedsigner/views/seed_views.py:1283
 msgid "Review SeedQR"
 msgstr "SeedQR überprüfen"
 
-#: src/seedsigner/views/seed_views.py:1418
+#: src/seedsigner/views/seed_views.py:1269
 msgid "Your transcribed SeedQR successfully scanned and yielded the same seed."
 msgstr "Ihr übersetzter SeedQR wurde erfolgreich gescannt und ergab den selben Seed."
 
-#: src/seedsigner/views/seed_views.py:1430
+#: src/seedsigner/views/seed_views.py:1281
 msgid "Your transcribed SeedQR could not be read!"
 msgstr "Ihr übersetzter SeedQR konnte nicht gelesen werden!"
 
-#: src/seedsigner/views/seed_views.py:1505
+#: src/seedsigner/views/seed_views.py:1353
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr "Sig Typ konnte nicht automatisch erkannt werden. Bitte spezifizieren:"
 
-#: src/seedsigner/views/seed_views.py:1547
+#: src/seedsigner/views/seed_views.py:1395
 msgid "Load the seed to verify"
 msgstr "Laden Sie den Seed zum verifizieren"
 
-#: src/seedsigner/views/seed_views.py:1557
+#: src/seedsigner/views/seed_views.py:1405
 msgid "Select seed to verify"
 msgstr "Zu verifizierenden Seed wählen"
 
-#: src/seedsigner/views/seed_views.py:1615
+#: src/seedsigner/views/seed_views.py:1463
 msgid "Can't validate a single sig addr without specifying a seed"
 msgstr "Sie müssen einen Seed spezifizieren um eine \"single sig\" Adresse zu verifizieren"
 
 #. Option when scanning for a matching address; skips ten addresses ahead
-#: src/seedsigner/views/seed_views.py:1661
+#: src/seedsigner/views/seed_views.py:1509
 msgid "Skip 10"
 msgstr "Springe 10"
 
-#: src/seedsigner/views/seed_views.py:1662
-#: src/seedsigner/views/seed_views.py:1804
+#: src/seedsigner/views/seed_views.py:1510
+#: src/seedsigner/views/seed_views.py:1652
 msgid "Cancel"
 msgstr "Abbruch"
 
-#: src/seedsigner/views/seed_views.py:1788
+#: src/seedsigner/views/seed_views.py:1636
 msgid "multisig"
 msgstr "Multisig"
 
-#: src/seedsigner/views/seed_views.py:1790
+#: src/seedsigner/views/seed_views.py:1638
 msgid "seed {}"
 msgstr "Seed {}"
 
-#: src/seedsigner/views/seed_views.py:1793
+#: src/seedsigner/views/seed_views.py:1641
 msgid "Address Verified"
 msgstr "Addresse verifiziert"
 
-#: src/seedsigner/views/seed_views.py:1803
+#: src/seedsigner/views/seed_views.py:1651
 msgid "Scan Descriptor"
 msgstr "Deskriptor scannen"
 
-#: src/seedsigner/views/seed_views.py:1833
+#: src/seedsigner/views/seed_views.py:1681
 msgid "Return to PSBT"
 msgstr "Zurück zur PSBT"
 
@@ -1133,117 +1171,117 @@ msgstr "Fortgeschritten"
 msgid "Dev Options"
 msgstr "Entwickler Optionen"
 
-#: src/seedsigner/views/tools_views.py:29
+#: src/seedsigner/views/tools_views.py:30
 msgid " New seed"
 msgstr "Generiere Seed"
 
-#: src/seedsigner/views/tools_views.py:30
+#: src/seedsigner/views/tools_views.py:31
 msgid "New seed"
 msgstr "Würfle Seed"
 
-#: src/seedsigner/views/tools_views.py:31
+#: src/seedsigner/views/tools_views.py:32
 msgid "Calc 12th/24th word"
 msgstr "Ber. 12./24. Wort"
 
-#: src/seedsigner/views/tools_views.py:114
-#: src/seedsigner/views/tools_views.py:240
+#: src/seedsigner/views/tools_views.py:111
+#: src/seedsigner/views/tools_views.py:237
 msgid "12 words"
 msgstr "12 Wörter"
 
-#: src/seedsigner/views/tools_views.py:115
-#: src/seedsigner/views/tools_views.py:241
+#: src/seedsigner/views/tools_views.py:112
+#: src/seedsigner/views/tools_views.py:238
 msgid "24 words"
 msgstr "24 Wörter"
 
-#: src/seedsigner/views/tools_views.py:119
+#: src/seedsigner/views/tools_views.py:116
 msgid "Mnemonic Length?"
 msgstr "Seedphrasen Länge?"
 
-#: src/seedsigner/views/tools_views.py:186
+#: src/seedsigner/views/tools_views.py:183
 msgid "12 words (50 rolls)"
 msgstr "12 Wörter (50 Würfe)"
 
-#: src/seedsigner/views/tools_views.py:187
+#: src/seedsigner/views/tools_views.py:184
 msgid "24 words (99 rolls)"
 msgstr "24 Wörter (99 Würfe)"
 
-#: src/seedsigner/views/tools_views.py:191
-#: src/seedsigner/views/tools_views.py:245
+#: src/seedsigner/views/tools_views.py:188
+#: src/seedsigner/views/tools_views.py:242
 msgid "Mnemonic Length"
 msgstr "Seedphrasen Länge"
 
 #. Label to gather entropy through coin tosses
-#: src/seedsigner/views/tools_views.py:278
+#: src/seedsigner/views/tools_views.py:275
 msgid "Coin flip entropy"
 msgstr ""
 
 #. Label to gather entropy through user specified BIP-39 word
-#: src/seedsigner/views/tools_views.py:280
+#: src/seedsigner/views/tools_views.py:277
 msgid "Word selection entropy"
 msgstr ""
 
 #. Label to allow user to default entropy as all-zeros
-#: src/seedsigner/views/tools_views.py:282
+#: src/seedsigner/views/tools_views.py:279
 msgid "Finalize with zeros"
 msgstr ""
 
 #. label to calculate the last word of a BIP-39 mnemonic seed phrase
-#: src/seedsigner/views/tools_views.py:386
+#: src/seedsigner/views/tools_views.py:383
 msgid "Final Word Calc"
 msgstr ""
 
-#: src/seedsigner/views/tools_views.py:408
+#: src/seedsigner/views/tools_views.py:405
 msgid "Load seed"
 msgstr "Lade Seed"
 
-#: src/seedsigner/views/tools_views.py:438
+#: src/seedsigner/views/tools_views.py:434
 msgid "Scan wallet descriptor"
 msgstr ""
 
 #. label for addresses where others send us incoming payments
-#: src/seedsigner/views/tools_views.py:547
+#: src/seedsigner/views/tools_views.py:542
 msgid "Receive Addresses"
 msgstr ""
 
 #. label for addresses that collect the change from our own outgoing payments
-#: src/seedsigner/views/tools_views.py:549
+#: src/seedsigner/views/tools_views.py:544
 msgid "Change Addresses"
 msgstr ""
 
 #. a status message that our payment addresses are being calculated
-#: src/seedsigner/views/tools_views.py:601
+#: src/seedsigner/views/tools_views.py:595
 msgid "Calculating addrs..."
 msgstr ""
 
-#: src/seedsigner/views/tools_views.py:640
+#: src/seedsigner/views/tools_views.py:634
 msgid "Next {}"
 msgstr ""
 
-#: src/seedsigner/views/tools_views.py:643
+#: src/seedsigner/views/tools_views.py:637
 msgid "Receive Addrs"
 msgstr ""
 
-#: src/seedsigner/views/tools_views.py:643
+#: src/seedsigner/views/tools_views.py:637
 msgid "Change Addrs"
 msgstr ""
 
-#: src/seedsigner/views/view.py:124
+#: src/seedsigner/views/view.py:222
 msgid "Work In Progress"
 msgstr "in Arbeit"
 
-#: src/seedsigner/views/view.py:125
+#: src/seedsigner/views/view.py:223
 msgid "Not Yet Implemented"
 msgstr "Noch nicht implementiert"
 
-#: src/seedsigner/views/view.py:126
+#: src/seedsigner/views/view.py:224
 msgid "This is still on our to-do list!"
 msgstr "Dies ist noch auf unserer To-Do Liste!"
 
-#: src/seedsigner/views/view.py:127
+#: src/seedsigner/views/view.py:225
 msgid "Back to Main Menu"
 msgstr "Zurück zum Hauptmenü"
 
-#: src/seedsigner/views/view.py:142
+#: src/seedsigner/views/view.py:240
 msgid "System Error"
 msgstr "Systemfehler"
 
@@ -1267,4 +1305,10 @@ msgstr "Systemfehler"
 
 #~ msgid "Legacy P2PKH verification not implemented!"
 #~ msgstr "Legacy P2PKH Überprüfung nicht implementiert!"
+
+#~ msgid "More entropy"
+#~ msgstr ""
+
+#~ msgid "English"
+#~ msgstr ""
 
