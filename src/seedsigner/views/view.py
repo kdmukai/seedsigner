@@ -6,7 +6,7 @@ from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants
 from seedsigner.gui.screens import RET_CODE__POWER_BUTTON
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, DireWarningScreen, WarningScreen
 from seedsigner.models.threads import BaseThread
-
+from seedsigner.models import Settings
 
 
 class BackStackView:
@@ -191,8 +191,10 @@ class RestartView(View):
 
             # Kill the SeedSigner process; Running the process again.
             # `.*` is a wildcard to detect either `python`` or `python3`.
-            # jdlcdl: pidof wildcard not working for me
-            call("kill $(pidof python python3) & python /opt/src/main.py", shell=True)
+            if Settings.HOSTNAME == Settings.SEEDSIGNER_OS:
+                call("kill $(pidof python*) & python /opt/src/main.py", shell=True)
+            else:
+                call("kill $(ps aux | grep '[p]ython.*main.py' | awk '{print $2}')", shell=True)
 
 
 
@@ -209,7 +211,13 @@ class PowerOffView(View):
             from subprocess import call
             while self.keep_running:
                 time.sleep(5)
-                call("poweroff", shell=True)
+                if Settings.HOSTNAME == Settings.SEEDSIGNER_OS:
+                    # disable microsd detection before shutdown to prevent display of toast notification during shutdown
+                    from seedsigner.controller import Controller
+                    Controller.get_instance().microsd.stop()
+                    call("poweroff", shell=True)
+                else:
+                    call("sudo shutdown --poweroff now", shell=True)
 
 
 class NotYetImplementedView(View):
