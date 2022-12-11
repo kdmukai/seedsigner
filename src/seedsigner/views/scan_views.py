@@ -7,7 +7,8 @@ from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON
 from seedsigner.models import DecodeQR, Seed
 from seedsigner.models.settings import SettingsConstants
 
-from .view import BackStackView, MainMenuView, NotYetImplementedView, View, Destination
+from .view import (BackStackView, MainMenuView, NotYetImplementedView, View, Destination,
+    OptionDisabledView)
 
 
 
@@ -100,16 +101,19 @@ class ScanView(View):
                 )
             
             elif self.decoder.is_sign_message:
-                from seedsigner.views.seed_views import SeedSignMessageStartView
-                qr_data = self.decoder.get_qr_data()
+                if self.settings.get_value(SettingsConstants.SETTING__MESSAGE_SIGNING) == SettingsConstants.OPTION__ENABLED:
+                    from seedsigner.views.seed_views import SeedSignMessageStartView
+                    qr_data = self.decoder.get_qr_data()
 
-                return Destination(
-                    SeedSignMessageStartView,
-                    view_args=dict(
-                        derivation_path=qr_data["derivation_path"],
-                        message=qr_data["message"],
+                    return Destination(
+                        SeedSignMessageStartView,
+                        view_args=dict(
+                            derivation_path=qr_data["derivation_path"],
+                            message=qr_data["message"],
+                        )
                     )
-                )
+                else:
+                    return Destination(OptionDisabledView, view_args=dict(error_msg="Message signing is currently disabled in Settings"))
             
             else:
                 return Destination(NotYetImplementedView)
