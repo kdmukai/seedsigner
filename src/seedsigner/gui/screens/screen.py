@@ -10,8 +10,7 @@ from seedsigner.models.threads import BaseThread, ThreadsafeCounter
 from seedsigner.models.encode_qr import EncodeQR
 from seedsigner.models.settings import Settings, SettingsConstants
 
-from ..components import (FontAwesomeIconConstants, GUIConstants, BaseComponent, Button, Icon, IconButton, LargeIconButton, SeedSignerCustomIconConstants, TopNav,
-    TextArea, load_image)
+from ..components import (FontAwesomeIconConstants, GUIConstants, BaseComponent, Button, Icon, IconButton, LargeIconButton, SeedSignerCustomIconConstants, TopNav, TextArea, load_image, ToastOverlay)
 
 from seedsigner.hardware.buttons import HardwareButtonsConstants, HardwareButtons
 
@@ -1035,14 +1034,17 @@ class KeyboardScreen(BaseTopNavScreen):
             
             elif self.show_save_button and input == HardwareButtonsConstants.KEY3:
                 # Save!
+                if len(self.user_input) == 0:
+                    # Don't try to submit zero input
+                    continue
+
                 # First show the save button reacting to the click
                 self.save_button.is_selected = True
                 self.save_button.render()
                 self.renderer.show_image()
 
                 # Then return the input to the View
-                if len(self.user_input) > 0:
-                    return self.user_input.strip()
+                return self.user_input.strip()
     
             # Process normal input
             if input in [HardwareButtonsConstants.KEY_UP, HardwareButtonsConstants.KEY_DOWN] and self.top_nav.is_selected:
@@ -1113,3 +1115,38 @@ class KeyboardScreen(BaseTopNavScreen):
                 self.title = f"Roll {self.cursor_position + 1}"
         """
         return False
+
+class MicroSDToastScreen(BaseScreen):
+    """
+        This screen is an overlay with special behavior with the ToastOverlay component. The ToastOverlay component overides all button
+        input and captures the existing screen content and stashes it to be restored once X second passes or any button is pressed. The
+        display method on this screen will not complete until after the ToastOverlay render method is complete it's takeover of the screen.
+    """
+    def __init__(self, action):
+        self.action = action
+        self.toast = None
+        super().__init__()
+    
+    def _run(self):
+        return
+    
+    def _render(self):
+        from seedsigner.hardware.microsd import MicroSD
+        
+        if self.action == MicroSD.ACTION__REMOVED:
+        
+            self.toast = ToastOverlay(
+                icon_name=FontAwesomeIconConstants.SDCARD,
+                color=GUIConstants.NOTIFICATION_COLOR,
+                label_text="MicroSD removed"
+            )
+        
+        elif self.action == MicroSD.ACTION__INSERTED:
+            
+            self.toast = ToastOverlay(
+                icon_name=FontAwesomeIconConstants.SDCARD,
+                color=GUIConstants.NOTIFICATION_COLOR,
+                label_text="MicroSD inserted"
+            )
+        
+        self.toast.render()

@@ -13,6 +13,9 @@ class SettingsConstants:
         (OPTION__ENABLED, "Enabled"),
         (OPTION__DISABLED, "Disabled"),
     ]
+    OPTIONS__ONLY_DISABLED = [
+        (OPTION__DISABLED, "Disabled"),
+    ]
     OPTIONS__PROMPT_REQUIRED_DISABLED = [
         (OPTION__PROMPT, "Prompt"),
         (OPTION__REQUIRED, "Required"),
@@ -152,6 +155,7 @@ class SettingsConstants:
     SETTING__PASSPHRASE = "passphrase"
     SETTING__CAMERA_ROTATION = "camera_rotation"
     SETTING__COMPACT_SEEDQR = "compact_seedqr"
+    SETTING__BIP85_CHILD_SEEDS = "bip85_child_seeds"
     SETTING__PRIVACY_WARNINGS = "privacy_warnings"
     SETTING__DIRE_WARNINGS = "dire_warnings"
     SETTING__PARTNER_LOGOS = "partner_logos"
@@ -437,6 +441,12 @@ class SettingsDefinition:
                       default_value=SettingsConstants.OPTION__DISABLED),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
+                      attr_name=SettingsConstants.SETTING__BIP85_CHILD_SEEDS,
+                      display_name="BIP-85 child seeds",
+                      visibility=SettingsConstants.VISIBILITY__ADVANCED,
+                      default_value=SettingsConstants.OPTION__DISABLED),
+
+        SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__PRIVACY_WARNINGS,
                       display_name="Show privacy warnings",
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
@@ -520,7 +530,14 @@ class SettingsDefinition:
 
 if __name__ == "__main__":
     import json
+    import os
 
-    output_file = "settings_definition.json"
+    hostname = os.uname()[1]
+  
+    if hostname == "seedsigner-os":
+        output_file = "/mnt/microsd/settings_definition.json"
+    else:
+        output_file = "settings_definition.json"
+    
     with open(output_file, 'w') as json_file:
         json.dump(SettingsDefinition.to_dict(), json_file, indent=4)
