@@ -408,13 +408,12 @@ class SeedMnemonicEntryScreen(BaseTopNavScreen):
 @dataclass
 class SeedFinalizeScreen(ButtonListScreen):
     fingerprint: str = None
-    title: str = _("Finalize Seed")
     is_bottom_list: bool = True
     button_data: list = None
 
     def __post_init__(self):
         self.show_back_button = False
-
+        self.title = _("Finalize Seed")
         super().__post_init__()
 
         self.fingerprint_icontl = IconTextLine(
@@ -584,17 +583,16 @@ class SeedExportXpubCustomDerivationScreen(KeyboardScreen):
 @dataclass
 class SeedExportXpubDetailsScreen(WarningEdgesMixin, ButtonListScreen):
     # Customize defaults
-    title: str = _("Xpub Details")
     is_bottom_list: bool = True
     fingerprint: str = None
     has_passphrase: bool = False
     derivation_path: str = "m/84'/0'/0'"
     xpub: str = "zpub6r..."
-    button_data=[_("Export Xpub")]
 
     def __post_init__(self):
         # Programmatically set up other args
         self.button_data = [_("Export Xpub")]
+        self.title = _("Xpub Details")
 
         # Initialize the base class
         super().__post_init__()
@@ -635,9 +633,7 @@ class SeedExportXpubDetailsScreen(WarningEdgesMixin, ButtonListScreen):
 
 @dataclass
 class SeedAddPassphraseScreen(BaseTopNavScreen):
-    title: str = _("Add Passphrase")
     passphrase: str = ""
-
     KEYBOARD__LOWERCASE_BUTTON_TEXT = "abc"
     KEYBOARD__UPPERCASE_BUTTON_TEXT = "ABC"
     KEYBOARD__DIGITS_BUTTON_TEXT = "123"
@@ -646,6 +642,7 @@ class SeedAddPassphraseScreen(BaseTopNavScreen):
 
 
     def __post_init__(self):
+        self.title = _("Add Passphrase")
         super().__post_init__()
 
         keys_lower = "abcdefghijklmnopqrstuvwxyz"
