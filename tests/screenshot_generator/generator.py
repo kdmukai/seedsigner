@@ -34,7 +34,7 @@ def test_generate_screenshots(target_locale):
     Camera.get_instance = Mock()
 
     # Prep the ScreenshotRenderer that will be patched over the normal Renderer
-    screenshot_root = "/Users/kdmukai/dev/seedsigner-screenshots"
+    screenshot_root = "/home/pi/seedsigner-screenshots"
     ScreenshotRenderer.configure_instance()
     screenshot_renderer: ScreenshotRenderer = ScreenshotRenderer.get_instance()
 
@@ -99,7 +99,7 @@ def test_generate_screenshots(target_locale):
     screenshot_sections = {
         "Main Menu Views": [
             main_menu_views.MainMenuView,
-            main_menu_views.PowerOffView,
+            #main_menu_views.PowerOffView,
             (scan_views.SettingsUpdatedView, dict(config_name="Keith's Settings")),
         ],
         "Seed Views": [
@@ -147,7 +147,6 @@ def test_generate_screenshots(target_locale):
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=True, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_change"),
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=False, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_selftransfer"),
             psbt_views.PSBTFinalizeView,
-            psbt_views.PSBTSelectCoordinatorView,
             psbt_views.PSBTSigningErrorView,
         ],
         "Tools Views": [
