@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-13 05:20-0400\n"
+"POT-Creation-Date: 2022-12-13 11:29-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Okami ., 2022\n"
 "Language: ko\n"
@@ -1349,11 +1349,5 @@ msgstr "시스템 Error"
 #~ msgstr ""
 
 #~ msgid "Legacy P2PKH verification not implemented!"
-#~ msgstr ""
-
-#~ msgid "More entropy"
-#~ msgstr ""
-
-#~ msgid "English"
 #~ msgstr ""
 

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-13 05:20-0400\n"
+"POT-Creation-Date: 2022-12-13 11:29-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Dom Azeredo, 2022\n"
 "Language: pt\n"
@@ -1356,10 +1356,4 @@ msgstr "Erro no Sistema"
 
 #~ msgid "Legacy P2PKH verification not implemented!"
 #~ msgstr "Verificação P2PKH Legacy não implementada!"
-
-#~ msgid "More entropy"
-#~ msgstr ""
-
-#~ msgid "English"
-#~ msgstr ""
 
