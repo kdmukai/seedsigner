@@ -99,6 +99,8 @@ def test_generate_screenshots(target_locale):
     screenshot_sections = {
         "Main Menu Views": [
             main_menu_views.MainMenuView,
+            main_menu_views.PowerOptionsView,
+            #main_menu_views.RestartView,
             #main_menu_views.PowerOffView,
             (scan_views.SettingsUpdatedView, dict(config_name="Keith's Settings")),
         ],
@@ -113,9 +115,21 @@ def test_generate_screenshots(target_locale):
             seed_views.SeedReviewPassphraseView,
             (seed_views.SeedOptionsView, dict(seed_num=0)),
             (seed_views.SeedBackupView, dict(seed_num=0)),
+            (seed_views.SeedExportXpubSigTypeView, dict(seed_num=0)),
+            (seed_views.SeedExportXpubScriptTypeView, dict(seed_num=0, sig_type="msig")),
+            (seed_views.SeedExportXpubCustomDerivationView, dict(seed_num=0, sig_type="ss", script_type="")),
+            (seed_views.SeedExportXpubCoordinatorView, dict(seed_num=0, sig_type="ss", script_type="nat")),
+            (seed_views.SeedExportXpubWarningView, dict(seed_num=0, sig_type="msig", script_type="nes", coordinator="spd", custom_derivation="")),
+            (seed_views.SeedExportXpubDetailsView, dict(seed_num=0, sig_type="ss", script_type="nat", coordinator="bw", custom_derivation="")),
             (seed_views.SeedWordsWarningView, dict(seed_num=0)),
             (seed_views.SeedWordsView, dict(seed_num=0)),
             (seed_views.SeedWordsView, dict(seed_num=0, page_index=2), "SeedWordsView_2"),
+            (seed_views.SeedBIP85ApplicationModeView, dict(seed_num=0)),
+            (seed_views.SeedBIP85SelectChildIndexView, dict(seed_num=0, num_words=24)),
+            (seed_views.SeedWordsBackupTestPromptView, dict(seed_num=0)),
+            (seed_views.SeedWordsBackupTestView, dict(seed_num=0)),
+            (seed_views.SeedWordsBackupTestMistakeView, dict(seed_num=0, cur_index=7, wrong_word="unlucky")),
+            (seed_views.SeedWordsBackupTestSuccessView, dict(seed_num=0)),
             (seed_views.SeedTranscribeSeedQRFormatView, dict(seed_num=0)),
             (seed_views.SeedTranscribeSeedQRWarningView, dict(seed_num=0)),
             (seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=0, seedqr_format=QRType.SEED__SEEDQR, num_modules=25), "SeedTranscribeSeedQRWholeQRView_12_Standard"),
@@ -128,6 +142,14 @@ def test_generate_screenshots(target_locale):
 
             # Screenshot can't render live preview screens
             # (seed_views.SeedTranscribeSeedQRConfirmScanView, dict(seed_num=0)),
+
+            #jdlcdl todo
+            #(seed_views.AddressVerificationStartView, dict(address=, script_type="nat", network="M")),
+            #seed_views.AddressVerificationSigTypeView,
+            #seed_views.SeedSingleSigAddressVerificationSelectSeedView,
+            #seed_views.SeedAddressVerificationView,
+            #seed_views.AddressVerificationSuccessView,
+            #jdlcdl
 
             seed_views.LoadMultisigWalletDescriptorView,
             seed_views.MultisigWalletDescriptorView,
@@ -153,6 +175,17 @@ def test_generate_screenshots(target_locale):
             tools_views.ToolsMenuView,
             tools_views.ToolsDiceEntropyMnemonicLengthView,
             (tools_views.ToolsDiceEntropyEntryView, dict(total_rolls=50)),
+            tools_views.ToolsCalcFinalWordNumWordsView,
+            tools_views.ToolsCalcFinalWordFinalizePromptView,
+            #jdlcdl
+            #tools_views.ToolsCalcFinalWordCoinFlipsView,
+            #(tools_views.ToolsCalcFinalWordShowFinalWordView, dict(coin_flips=3)),
+            #tools_views.ToolsCalcFinalWordDoneView,
+            tools_views.ToolsAddressExplorerSelectSourceView,
+            tools_views.ToolsAddressExplorerAddressTypeView,
+            tools_views.ToolsAddressExplorerAddressListView,
+            #tools_views.ToolsAddressExplorerAddressView,
+            #jdlcdl
         ],
         "Settings Views": settings_views_list,
     }
