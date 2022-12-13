@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-13 11:29-0400\n"
+"POT-Creation-Date: 2022-12-13 05:20-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Jp Prudhomme <jpprudhomme@gmail.com>, 2022\n"
 "Language: fr\n"
@@ -337,7 +337,7 @@ msgstr "Compacte"
 #. Briefly explains the Compact SeedQR data format
 #: src/seedsigner/gui/screens/seed_screens.py:1133
 msgid "Raw entropy bits"
-msgstr "bits entropie brut"
+msgstr "Bits entropie brut"
 
 #: src/seedsigner/gui/screens/seed_screens.py:1147
 msgid "Transcribe SeedQR"
@@ -390,7 +390,7 @@ msgstr "Clés de Signature"
 
 #: src/seedsigner/gui/screens/seed_screens.py:1544
 msgid "BIP-85 Index"
-msgstr ""
+msgstr "Index BIP-85"
 
 #: src/seedsigner/gui/screens/settings_screens.py:26
 #: src/seedsigner/views/main_menu_views.py:21
@@ -402,7 +402,7 @@ msgstr "Paramètres"
 #. working properly
 #: src/seedsigner/gui/screens/settings_screens.py:59
 msgid "I/O Test"
-msgstr "Test Entré/Sortie"
+msgstr "Test Entrée/Sortie"
 
 #. Blank the screen
 #: src/seedsigner/gui/screens/settings_screens.py:130
@@ -434,7 +434,7 @@ msgid ""
 "SeedSigner is 100%% free & open source, funded solely by the Bitcoin community.\n"
 "\n"
 "Donate onchain or LN at:"
-msgstr "SeedSigner est 100%% gratuit et open source, financé par la communauté Bitcoin. Faites un don 'onchain' ou LN à:"
+msgstr "SeedSigner est 100%% gratuit & open source, financé par la communauté Bitcoin. Faites un don 'onchain' ou LN à:"
 
 #. Instructions when taking a picture; "back" should point left.
 #: src/seedsigner/gui/screens/tools_screens.py:41
@@ -445,7 +445,7 @@ msgstr "< retour | clic joystick"
 #. must point right
 #: src/seedsigner/gui/screens/tools_screens.py:99
 msgid " < reshoot  |  accept > "
-msgstr "< recommencer | accepter >"
+msgstr "< recapturer | accepter >"
 
 #. current roll number vs total rolls (e.g. roll 7 of 50)
 #: src/seedsigner/gui/screens/tools_screens.py:119
@@ -461,7 +461,7 @@ msgstr "Calculer Dernier Mot"
 #. Number of BIP-39 seed words, and the entropy -- in bits, contained within.
 #: src/seedsigner/gui/screens/tools_screens.py:169
 msgid "The {}th word is built from {} more entropy bits plus auto-calculated checksum."
-msgstr "Le {}ème mot contient {} bits entropie plus la somme de contrôle."
+msgstr "Le {}ème mot est obtenu par {} plus de bits entropie plus la somme de contrôle."
 
 #. current coin-flip number vs total flips (e.g. flip 3 of 4)
 #: src/seedsigner/gui/screens/tools_screens.py:180
@@ -677,7 +677,7 @@ msgstr "Langue Mnémoniques"
 
 #: src/seedsigner/models/settings_definition.py:378
 msgid "Persistent settings"
-msgstr "Paramètres persistents"
+msgstr "Paramètres persistants"
 
 #: src/seedsigner/models/settings_definition.py:384
 msgid "Coordinator software"
@@ -709,7 +709,7 @@ msgstr "Types Scripts"
 
 #: src/seedsigner/models/settings_definition.py:438
 msgid "Show xpub details"
-msgstr "Afficher détails Xpub"
+msgstr "Afficher détails xpub"
 
 #: src/seedsigner/models/settings_definition.py:444
 msgid "BIP-39 passphrase"
@@ -804,7 +804,7 @@ msgstr "Type de Script non supporté !"
 
 #: src/seedsigner/views/psbt_views.py:167
 msgid "PSBT has unsupported input script type, please verify your change addresses."
-msgstr "La PSBT a un script d'entrée non supporté, veuillez vérfier votre adresse de monnaie."
+msgstr "Script d'entrée PSBT non supporté, veuillez vérfier votre adresse de monnaie."
 
 #: src/seedsigner/views/psbt_views.py:168
 #: src/seedsigner/views/psbt_views.py:187
@@ -819,7 +819,7 @@ msgstr "Dépense Totale !"
 
 #: src/seedsigner/views/psbt_views.py:186
 msgid "This PSBT spends its entire input value. No change is coming back to your wallet."
-msgstr "Cette PSBT dépense la totalité de la valeur entrée. Aucune monnaie ne sera rendue sur votre portefeuille."
+msgstr "Cette PSBT fait l'appoint. Aucune monnaie ne sera rendue."
 
 #. Future-tense used to indicate that this transaction will send this amount,
 #. as opposed to "Send" on its own which could be misread as an instant command
@@ -847,7 +847,7 @@ msgstr "Votre Monnaie"
 
 #: src/seedsigner/views/psbt_views.py:336
 msgid "Verify Multisig Change"
-msgstr "Verifier la monnaie Multisig"
+msgstr "Verifier Monnaie Multisig"
 
 #: src/seedsigner/views/psbt_views.py:338
 msgid "Self-Transfer"
@@ -863,12 +863,12 @@ msgstr "Vérification Monnaie..."
 
 #: src/seedsigner/views/psbt_views.py:360
 msgid "Verifying Self-Transfer..."
-msgstr "Verification de l' Auto-Transfert..."
+msgstr "Vérification de l' Auto-Transfert..."
 
 #. Variable is either "change" or "self-transfer".
 #: src/seedsigner/views/psbt_views.py:443
 msgid "PSBT's {} address could not be verified with your multisig wallet descriptor."
-msgstr "L'adresse PSBT's {} n'a pas pu être vérifiée avec le descripteur multisig de votre portefeuille."
+msgstr "Votre descripteur portefeuille multisig n'a pas pu vérifier l'adresse PSBT {}."
 
 #: src/seedsigner/views/psbt_views.py:445
 msgid "Suspicious PSBT"
@@ -877,11 +877,11 @@ msgstr "PSBT Suspect"
 #. Variable is either "change" or "self-transfer".
 #: src/seedsigner/views/psbt_views.py:447
 msgid "PSBT's {} address could not be generated from your seed."
-msgstr "L'adresse {} PSBT n'a pas pu être générée depuis votre seed."
+msgstr "Votre seed n'a pas pu générer l'adresse PSBT {}."
 
 #: src/seedsigner/views/psbt_views.py:451
 msgid "Address Verification Failed"
-msgstr "Echec vérification de l'adresse"
+msgstr "Echec vérification de l'Adresse"
 
 #: src/seedsigner/views/psbt_views.py:453
 msgid "Discard PSBT"
@@ -901,7 +901,7 @@ msgstr "Echec signature"
 
 #: src/seedsigner/views/psbt_views.py:533
 msgid "Signing with this seed did not add a valid signature."
-msgstr "Signer avec cette seed n'a pas ajouté une signature valide"
+msgstr "La signature avec cette seed n'a pas ajouté de signature valide."
 
 #: src/seedsigner/views/psbt_views.py:534
 msgid "Select Diff Seed"
@@ -967,8 +967,8 @@ msgid ""
 "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
 "Be sure you know what you're doing!"
 msgstr ""
-"La phrase secrète BIP-39 change votre seed, creant de nouvaux xpubs, portefeuilles, etc.\n"
-"Soyez sür de savoir ce que vous faites !"
+"La phrase secrète BIP-39 change votre seed, créant de nouveaux xpubs, portefeuilles, etc.\n"
+"Soyez certain de savoir ce que vous faites !"
 
 #: src/seedsigner/views/seed_views.py:300
 msgid "Edit passphrase"
@@ -1077,7 +1077,7 @@ msgstr "Erreur Vérification"
 
 #: src/seedsigner/views/seed_views.py:1113
 msgid "Wrong Word!"
-msgstr "Mots Érronés !"
+msgstr "Mots Erronés !"
 
 #: src/seedsigner/views/seed_views.py:1114
 msgid "Word #{} is not \"{}\"!"
@@ -1170,7 +1170,7 @@ msgstr "Sélectionner la seed à vérifier"
 
 #: src/seedsigner/views/seed_views.py:1589
 msgid "Can't validate a single sig addr without specifying a seed"
-msgstr "Validation d'une adresse single sig impossible sans spécifier la seed"
+msgstr "Impossible de valider l'adresse d'une clé simple sans spécifier la seed"
 
 #. Option when scanning for a matching address; skips ten addresses ahead
 #: src/seedsigner/views/seed_views.py:1635
@@ -1290,7 +1290,7 @@ msgstr "Adresses de Réception"
 #. label for addresses that collect the change from our own outgoing payments
 #: src/seedsigner/views/tools_views.py:544
 msgid "Change Addresses"
-msgstr "Adresses de la Monnaie"
+msgstr "Adresses de Monnaie"
 
 #. a status message that our payment addresses are being calculated
 #: src/seedsigner/views/tools_views.py:595
@@ -1303,7 +1303,7 @@ msgstr "Prochain {}"
 
 #: src/seedsigner/views/tools_views.py:637
 msgid "Receive Addrs"
-msgstr "Adrs Reception"
+msgstr "Adrs Réception"
 
 #: src/seedsigner/views/tools_views.py:637
 msgid "Change Addrs"
@@ -1319,7 +1319,7 @@ msgstr "Pas encore implémenté"
 
 #: src/seedsigner/views/view.py:232
 msgid "This is still on our to-do list!"
-msgstr "Ceci est toujours dans notre liste 'a-faire' !"
+msgstr " Ce qu'il nous reste 'à-faire' !"
 
 #: src/seedsigner/views/view.py:233
 msgid "Back to Main Menu"

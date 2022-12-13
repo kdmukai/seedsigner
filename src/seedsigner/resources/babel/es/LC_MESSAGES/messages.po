@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-13 11:29-0400\n"
+"POT-Creation-Date: 2022-12-13 05:20-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Bitcoin Hornet, 2022\n"
 "Language: es\n"
@@ -26,11 +26,11 @@ msgstr ""
 
 #: src/seedsigner/gui/renderer.py:148
 msgid "Yes "
-msgstr ""
+msgstr "Si"
 
 #: src/seedsigner/gui/renderer.py:148
 msgid "No "
-msgstr ""
+msgstr "No"
 
 #: src/seedsigner/gui/screens/main_menu_screens.py:12
 #: src/seedsigner/gui/screens/scan_screens.py:140
@@ -232,11 +232,11 @@ msgstr "¡Información Clasificada!"
 
 #: src/seedsigner/gui/screens/screen.py:1140
 msgid "MicroSD removed"
-msgstr ""
+msgstr "MicroSD sacada"
 
 #: src/seedsigner/gui/screens/screen.py:1148
 msgid "MicroSD inserted"
-msgstr ""
+msgstr "MicroSD insertada"
 
 #: src/seedsigner/gui/screens/seed_screens.py:411
 msgid "Finalize Seed"
@@ -1357,4 +1357,10 @@ msgstr "Error del Sistema"
 
 #~ msgid "Legacy P2PKH verification not implemented!"
 #~ msgstr "¡La verificación P2PKH heredadas no está todavía implementada!"
+
+#~ msgid "More entropy"
+#~ msgstr ""
+
+#~ msgid "English"
+#~ msgstr ""
 
