@@ -937,13 +937,13 @@ class SeedBIP85ApplicationModeView(View):
 
     def run(self):
         # TODO: Future enhancement to display WIF (HD-SEED) and XPRV (Bip32)?
-        WORDS_12 = "12 Words"
-        WORDS_24 = "24 Words"
+        WORDS_12 = _("12 Words")
+        WORDS_24 = _("24 Words")
 
         button_data = [WORDS_12, WORDS_24]
 
         selected_menu_num = ButtonListScreen(
-            title="BIP-85 Num Words",
+            title=_("BIP-85 Num Words"),
             button_data=button_data
         ).display()
 

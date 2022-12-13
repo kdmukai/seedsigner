@@ -1137,7 +1137,7 @@ class MicroSDToastScreen(BaseScreen):
             self.toast = ToastOverlay(
                 icon_name=FontAwesomeIconConstants.SDCARD,
                 color=GUIConstants.NOTIFICATION_COLOR,
-                label_text="MicroSD removed"
+                label_text=_("MicroSD removed")
             )
         
         elif self.action == MicroSD.ACTION__INSERTED:
@@ -1145,7 +1145,7 @@ class MicroSDToastScreen(BaseScreen):
             self.toast = ToastOverlay(
                 icon_name=FontAwesomeIconConstants.SDCARD,
                 color=GUIConstants.NOTIFICATION_COLOR,
-                label_text="MicroSD inserted"
+                label_text=_("MicroSD inserted")
             )
         
         self.toast.render()

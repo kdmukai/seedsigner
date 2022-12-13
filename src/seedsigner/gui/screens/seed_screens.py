@@ -1541,7 +1541,7 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
 @dataclass
 class SeedBIP85SelectChildIndexScreen(KeyboardScreen):
     def __post_init__(self):
-        self.title = "BIP-85 Index"
+        self.title = _("BIP-85 Index")
         self.user_input = ""
 
         # Specify the keys in the keyboard

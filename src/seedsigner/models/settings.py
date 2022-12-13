@@ -205,7 +205,7 @@ class Settings(Singleton):
                 # restore persistent settings back to defaults
                 entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__PERSISTENT_SETTINGS)
                 entry.selection_options = SettingsConstants.OPTIONS__ENABLED_DISABLED
-                entry.help_text = "Store Settings on SD card."
+                entry.help_text = _("Store Settings on SD card.")
                 
                 # if Settings file exists (meaning persistent settings was previously enabled), write out current settings to disk
                 if os.path.exists(Settings.SETTINGS_FILENAME):
@@ -220,4 +220,4 @@ class Settings(Singleton):
                 # set persistent settings to only have disabled as an option, adding additional help text that microSD is removed
                 entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__PERSISTENT_SETTINGS)
                 entry.selection_options = SettingsConstants.OPTIONS__ONLY_DISABLED
-                entry.help_text = "MicroSD card is removed"
+                entry.help_text = _("MicroSD card is removed")

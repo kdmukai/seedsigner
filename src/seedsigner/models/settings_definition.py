@@ -15,7 +15,7 @@ class SettingsConstants:
         (OPTION__DISABLED, _("Disabled")),
     ]
     OPTIONS__ONLY_DISABLED = [
-        (OPTION__DISABLED, "Disabled"),
+        (OPTION__DISABLED, _("Disabled")),
     ]
     OPTIONS__PROMPT_REQUIRED_DISABLED = [
         (OPTION__PROMPT, _("Prompt")),
@@ -463,7 +463,7 @@ class SettingsDefinition:
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__BIP85_CHILD_SEEDS,
-                      display_name="BIP-85 child seeds",
+                      display_name=_("BIP-85 child seeds"),
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       default_value=SettingsConstants.OPTION__DISABLED),
 
