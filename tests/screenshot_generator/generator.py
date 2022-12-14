@@ -150,7 +150,6 @@ def test_generate_screenshots(target_locale):
             #seed_views.SeedSingleSigAddressVerificationSelectSeedView,
             #seed_views.SeedAddressVerificationView,
             #seed_views.AddressVerificationSuccessView,
-            #jdlcdl
 
             seed_views.LoadMultisigWalletDescriptorView,
             seed_views.MultisigWalletDescriptorView,
@@ -178,15 +177,15 @@ def test_generate_screenshots(target_locale):
             (tools_views.ToolsDiceEntropyEntryView, dict(total_rolls=50)),
             tools_views.ToolsCalcFinalWordNumWordsView,
             tools_views.ToolsCalcFinalWordFinalizePromptView,
-            #jdlcdl
-            #tools_views.ToolsCalcFinalWordCoinFlipsView,
+            tools_views.ToolsCalcFinalWordCoinFlipsView,
+            # jdlcdl todo
             #(tools_views.ToolsCalcFinalWordShowFinalWordView, dict(coin_flips=3)),
             #tools_views.ToolsCalcFinalWordDoneView,
             tools_views.ToolsAddressExplorerSelectSourceView,
             tools_views.ToolsAddressExplorerAddressTypeView,
             tools_views.ToolsAddressExplorerAddressListView,
+            # jdlcdl todo
             #tools_views.ToolsAddressExplorerAddressView,
-            #jdlcdl
         ],
         "Settings Views": settings_views_list,
     }

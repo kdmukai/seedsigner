@@ -182,7 +182,7 @@ class ToolsCoinFlipEntryScreen(KeyboardScreen):
         # Specify the keys in the keyboard
         self.rows = 1
         self.cols = 4
-        self.key_height = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2 + 2*GUIConstants.EDGE_PADDING
+        self.key_height = GUIConstants.get_top_nav_title_font_size() + 2 + 2*GUIConstants.EDGE_PADDING
         self.keys_charset = "10"
 
         # Now initialize the parent class
@@ -219,7 +219,7 @@ class ToolsCalcFinalWordScreen(ButtonListScreen):
         super().__post_init__()
 
         # First what's the total bit display width and where do the checksum bits start?
-        bit_font_size = GUIConstants.BUTTON_FONT_SIZE + 2
+        bit_font_size = GUIConstants.get_button_font_size() + 2
         font = Fonts.get_font(GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME, bit_font_size)
         (left, top, bit_display_width, bit_font_height) = font.getbbox("0" * 11, anchor="lt")
         (left, top, checksum_x, bottom) = font.getbbox("0" * (11 - len(self.checksum_bits)), anchor="lt")

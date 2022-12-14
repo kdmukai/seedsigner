@@ -1088,8 +1088,8 @@ class KeyboardScreen(BaseTopNavScreen):
                 if self.update_title():
                     TextArea(
                         text=self.title,
-                        font_name=GUIConstants.TOP_NAV_TITLE_FONT_NAME,
-                        font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE,
+                        font_name=GUIConstants.get_top_nav_title_font_name(),
+                        font_size=GUIConstants.get_top_nav_title_font_size(),
                         height=self.top_nav.height,
                     ).render()
                     self.top_nav.render_buttons()
