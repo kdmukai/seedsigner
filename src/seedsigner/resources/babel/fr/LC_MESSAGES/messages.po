@@ -319,7 +319,7 @@ msgstr "Compacte"
 #. Briefly explains the Compact SeedQR data format
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Raw entropy bits"
-msgstr "Bits entropie brut"
+msgstr "Entropie brute bits"
 
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Transcribe SeedQR"
@@ -354,7 +354,7 @@ msgstr "Verification Multisig"
 
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Load your multisig wallet descriptor to verify your receive/self-transfer or change address."
-msgstr "Charger votre descripteur portefeuille multisig pour vérifier votre adresse de réception/auto-transfert ou monnaie"
+msgstr "Charger votre descripteur multisig pour vérifier l'adresse de réception/auto-transfert ou monnaie"
 
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Descriptor Loaded"
@@ -439,7 +439,7 @@ msgstr "Calculer Dernier Mot"
 #. Number of BIP-39 seed words, and the entropy -- in bits, contained within.
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "The {}th word is built from {} more entropy bits plus auto-calculated checksum."
-msgstr "Le {}ème mot est obtenu par {} plus de bits entropie plus la somme de contrôle."
+msgstr "Le {}ème mot est obtenu par {} plus d'entropie bits plus la somme de contrôle."
 
 #. current coin-flip number vs total flips (e.g. flip 3 of 4)
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -633,7 +633,7 @@ msgstr "Taproot"
 
 #: src/seedsigner/models/settings_definition.py
 msgid "Custom Derivation"
-msgstr "Dérivation Personnalisée"
+msgstr "Dérivation sur mesure"
 
 #: src/seedsigner/models/settings_definition.py
 msgid "Language"
@@ -829,7 +829,7 @@ msgstr "Vérification de l' Auto-Transfert..."
 #. Variable is either "change" or "self-transfer".
 #: src/seedsigner/views/psbt_views.py
 msgid "PSBT's {} address could not be verified with your multisig wallet descriptor."
-msgstr "Votre descripteur portefeuille multisig n'a pas pu vérifier l'adresse PSBT {}."
+msgstr "Votre descripteur multisig n'a pas pu vérifier l'adresse PSBT {}."
 
 #: src/seedsigner/views/psbt_views.py
 msgid "Suspicious PSBT"
@@ -1202,12 +1202,12 @@ msgstr "Longueur Phrase"
 #. Label to gather entropy through coin tosses
 #: src/seedsigner/views/tools_views.py
 msgid "Coin flip entropy"
-msgstr "Entropie de pile ou face"
+msgstr "Entropie pile ou face"
 
 #. Label to gather entropy through user specified BIP-39 word
 #: src/seedsigner/views/tools_views.py
 msgid "Word selection entropy"
-msgstr "Entropie de sélection de mots"
+msgstr "Entropie choix de mots"
 
 #. Label to allow user to default entropy as all-zeros
 #: src/seedsigner/views/tools_views.py

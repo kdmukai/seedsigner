@@ -455,12 +455,12 @@ msgstr ""
 #. How we call the "front" side result during a coin toss.
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Heads = 1"
-msgstr ""
+msgstr "Cara = 1"
 
 #. How we call the "back" side result during a coin toss.
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Tails = 0"
-msgstr ""
+msgstr "Cruz = 0"
 
 #. A labeled presentation of a user-supplied value
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -475,7 +475,7 @@ msgstr ""
 #. labeled presentation of the last word in a BIP-39 mnemonic seed phrase.
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Final Word: \"{}\""
-msgstr ""
+msgstr "Última Palabra"
 
 #. a label for the last word of a 12-word BIP-39 mnemonic seed phrase
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -1000,15 +1000,15 @@ msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Seed Words"
-msgstr ""
+msgstr "Palabras Claves"
 
 #: src/seedsigner/views/seed_views.py
 msgid "12 Words"
-msgstr ""
+msgstr "12 Palabras"
 
 #: src/seedsigner/views/seed_views.py
 msgid "24 Words"
-msgstr ""
+msgstr "24 Palabras"
 
 #: src/seedsigner/views/seed_views.py
 msgid "BIP-85 Num Words"
@@ -1210,7 +1210,7 @@ msgstr "Longitud de la frase Mnemónica"
 #. Label to gather entropy through coin tosses
 #: src/seedsigner/views/tools_views.py
 msgid "Coin flip entropy"
-msgstr ""
+msgstr "Entropía Cara o cruz"
 
 #. Label to gather entropy through user specified BIP-39 word
 #: src/seedsigner/views/tools_views.py
