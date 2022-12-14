@@ -2,6 +2,7 @@ import embit
 import os
 import pathlib
 import pytest
+import shutil
 from mock import Mock, patch
 
 from seedsigner.controller import Controller
@@ -207,7 +208,8 @@ def test_generate_screenshots(target_locale):
         locale_readme = f"""# SeedSigner Screenshots: {display_name}\n"""
 
         # Report the translation progress
-        if locale != SettingsConstants.LOCALE__ENGLISH:
+        #if locale != SettingsConstants.LOCALE__ENGLISH:
+        if locale:
             translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "babel", locale, "LC_MESSAGES", "messages.po") 
             with open(translated_messages_path, 'r') as translation_file:
                 locale_translations = translation_file.read()
@@ -242,6 +244,8 @@ def test_generate_screenshots(target_locale):
 
         with open(os.path.join(screenshot_renderer.screenshot_path, "README.md"), 'w') as readme_file:
             readme_file.write(locale_readme)
+        shutil.copy(translated_messages_path, os.path.join(screenshot_renderer.screenshot_path, "messages.po"))
+        
 
     # Write the main README; ensure it writes all locales, not just the one that may
     # have been specified for this run.
