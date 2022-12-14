@@ -21,8 +21,9 @@ Re-generate the `messages.pot` file:
 # -c TRANSLATOR_NOTE: will extract translator hints identified as comments starting with "# NOTE"
 # -s will strip the "NOTE:" part of the translator hint out
 # -F specifies the config file
+# --add-location=file will include filename but not line-number of msgid
 # -o is our target output file
-pybabel extract -c TRANSLATOR_NOTE: -s -F babel/babel.cfg -o babel/messages.pot .
+pybabel extract -c TRANSLATOR_NOTE: -s -F babel/babel.cfg --add-location=file -o babel/messages.pot .
 ```
 This will rescan all wrapped text, picking up new strings as well as updating existings strings that have been edited.
 
