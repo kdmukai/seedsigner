@@ -89,9 +89,15 @@ def test_generate_screenshots(target_locale):
     # Automatically populate all Settings options Views
     settings_views_list = []
     settings_views_list.append(settings_views.SettingsMenuView)
+    #jdlcdl so we get a choice for transcribe seed qr format
+    controller.settings.set_value(
+        attr_name=SettingsConstants.SETTING__COMPACT_SEEDQR,
+        value=SettingsConstants.OPTION__ENABLED
+    )
     for settings_entry in SettingsDefinition.settings_entries:
         if settings_entry.visibility == SettingsConstants.VISIBILITY__HIDDEN:
             continue
+
         settings_views_list.append((settings_views.SettingsEntryUpdateSelectionView, dict(attr_name=settings_entry.attr_name), f"SettingsEntryUpdateSelectionView_{settings_entry.attr_name}"))
     settings_views_list.append(settings_views.IOTestView)
     settings_views_list.append(settings_views.DonateView)
@@ -153,6 +159,7 @@ def test_generate_screenshots(target_locale):
 
             seed_views.LoadMultisigWalletDescriptorView,
             seed_views.MultisigWalletDescriptorView,
+            (seed_views.SeedDiscardView, dict(seed_num=0)),
         ],
         "PSBT Views": [
             psbt_views.PSBTSelectSeedView,
