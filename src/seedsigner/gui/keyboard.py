@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from PIL import Image, ImageDraw, ImageFont
 from typing import Tuple
+from gettext import gettext as _
 
 from seedsigner.gui.components import Fonts, GUIConstants
 from seedsigner.hardware.buttons import HardwareButtonsConstants
@@ -27,12 +28,16 @@ class Keyboard:
     REGULAR_KEY_FONT = "regular"
     COMPACT_KEY_FONT = "compact"
 
+    # TRANSLATOR_NOTE: The abbreviated label for the special key <del> on a standard keyboard.
+    babel_extract_food = _("del")
     KEY_BACKSPACE = {
         "code": "DEL",
         "letter": "del",
         "font": COMPACT_KEY_FONT,
         "size": 2,
     }
+    # TRANSLATOR_NOTE: The abbreviated label for the special key <space> on a standard keyboard.
+    babel_extract_food = _("space")
     KEY_SPACE = {
         "code": "SPACE",
         "letter": "space",
@@ -158,7 +163,7 @@ class Keyboard:
                     self.screen_x + int(self.keyboard.key_width * self.size / 2),
                     self.screen_y + self.keyboard.key_height - int((self.keyboard.key_height - text_height)/2)
                 ),
-                self.letter,
+                _(self.letter),
                 fill=font_color,
                 font=font,
                 anchor="ms"
