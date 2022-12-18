@@ -1803,6 +1803,7 @@ class MultisigWalletDescriptorView(View):
             fingerprints.append(fingerprint)
         
         policy = descriptor.brief_policy.split("multisig")[0].strip()
+        policy = " / ".join(policy.split(" of ")) # i18n w/o l10n since coming from non-l10n embit
         
         RETURN = _("Return to PSBT")
         VERIFY = _("Verify Addr")

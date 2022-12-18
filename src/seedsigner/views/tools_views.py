@@ -547,6 +547,7 @@ class ToolsAddressExplorerAddressTypeView(View):
         wallet_descriptor_display_name = None
         if "wallet_descriptor" in data:
             wallet_descriptor_display_name = data["wallet_descriptor"].brief_policy.replace(" (sorted)", "")
+            wallet_descriptor_display_name = " / ".join(wallet_descriptor_display_name.split(" of ")) # i18n w/o l10n since coming from non-l10n embit
 
         script_type = data["script_type"] if "script_type" in data else None
 
