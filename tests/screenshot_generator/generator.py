@@ -107,7 +107,7 @@ def test_generate_screenshots(target_locale):
         "Main Menu Views": [
             main_menu_views.MainMenuView,
             main_menu_views.PowerOptionsView,
-            #main_menu_views.RestartView,
+            main_menu_views.RestartView,
             #main_menu_views.PowerOffView,
             (scan_views.SettingsUpdatedView, dict(config_name="Keith's Settings")),
         ],
