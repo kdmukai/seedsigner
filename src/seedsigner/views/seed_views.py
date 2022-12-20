@@ -351,6 +351,7 @@ class SeedOptionsView(View):
         EXPORT_XPUB = "Export Xpub"
         EXPLORER = "Address Explorer"
         BACKUP = ("Backup Seed", None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT)
+        NOSTR_DELEGATION = "Nostr Delegation"
         BIP85_CHILD_SEED = "BIP-85 Child Seed"
         DISCARD = ("Discard Seed", None, None, "red")
 
@@ -393,6 +394,9 @@ class SeedOptionsView(View):
         button_data.append(EXPLORER)
         button_data.append(BACKUP)
 
+        if self.settings.get_value(SettingsConstants.SETTING__NOSTR_DELEGATION) == SettingsConstants.OPTION__ENABLED:
+            button_data.append(NOSTR_DELEGATION)
+
         if self.settings.get_value(SettingsConstants.SETTING__BIP85_CHILD_SEEDS) == SettingsConstants.OPTION__ENABLED:
             button_data.append(BIP85_CHILD_SEED)
 
@@ -428,6 +432,9 @@ class SeedOptionsView(View):
 
         elif button_data[selected_menu_num] == BACKUP:
             return Destination(SeedBackupView, view_args=dict(seed_num=self.seed_num))
+
+        elif button_data[selected_menu_num] == NOSTR_DELEGATION:
+            return Destination(NotYetImplementedView, view_args={"seed_num": self.seed_num})
 
         elif button_data[selected_menu_num] == BIP85_CHILD_SEED:
             return Destination(SeedBIP85ApplicationModeView, view_args={"seed_num": self.seed_num})
