@@ -38,6 +38,7 @@ class EncodeQR:
     qr_density: str = SettingsConstants.DENSITY__MEDIUM
     wordlist_language_code: str = SettingsConstants.WORDLIST_LANGUAGE__ENGLISH
     bitcoin_address: str = None
+    data: str = None
 
     def __post_init__(self):
         self.qr = QR()
@@ -98,7 +99,10 @@ class EncodeQR:
                                                 wordlist_language_code=self.wordlist_language_code)
         
         elif self.qr_type == QRType.BITCOIN_ADDRESS:
-            self.encoder = BitcoinAddressEncoder(address=self.bitcoin_address)
+            self.encoder = StaticEncoder(data=self.bitcoin_address)
+        
+        elif self.qr_type == QRType.GENERIC__STATIC:
+            self.encoder = StaticEncoder(data=self.data)
 
         else:
             raise Exception('QR Type not supported')
@@ -151,6 +155,26 @@ class BaseQrEncoder:
 
     def _create_parts(self):
         raise Exception("Not implemented in child class")
+
+
+
+class StaticEncoder(BaseQrEncoder):
+    def __init__(self, data: str):
+        super().__init__()
+        self.data = data
+
+
+    def seq_len(self):
+        return 1
+
+
+    def next_part(self):
+        return self.data
+
+
+    @property
+    def is_complete(self):
+        return True
 
 
 
@@ -320,25 +344,6 @@ class CompactSeedQrEncoder(SeedQrEncoder):
         # Must return data as `bytes` for `qrcode` to properly recognize it as byte data
         return bytes(as_bytes)
 
-
-
-class BitcoinAddressEncoder(BaseQrEncoder):
-    def __init__(self, address: str):
-        super().__init__()
-        self.address = address
-
-
-    def seq_len(self):
-        return 1
-
-
-    def next_part(self):
-        return self.address
-
-
-    @property
-    def is_complete(self):
-        return True
 
 
 class XpubQrEncoder(BaseQrEncoder):
