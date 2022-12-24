@@ -155,6 +155,7 @@ class SettingsConstants:
     SETTING__PASSPHRASE = "passphrase"
     SETTING__CAMERA_ROTATION = "camera_rotation"
     SETTING__COMPACT_SEEDQR = "compact_seedqr"
+    SETTING__NOSTR_KEY = "nostr_key"
     SETTING__BIP85_CHILD_SEEDS = "bip85_child_seeds"
     SETTING__PRIVACY_WARNINGS = "privacy_warnings"
     SETTING__DIRE_WARNINGS = "dire_warnings"
@@ -437,6 +438,12 @@ class SettingsDefinition:
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__COMPACT_SEEDQR,
                       display_name="CompactSeedQR",
+                      visibility=SettingsConstants.VISIBILITY__ADVANCED,
+                      default_value=SettingsConstants.OPTION__DISABLED),
+
+        SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
+                      attr_name=SettingsConstants.SETTING__NOSTR_KEY,
+                      display_name="Nostr key support",
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       default_value=SettingsConstants.OPTION__DISABLED),
 
