@@ -27,8 +27,7 @@ class NostrKeyOptionsView(View):
         ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
-            from seedsigner.views.seed_views import SeedOptionsView
-            return Destination(SeedOptionsView, view_args=dict(seed_num=self.seed_num))
+            return Destination(BackStackView)
 
         if button_data[selected_menu_num] == EXPORT_PRIVATE_KEY:
             return Destination(NostrKeyDisplayView, view_args=dict(seed_num=self.seed_num, is_pubkey=False))
