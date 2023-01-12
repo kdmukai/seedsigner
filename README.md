@@ -1,6 +1,6 @@
 # jdlcdl branch: kdmukai/initial_multilanguage
 
-My self-directed exploration, from mid November through mid December 2022, to carry-on where kdmukai left-off this past summer, in similar style, regarding internationalization/localization of seedsigner codebase (w/ exploration focus in locale 'fr')
+My self-directed exploration, from mid November through mid December 2022, to carry-on where kdmukai left-off this past summer, in similar style, regarding internationalization/localization of seedsigner codebase (w/ exploration focus in locale 'fr').  Note: requirements.txt has new dependencies; also, follow instructions in babel/ to build binary message catalogs.
 
 ---------------
 
