@@ -274,6 +274,15 @@ class DecodeQR:
         
 
     @property
+    def is_xpub(self):
+        return self.qr_type in [
+            QRType.XPUB,
+            QRType.XPUB__SPECTER,
+            QRType.XPUB__UR,
+        ]
+        
+
+    @property
     def is_wallet_descriptor(self):
         check = self.qr_type in [QRType.WALLET__SPECTER, QRType.WALLET__UR, QRType.WALLET__CONFIGFILE, QRType.WALLET__GENERIC, QRType.OUTPUT__UR]
         
@@ -362,6 +371,10 @@ class DecodeQR:
             # Bitcoin Address
             elif DecodeQR.is_bitcoin_address(s):
                 return QRType.BITCOIN_ADDRESS
+            
+            # Xpub
+            elif DecodeQR.is_xpub(s):
+                return QRType.XPUB
 
             # config data
             if "type=settings" in s:
