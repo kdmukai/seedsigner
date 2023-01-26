@@ -5,6 +5,7 @@ from embit.descriptor import Descriptor
 
 from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON
 from seedsigner.models import DecodeQR, Seed
+from seedsigner.models.qr_type import QRType
 from seedsigner.models.settings import SettingsConstants
 
 from .view import BackStackView, MainMenuView, NotYetImplementedView, View, Destination
@@ -98,6 +99,11 @@ class ScanView(View):
                         "network": network,
                     }
                 )
+            
+            elif self.decoder.qr_type == QRType.NOSTR__NIP26_DELEGATION_TOKEN:
+                from seedsigner.views.nostr_views import NostrNIP26DelegationTokenView
+                delegation_token = self.decoder.get_delegation_token()
+                return Destination(NostrNIP26DelegationTokenView, view_args=dict(delegation_token=delegation_token), skip_current_view=True)
             
             else:
                 return Destination(NotYetImplementedView)

@@ -29,6 +29,8 @@ class QRType:
     ACCOUNT__UR = "account__ur"
     BYTES__UR = "bytes__ur"
 
+    NOSTR__NIP26_DELEGATION_TOKEN = "nostr__nip26_delegation_token"
+
     GENERIC__STATIC = "generic__static"
 
     INVALID = "invalid"

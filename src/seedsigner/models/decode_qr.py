@@ -92,6 +92,9 @@ class DecodeQR:
                 
             elif self.qr_type == QRType.WALLET__CONFIGFILE:
                 self.decoder = MultiSigConfigFileQRDecoder()
+            
+            elif self.qr_type == QRType.NOSTR__NIP26_DELEGATION_TOKEN:
+                self.decoder = NostrNIP26DelegationQrDecoder()
 
         elif self.qr_type != qr_type:
             raise Exception('QR Fragment Unexpected Type Change')
@@ -231,6 +234,10 @@ class DecodeQR:
 
         else:
             return 0
+
+
+    def get_delegation_token(self) -> str:
+        return self.decoder.get_delegation_token()
 
 
     @property
@@ -398,6 +405,9 @@ class DecodeQR:
 
             elif DecodeQR.is_base43_psbt(s):
                 return QRType.PSBT__BASE43
+            
+            elif s.startswith("nostr:delegation:"):
+                return QRType.NOSTR__NIP26_DELEGATION_TOKEN
 
         except UnicodeDecodeError:
             # Probably this isn't meant to be string data; check if it's valid byte data
@@ -495,7 +505,14 @@ class DecodeQR:
             return True
         else:
             return False
-    
+
+    @staticmethod
+    def is_xpub(s):
+        if re.search(r'^((bc1|tb1|bcr|[123]|[mn])[a-zA-HJ-NP-Z0-9]{25,62})$', s):
+            return True
+        else:
+            return False
+
     @staticmethod
     def multisig_setup_file_to_descriptor(text) -> str:
         # sample text file, parse the contents and create descriptor
@@ -1026,6 +1043,20 @@ class BitcoinAddressQrDecoder(BaseSingleFrameQrDecoder):
 
 
 
+class NostrNIP26DelegationQrDecoder(BaseSingleFrameQrDecoder):
+    def __init__(self):
+        super().__init__()
+        self.delegation_token = None
+
+    def add(self, segment, qr_type=QRType.NOSTR__NIP26_DELEGATION_TOKEN):
+        self.delegation_token = segment.strip()
+        return DecodeQRStatus.COMPLETE
+
+    def get_delegation_token(self):
+        return self.delegation_token
+
+
+
 class SpecterWalletQrDecoder(BaseAnimatedQrDecoder):
     """
         Decodes animated frames to get a wallet descriptor from Specter Desktop
@@ -1104,7 +1135,9 @@ class GenericWalletQrDecoder(BaseSingleFrameQrDecoder):
 
     def get_wallet_descriptor(self):
         return self.descriptor
-        
+
+
+
 class MultiSigConfigFileQRDecoder(GenericWalletQrDecoder):
     
     def add(self, segment, qr_type=QRType.WALLET__CONFIGFILE):
