@@ -64,6 +64,7 @@ class GUIConstants:
 
 
 class FontAwesomeIconConstants:
+    ADDRESS_CARD = "\uf2bb"
     ANGLE_DOWN = "\uf107"
     ANGLE_LEFT = "\uf104"
     ANGLE_RIGHT = "\uf105"
@@ -94,6 +95,7 @@ class FontAwesomeIconConstants:
     POWER_OFF = "\uf011"
     ROTATE_RIGHT = "\uf2f9"
     SCREWDRIVER_WRENCH = "\uf7d9"
+    SITEMAP = "\uf0e8"
     SQUARE = "\uf0c8"
     SQUARE_CARET_DOWN = "\uf150"
     SQUARE_CARET_LEFT = "\uf191"

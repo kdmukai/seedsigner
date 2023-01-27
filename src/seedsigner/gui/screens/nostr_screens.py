@@ -404,7 +404,7 @@ class NostrNIP26ReviewTokenScreen(ButtonListScreen):
 
 
 @dataclass
-class NostrPublicKeyDisplayScreen(ButtonListScreen):
+class NostrBech32KeyDisplayScreen(ButtonListScreen):
     key: str = None
     is_pubkey: bool = True
 
@@ -423,7 +423,7 @@ class NostrPublicKeyDisplayScreen(ButtonListScreen):
         self.components.append(keytype)
 
         key_display = TextArea(
-            text=f"{self.key[:10]}...\n...{self.key[-10:]}",
+            text=f"{self.key[:14]}\n...{self.key[-10:]}",
             font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
             font_color=GUIConstants.ACCENT_COLOR,
             font_size=GUIConstants.BODY_FONT_SIZE + 12,
@@ -435,6 +435,6 @@ class NostrPublicKeyDisplayScreen(ButtonListScreen):
 
 
 @dataclass
-class NostrPrivateKeyDisplayScreen(WarningEdgesMixin, NostrPublicKeyDisplayScreen):
+class NostrPrivateKeyDisplayScreen(WarningEdgesMixin, NostrBech32KeyDisplayScreen):
     status_color: str = GUIConstants.DIRE_WARNING_COLOR
     is_pubkey: bool = False

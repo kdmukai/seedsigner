@@ -4,6 +4,7 @@ from embit import bip32
 from embit import ec
 from hashlib import sha256
 from seedsigner.helpers import bech32
+from seedsigner.models.seed import Seed
 
 
 # Nostr kinds
@@ -21,28 +22,27 @@ ALL_KINDS = [
 
 
 
-def derive_nostr_root(seed_bytes: bytes) -> bip32.HDKey:
-    """ Derive the NIP-06 Nostr root at m/44'/1237'/0' """
-    root = bip32.HDKey.from_seed(seed_bytes)
-    return root.derive("m/44h/1237h/0h")
+def derive_nostr_key(seed: Seed) -> bip32.HDKey:
+    """ Derive the NIP-06 Nostr key at m/44'/1237'/0'/0/0 """
+    """
+        Note: You could derive sibling seeds (e.g. m/44h/1237h/0h/0/1) from the same root
+        Seed, but so far Nostr use cases & best practices are limited to just a single
+        direct path from mnemonic to npub/nsec. No sibling or child Nostr keys.
+    """
+    root = bip32.HDKey.from_seed(seed.seed_bytes)
+    return root.derive("m/44h/1237h/0h/0/0")
 
 
-def derive_nostr_child(seed_bytes: bytes, index: int) -> bip32.HDKey:
-    """ Derive the NIP-06 Nostr child at m/44'/1237'/0'/0/{index} """
-    root = bip32.HDKey.from_seed(seed_bytes)
-    return root.derive("m/44h/1237h/0h/0/{index}")
-
-
-def get_nsec(seed_bytes: bytes) -> str:
-    nostr_root = derive_nostr_root(seed_bytes=seed_bytes)
+def get_nsec(seed: Seed) -> str:
+    nostr_root = derive_nostr_key(seed=seed)
     converted_bits = bech32.convertbits(nostr_root.secret, 8, 5)
     return bech32.bech32_encode("nsec", converted_bits, bech32.Encoding.BECH32)
 
 
-def get_npub(seed_bytes: bytes) -> str:
-    nostr_root = derive_nostr_root(seed_bytes=seed_bytes)
+def get_npub(seed: Seed) -> str:
+    nostr_root = derive_nostr_key(seed=seed)
     privkey = ec.PrivateKey(secret=nostr_root.secret)
-    pubkey = privkey.get_public_key().serialize()[1:]
+    pubkey = privkey.get_public_key().xonly()
     converted_bits = bech32.convertbits(pubkey, 8, 5)
     return bech32.bech32_encode("npub", converted_bits, bech32.Encoding.BECH32)
 
@@ -58,8 +58,8 @@ def npub_to_hex(npub: str) -> str:
     return bytes(raw_public_key).hex()
 
 
-def sign_message(seed_bytes: bytes, message: str):
-    nostr_root = derive_nostr_root(seed_bytes=seed_bytes)
+def sign_message(seed: Seed, message: str):
+    nostr_root = derive_nostr_key(seed=seed)
     sig = nostr_root.schnorr_sign(sha256(message.encode()).digest())
     return sig
 
@@ -95,9 +95,9 @@ def parse_nip26_delegation_token(token: str):
     )
 
 
-def sign_nip26_delegation(seed_bytes: bytes, token: str):
+def sign_nip26_delegation(seed: Seed, token: str):
     token_dict = parse_nip26_delegation_token(token)
-    signature = sign_message(seed_bytes=seed_bytes, message=token)
+    signature = sign_message(seed=seed, message=token)
 
     return [
         "delegation",
