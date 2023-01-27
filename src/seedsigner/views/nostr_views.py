@@ -28,7 +28,7 @@ class BaseNostrView(View):
 
 
 
-class NostrKeyOptionsView(BaseNostrView):
+class NostrKeyOptionsView(View):
     def __init__(self, seed_num: int):
         super().__init__()
         if self.controller.nostr_data is None:
@@ -57,11 +57,11 @@ class NostrKeyOptionsView(BaseNostrView):
         if button_data[selected_menu_num] == NIP_26_DELEGATION:
             return Destination(NostrNIP26DelegationStartView)
 
-        elif button_data[selected_menu_num] == EXPORT_PRIVATE_KEY:
-            return Destination(NostrKeyDisplayView, view_args=dict(sis_pubkey=False))
-
         elif button_data[selected_menu_num] == EXPORT_PUBLIC_KEY:
             return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=True))
+
+        elif button_data[selected_menu_num] == EXPORT_PRIVATE_KEY:
+            return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=False))
 
 
 
@@ -98,7 +98,7 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
         super().__init__()
         self.selected_button = 0
         if "nip26_kinds" in self.controller.nostr_data:
-            self.checked_buttons = [kind[1] for kind in self.controller.nostr_data["nip26_kinds"]]
+            self.checked_buttons = self.controller.nostr_data["nip26_kinds"]
         else:
             self.checked_buttons = []
 
