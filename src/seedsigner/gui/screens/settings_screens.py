@@ -14,6 +14,7 @@ from seedsigner.models.settings import SettingsConstants
 
 @dataclass
 class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
+    title = "Settings"
     display_name: str = None
     help_text: str = None
     checked_buttons: List[int] = None
@@ -21,7 +22,6 @@ class SettingsEntryUpdateSelectionScreen(ButtonListScreen):
     selected_button: int = 0
 
     def __post_init__(self):
-        self.title = "Settings"
         self.is_bottom_list = True
         self.use_checked_selection_buttons = True
         if self.settings_entry_type == SettingsConstants.TYPE__MULTISELECT:

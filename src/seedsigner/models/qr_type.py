@@ -30,6 +30,7 @@ class QRType:
     BYTES__UR = "bytes__ur"
 
     NOSTR__NIP26_DELEGATION_TOKEN = "nostr__nip26_delegation_token"
+    NOSTR__NPUB = "nostr__npub"
 
     GENERIC__STATIC = "generic__static"
 

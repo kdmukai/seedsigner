@@ -239,6 +239,7 @@ class Controller(Singleton):
                     self.psbt = None
                     self.psbt_parser = None
                     self.psbt_seed = None
+                    self.nostr_data = None
                 
                 print(f"back_stack: {self.back_stack}")
 

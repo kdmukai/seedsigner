@@ -101,10 +101,15 @@ class ScanView(View):
                 )
             
             elif self.decoder.qr_type == QRType.NOSTR__NIP26_DELEGATION_TOKEN:
-                from seedsigner.views.nostr_views import NostrNIP26DelegationTokenView
+                from seedsigner.views.nostr_views import NostrNIP26ReviewTokenView
                 delegation_token = self.decoder.get_delegation_token()
-                return Destination(NostrNIP26DelegationTokenView, view_args=dict(delegation_token=delegation_token), skip_current_view=True)
-            
+                return Destination(NostrNIP26ReviewTokenView, view_args=dict(delegation_token=delegation_token), skip_current_view=True)
+
+            elif self.decoder.qr_type == QRType.NOSTR__NPUB:
+                from seedsigner.views.nostr_views import NostrNIP26BuildToken
+                npub = self.decoder.get_npub()
+                return Destination(NostrNIP26BuildToken, view_args=dict(npub=npub), skip_current_view=True)
+
             else:
                 return Destination(NotYetImplementedView)
 

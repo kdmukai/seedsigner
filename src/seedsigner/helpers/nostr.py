@@ -1,8 +1,24 @@
 from binascii import hexlify, unhexlify
+from typing import List
 from embit import bip32
 from embit import ec
 from hashlib import sha256
 from seedsigner.helpers import bech32
+
+
+# Nostr kinds
+KIND__SET_METADATA = ("Set metadata", 0)
+KIND__TEXT_NOTE = ("Notes", 1)
+KIND__RECOMMEND_RELAY = ("Recommend relay", 2)
+KIND__CONTACTS = ("Contacts", 3)
+KIND__ENCRYPTED_DIRECT_MESSAGE = ("DMs", 4)
+KIND__DELETE = ("Delete", 5)
+
+ALL_KINDS = [
+    KIND__SET_METADATA, KIND__TEXT_NOTE, KIND__RECOMMEND_RELAY, KIND__CONTACTS,
+    KIND__ENCRYPTED_DIRECT_MESSAGE, KIND__DELETE
+]
+
 
 
 def derive_nostr_root(seed_bytes: bytes) -> bip32.HDKey:
@@ -36,10 +52,29 @@ def pubkey_hex_to_npub(pubkey_hex: str) -> str:
     return bech32.bech32_encode("npub", converted_bits, bech32.Encoding.BECH32)
 
 
+def npub_to_hex(npub: str) -> str:
+    hrp, data, spec = bech32.bech32_decode(npub)
+    raw_public_key = bech32.convertbits(data, 5, 8)[:-1]
+    return bytes(raw_public_key).hex()
+
+
 def sign_message(seed_bytes: bytes, message: str):
     nostr_root = derive_nostr_root(seed_bytes=seed_bytes)
     sig = nostr_root.schnorr_sign(sha256(message.encode()).digest())
     return sig
+
+
+def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int], valid_until: int):
+    token = f"nostr:delegation:{delegatee_pubkey}:"
+
+    conditions = []
+    if kinds:
+        conditions.append(f"""kind={",".join([str(kind) for kind in kinds])}""")
+    
+    conditions.append(f"created_at<{valid_until}")
+
+    return token + "&".join(conditions)
+
 
 
 def parse_nip26_delegation_token(token: str):

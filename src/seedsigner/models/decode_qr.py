@@ -96,6 +96,9 @@ class DecodeQR:
             elif self.qr_type == QRType.NOSTR__NIP26_DELEGATION_TOKEN:
                 self.decoder = NostrNIP26DelegationQrDecoder()
 
+            elif self.qr_type == QRType.NOSTR__NPUB:
+                self.decoder = NostrNpubQrDecoder()
+
         elif self.qr_type != qr_type:
             raise Exception('QR Fragment Unexpected Type Change')
         
@@ -240,6 +243,10 @@ class DecodeQR:
         return self.decoder.get_delegation_token()
 
 
+    def get_npub(self) -> str:
+        return self.decoder.get_npub()
+
+
     @property
     def is_complete(self) -> bool:
         return self.complete
@@ -371,6 +378,14 @@ class DecodeQR:
             elif "sortedmulti" in s:
                 return QRType.WALLET__GENERIC
 
+            # Nostr
+            elif s.startswith("nostr:delegation:"):
+                return QRType.NOSTR__NIP26_DELEGATION_TOKEN
+
+            # This must be listed before the is_bitcoin_address test
+            elif s.startswith("npub1"):
+                return QRType.NOSTR__NPUB
+
             # Seed
             if re.search(r'\d{48,96}', s):
                 return QRType.SEED__SEEDQR
@@ -405,9 +420,6 @@ class DecodeQR:
 
             elif DecodeQR.is_base43_psbt(s):
                 return QRType.PSBT__BASE43
-            
-            elif s.startswith("nostr:delegation:"):
-                return QRType.NOSTR__NIP26_DELEGATION_TOKEN
 
         except UnicodeDecodeError:
             # Probably this isn't meant to be string data; check if it's valid byte data
@@ -1055,6 +1067,19 @@ class NostrNIP26DelegationQrDecoder(BaseSingleFrameQrDecoder):
     def get_delegation_token(self):
         return self.delegation_token
 
+
+
+class NostrNpubQrDecoder(BaseSingleFrameQrDecoder):
+    def __init__(self):
+        super().__init__()
+        self.npub = None
+
+    def add(self, segment, qr_type=QRType.NOSTR__NPUB):
+        self.npub = segment.strip()
+        return DecodeQRStatus.COMPLETE
+
+    def get_npub(self):
+        return self.npub
 
 
 class SpecterWalletQrDecoder(BaseAnimatedQrDecoder):
