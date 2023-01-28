@@ -1,8 +1,9 @@
 import json
 from seedsigner.controller import Controller
 from seedsigner.gui.components import FontAwesomeIconConstants
+from seedsigner.gui.screens.nostr_screens import NostrButtonListScreen
 from seedsigner.helpers import nostr
-from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, ButtonListScreen, QRDisplayScreen
+from seedsigner.gui.screens.screen import RET_CODE__BACK_BUTTON, QRDisplayScreen
 from seedsigner.models.encode_qr import EncodeQR
 from seedsigner.models.qr_type import QRType
 from seedsigner.models.seed import Seed
@@ -55,12 +56,12 @@ class NostrKeyOptionsView(View):
 
         button_data = [NIP_26_DELEGATION, SIGN, EXPORT_PUBLIC_KEY, EXPORT_PRIVATE_KEY]
 
-        selected_menu_num = ButtonListScreen(
+        selected_menu_num = NostrButtonListScreen(
             # title="Nostr Key Options",
             title=f"npub: {nostr.get_npub(self.seed)[4:13]}",
             button_data=button_data,
             is_bottom_list=True,
-            is_button_text_centered=False,
+            is_button_text_centered=False,            
         ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -194,7 +195,7 @@ class NostrNIP26SelectDelegateeView(BaseNostrView):
             onboard_seeds.append(nostr.get_npub(seed))
             button_data.append(f"npub: {nostr.get_npub(seed)[4:13]}")
             
-        selected_menu_num = ButtonListScreen(
+        selected_menu_num = NostrButtonListScreen(
             title="Select Delegatee",
             button_data=button_data,
             is_bottom_list=True,
@@ -213,7 +214,6 @@ class NostrNIP26SelectDelegateeView(BaseNostrView):
             for i, npub in enumerate(onboard_seeds):
                 if i + 1 == selected_menu_num:
                     return Destination(NostrNIP26BuildToken, view_args=dict(npub=npub))
-
 
 
 
@@ -309,7 +309,9 @@ class NostrSignEventStartView(BaseNostrView):
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrSignEventStartScreen
         from seedsigner.views.scan_views import ScanView
-        selected_menu_num = NostrSignEventStartScreen().display()
+        selected_menu_num = NostrSignEventStartScreen(
+            title="Sign Event"
+        ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -399,7 +401,7 @@ class NostrKeySelectFormatView(BaseNostrView):
         HEX = "Hex"
 
         button_data = [BECH32, HEX]
-        selected_menu_num = ButtonListScreen(
+        selected_menu_num = NostrButtonListScreen(
             title="Key Format",
             button_data=button_data,
             is_bottom_list=True,

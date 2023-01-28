@@ -189,6 +189,8 @@ class LoadingScreenThread(BaseThread):
 class BaseTopNavScreen(BaseScreen):
     top_nav_icon_name: str = None
     top_nav_icon_color: str = None
+    top_nav_background_color: str = GUIConstants.BACKGROUND_COLOR
+    top_nav_button_selected_color: str = GUIConstants.ACCENT_COLOR
     title: str = "Screen Title"
     title_font_size: int = GUIConstants.TOP_NAV_TITLE_FONT_SIZE
     show_back_button: bool = True
@@ -203,8 +205,10 @@ class BaseTopNavScreen(BaseScreen):
             font_size=self.title_font_size,
             width=self.canvas_width,
             height=GUIConstants.TOP_NAV_HEIGHT,
+            background_color=self.top_nav_background_color,
             show_back_button=self.show_back_button,
             show_power_button=self.show_power_button,
+            button_selected_color=self.top_nav_button_selected_color,
         )
         self.is_input_in_top_nav = False
 

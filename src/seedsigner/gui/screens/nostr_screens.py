@@ -9,11 +9,37 @@ from seedsigner.hardware.buttons import HardwareButtonsConstants
 
 
 
+NOSTR_BACKGROUND_COLOR = "#290152"
+NOSTR_ACCENT_COLOR = "#cc33ff"
+
+
+
+@dataclass
+class NostrButtonListScreen(ButtonListScreen):
+    def __post_init__(self):
+        # Lock in overrided defaults
+        self.top_nav_background_color = NOSTR_BACKGROUND_COLOR
+        self.top_nav_button_selected_color = NOSTR_ACCENT_COLOR
+        self.button_selected_color = NOSTR_ACCENT_COLOR
+        super().__post_init__()
+
+
+
+@dataclass
+class NostrBaseTopNavScreen(BaseTopNavScreen):
+    def __post_init__(self):
+        # Lock in overrided defaults
+        self.top_nav_background_color = NOSTR_BACKGROUND_COLOR
+        self.top_nav_button_selected_color = NOSTR_ACCENT_COLOR
+        super().__post_init__()
+
+
+
 """****************************************************************************
     NIP-26 Delegation
 ****************************************************************************"""
 @dataclass
-class NostrNIP26DelegationStartScreen(ButtonListScreen):
+class NostrNIP26DelegationStartScreen(NostrButtonListScreen):
     npub: str = None
 
     def __post_init__(self):
@@ -31,7 +57,7 @@ class NostrNIP26DelegationStartScreen(ButtonListScreen):
         key_display = TextArea(
             text=self.npub,
             font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
-            font_color=GUIConstants.ACCENT_COLOR,
+            font_color=NOSTR_ACCENT_COLOR,
             font_size=GUIConstants.BODY_FONT_SIZE + 10,
             is_text_centered=True,
         )
@@ -41,7 +67,7 @@ class NostrNIP26DelegationStartScreen(ButtonListScreen):
 
 
 @dataclass
-class NostrNIP26TokenKindsScreen(ButtonListScreen):
+class NostrNIP26TokenKindsScreen(NostrButtonListScreen):
     """
         Simplified version of the SettingsEntryUpdateSelectionScreen
     """
@@ -58,6 +84,7 @@ class NostrNIP26TokenKindsScreen(ButtonListScreen):
             text="Next",
             screen_x=GUIConstants.EDGE_PADDING,
             scroll_y=self.buttons[-1].scroll_y,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         button.screen_y = self.buttons[-1].screen_y + GUIConstants.BUTTON_HEIGHT + GUIConstants.LIST_ITEM_PADDING
 
@@ -66,7 +93,7 @@ class NostrNIP26TokenKindsScreen(ButtonListScreen):
 
 
 @dataclass
-class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
+class NostrNIP26CreateTokenCreatedAtScreen(NostrBaseTopNavScreen):
     def __post_init__(self):
         super().__post_init__()
 
@@ -86,7 +113,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             text=str(self.year),
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             font_size=digit_font_size,
-            font_color=GUIConstants.ACCENT_COLOR,
+            font_color=NOSTR_ACCENT_COLOR,
             is_text_centered=True,
             background_color="#080808",
             width=int(digit_font_size * 2.5),
@@ -101,7 +128,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             text=f"{self.month:02}",
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             font_size=digit_font_size,
-            font_color=GUIConstants.ACCENT_COLOR,
+            font_color=NOSTR_ACCENT_COLOR,
             is_text_centered=True,
             background_color="#080808",
             width=int(digit_font_size * 1.5),
@@ -116,7 +143,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             text=f"{self.day:02}",
             font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             font_size=digit_font_size,
-            font_color=GUIConstants.ACCENT_COLOR,
+            font_color=NOSTR_ACCENT_COLOR,
             is_text_centered=True,
             background_color="#080808",
             width=int(digit_font_size * 1.5),
@@ -131,7 +158,8 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
         self.next_button = Button(
             text="Next",
             screen_x=GUIConstants.EDGE_PADDING,
-            screen_y=self.canvas_height - GUIConstants.BUTTON_HEIGHT - GUIConstants.EDGE_PADDING
+            screen_y=self.canvas_height - GUIConstants.BUTTON_HEIGHT - GUIConstants.EDGE_PADDING,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.next_button)
 
@@ -142,6 +170,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             width=digit_button_width,
             screen_x=self.year_display.screen_x + int(0.75*digit_font_size),
             screen_y=self.year_display.screen_y - GUIConstants.BUTTON_HEIGHT - GUIConstants.COMPONENT_PADDING,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.year_up_button)
         self.digit_buttons[0].append(self.year_up_button)
@@ -151,6 +180,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             width=digit_button_width,
             screen_x=self.year_up_button.screen_x,
             screen_y=self.year_display.screen_y + self.year_display.height + GUIConstants.COMPONENT_PADDING,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.year_down_button)
         self.digit_buttons[1].append(self.year_down_button)
@@ -162,6 +192,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             screen_x=self.month_display.screen_x + int(0.25*digit_font_size),
             screen_y=self.year_up_button.screen_y,
             is_selected=True,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.month_up_button)
         self.digit_buttons[0].append(self.month_up_button)
@@ -171,6 +202,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             width=digit_button_width,
             screen_x=self.month_up_button.screen_x,
             screen_y=self.year_down_button.screen_y,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.month_down_button)
         self.digit_buttons[1].append(self.month_down_button)
@@ -181,6 +213,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             width=digit_button_width,
             screen_x=self.day_display.screen_x + int(0.25*digit_font_size),
             screen_y=self.year_up_button.screen_y,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.day_up_button)
         self.digit_buttons[0].append(self.day_up_button)
@@ -190,6 +223,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
             width=digit_button_width,
             screen_x=self.day_up_button.screen_x,
             screen_y=self.year_down_button.screen_y,
+            selected_color=NOSTR_ACCENT_COLOR,
         )
         self.components.append(self.day_down_button)
         self.digit_buttons[1].append(self.day_down_button)
@@ -383,7 +417,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
 
 
 @dataclass
-class NostrNIP26ReviewTokenScreen(ButtonListScreen):
+class NostrNIP26ReviewTokenScreen(NostrButtonListScreen):
     delegator_npub: str = None
     delegatee_npub: str = None
     conditions: List[str] = None
@@ -411,7 +445,7 @@ class NostrNIP26ReviewTokenScreen(ButtonListScreen):
     Sign Event
 ****************************************************************************"""
 @dataclass
-class NostrSignEventStartScreen(ButtonListScreen):
+class NostrSignEventStartScreen(NostrButtonListScreen):
     def __post_init__(self):
         # Customize defaults
         self.is_bottom_list = True
@@ -428,7 +462,7 @@ class NostrSignEventStartScreen(ButtonListScreen):
 
 
 @dataclass
-class NostrSignEventReviewScreen(ButtonListScreen):
+class NostrSignEventReviewScreen(NostrButtonListScreen):
     kind: str = None
     content: str = None
 
@@ -455,7 +489,7 @@ class NostrSignEventReviewScreen(ButtonListScreen):
     npub / nsec Display and Export
 ****************************************************************************"""
 @dataclass
-class NostrBech32KeyDisplayScreen(ButtonListScreen):
+class NostrBech32KeyDisplayScreen(NostrButtonListScreen):
     key: str = None
     is_pubkey: bool = True
 
@@ -476,7 +510,7 @@ class NostrBech32KeyDisplayScreen(ButtonListScreen):
         key_display = TextArea(
             text=f"{self.key[:14]}\n...{self.key[-10:]}",
             font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
-            font_color=GUIConstants.ACCENT_COLOR,
+            font_color=NOSTR_ACCENT_COLOR,
             font_size=GUIConstants.BODY_FONT_SIZE + 12,
             is_text_centered=True,
         )

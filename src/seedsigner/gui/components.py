@@ -572,6 +572,7 @@ class IconTextLine(BaseComponent):
             self.icon.render()
 
 
+
 @dataclass
 class ToastOverlay(BaseComponent):
     icon_name: str = None
@@ -637,6 +638,8 @@ class ToastOverlay(BaseComponent):
                 break
             
         self.renderer.show_image(self.current_screen)
+
+
 
 @dataclass
 class FormattedAddress(BaseComponent):
@@ -1267,6 +1270,7 @@ class TopNav(BaseComponent):
     font_color: str = "#fcfcfc"
     show_back_button: bool = True
     show_power_button: bool = False
+    button_selected_color: str = GUIConstants.ACCENT_COLOR
     is_selected: bool = False
 
 
@@ -1285,6 +1289,7 @@ class TopNav(BaseComponent):
                 screen_y=GUIConstants.EDGE_PADDING,
                 width=GUIConstants.TOP_NAV_BUTTON_SIZE,
                 height=GUIConstants.TOP_NAV_BUTTON_SIZE,
+                selected_color=self.button_selected_color,
             )
 
         if self.show_power_button:
@@ -1295,6 +1300,7 @@ class TopNav(BaseComponent):
                 screen_y=GUIConstants.EDGE_PADDING,
                 width=GUIConstants.TOP_NAV_BUTTON_SIZE,
                 height=GUIConstants.TOP_NAV_BUTTON_SIZE,
+                selected_color=self.button_selected_color,
             )
 
         min_x = 0
@@ -1325,6 +1331,7 @@ class TopNav(BaseComponent):
                 is_text_centered=True,
                 font_name=self.font_name,
                 font_size=self.font_size,
+                background_color=self.background_color,
             )
 
 
