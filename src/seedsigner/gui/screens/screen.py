@@ -350,12 +350,6 @@ class ButtonListScreen(BaseTopNavScreen):
 
         cur_selected_button = self.buttons[self.selected_button]
         cur_selected_button.is_selected = True
-        if self.has_scroll_arrows:
-            if self.scroll_y_initial_offset is None:
-                # Only use this older scroll approach if the newer variable isn't set 
-                frame_scroll = self.buttons[0].screen_y - cur_selected_button.screen_y
-                for button in self.buttons:
-                    button.scroll_y -= frame_scroll
 
 
     def _render(self):
@@ -906,6 +900,21 @@ class PowerOffScreen(BaseTopNavScreen):
 
         self.components.append(TextArea(
             text="Please wait about 30 seconds before disconnecting power.",
+            screen_y=self.top_nav.height,
+            height=self.canvas_height - self.top_nav.height,
+        ))
+
+
+
+@dataclass
+class PowerOffNotRequiredScreen(BaseTopNavScreen):
+    def __post_init__(self):
+        self.title = "Just Unplug It"
+        self.show_back_button = True
+        super().__post_init__()
+
+        self.components.append(TextArea(
+            text="It is safe to disconnect power at any time.",
             screen_y=self.top_nav.height,
             height=self.canvas_height - self.top_nav.height,
         ))
