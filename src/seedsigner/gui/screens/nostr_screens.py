@@ -9,6 +9,9 @@ from seedsigner.hardware.buttons import HardwareButtonsConstants
 
 
 
+"""****************************************************************************
+    NIP-26 Delegation
+****************************************************************************"""
 @dataclass
 class NostrNIP26DelegationStartScreen(ButtonListScreen):
     npub: str = None
@@ -29,7 +32,7 @@ class NostrNIP26DelegationStartScreen(ButtonListScreen):
             text=self.npub,
             font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
             font_color=GUIConstants.ACCENT_COLOR,
-            font_size=GUIConstants.BODY_FONT_SIZE + 12,
+            font_size=GUIConstants.BODY_FONT_SIZE + 10,
             is_text_centered=True,
         )
         key_display.screen_y = keytype.screen_y + keytype.height + int((self.buttons[0].screen_y - (keytype.screen_y + keytype.height) - key_display.height)/2)
@@ -378,6 +381,7 @@ class NostrNIP26CreateTokenCreatedAtScreen(BaseTopNavScreen):
                 self.renderer.show_image()
 
 
+
 @dataclass
 class NostrNIP26ReviewTokenScreen(ButtonListScreen):
     delegator_npub: str = None
@@ -403,6 +407,53 @@ class NostrNIP26ReviewTokenScreen(ButtonListScreen):
 
 
 
+"""****************************************************************************
+    Sign Event
+****************************************************************************"""
+@dataclass
+class NostrSignEventStartScreen(ButtonListScreen):
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        self.button_data = [("Scan", FontAwesomeIconConstants.QRCODE)]
+
+        super().__post_init__()
+
+        self.components.append(TextArea(
+            text="Scan the event json or its serialized form",
+            is_text_centered=True,
+            screen_y=self.top_nav.height + 3*GUIConstants.COMPONENT_PADDING
+        ))
+
+
+
+@dataclass
+class NostrSignEventReviewScreen(ButtonListScreen):
+    kind: str = None
+    content: str = None
+
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        self.button_data = [("Sign", FontAwesomeIconConstants.PAPER_PLANE)]
+
+        super().__post_init__()
+
+        text = f"kind: {self.kind}" + "\n"
+        text += "content: " + self.content
+
+        self.components.append(TextArea(
+            text=text,
+            is_text_centered=False,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+            allow_text_overflow=True,
+        ))
+
+
+
+"""****************************************************************************
+    npub / nsec Display and Export
+****************************************************************************"""
 @dataclass
 class NostrBech32KeyDisplayScreen(ButtonListScreen):
     key: str = None

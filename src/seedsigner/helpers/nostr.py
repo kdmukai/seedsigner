@@ -1,3 +1,4 @@
+import json
 from binascii import hexlify, unhexlify
 from typing import List
 from embit import bip32
@@ -7,18 +8,30 @@ from seedsigner.helpers import bech32
 from seedsigner.models.seed import Seed
 
 
+
 # Nostr kinds
 KIND__SET_METADATA = ("Set metadata", 0)
-KIND__TEXT_NOTE = ("Notes", 1)
+KIND__TEXT_NOTE = ("Text note", 1)
 KIND__RECOMMEND_RELAY = ("Recommend relay", 2)
 KIND__CONTACTS = ("Contacts", 3)
-KIND__ENCRYPTED_DIRECT_MESSAGE = ("DMs", 4)
+KIND__ENCRYPTED_DIRECT_MESSAGE = ("Encrypted DM", 4)
 KIND__DELETE = ("Delete", 5)
 
 ALL_KINDS = [
     KIND__SET_METADATA, KIND__TEXT_NOTE, KIND__RECOMMEND_RELAY, KIND__CONTACTS,
     KIND__ENCRYPTED_DIRECT_MESSAGE, KIND__DELETE
 ]
+
+
+
+class SerializedEventFields:
+    # Nostr Events are serialized as (see NIP-01):
+    #   [0, <sender_pubkey: str>, <created_at: int>, <kind: int>, <tags: List[List[str]]>, <content:str>]
+    SENDER_PUBKEY = 1
+    CREATED_AT = 2
+    KIND = 3
+    TAGS = 4
+    CONTENT = 5
 
 
 
@@ -47,6 +60,22 @@ def get_npub(seed: Seed) -> str:
     return bech32.bech32_encode("npub", converted_bits, bech32.Encoding.BECH32)
 
 
+def get_pubkey_hex(seed: Seed) -> str:
+    nostr_root = derive_nostr_key(seed=seed)
+    privkey = ec.PrivateKey(secret=nostr_root.secret)
+    return hexlify(privkey.get_public_key().xonly()).decode()
+
+
+def get_privkey_hex(seed: Seed) -> str:
+    nostr_root = derive_nostr_key(seed=seed)
+    privkey = ec.PrivateKey(secret=nostr_root.secret)
+    return hexlify(privkey.xonly()).decode()
+
+
+
+"""****************************************************************************
+    Key format conversion
+****************************************************************************"""
 def pubkey_hex_to_npub(pubkey_hex: str) -> str:
     converted_bits = bech32.convertbits(unhexlify(pubkey_hex), 8, 5)
     return bech32.bech32_encode("npub", converted_bits, bech32.Encoding.BECH32)
@@ -58,12 +87,36 @@ def npub_to_hex(npub: str) -> str:
     return bytes(raw_public_key).hex()
 
 
-def sign_message(seed: Seed, message: str):
+
+"""****************************************************************************
+    Signing
+****************************************************************************"""
+def sign_message(seed: Seed, full_message: str):
+    """ Hashes the full_message and then signs """
     nostr_root = derive_nostr_key(seed=seed)
-    sig = nostr_root.schnorr_sign(sha256(message.encode()).digest())
+    sig = nostr_root.schnorr_sign(sha256(full_message.encode()).digest())
     return sig
 
 
+
+"""****************************************************************************
+    Events
+****************************************************************************"""
+def serialize_event(event_dict: dict) -> str:
+    """ Serialize an Event from its json form """
+    data = [0, event_dict["pubkey"], event_dict["created_at"], event_dict["kind"], event_dict["tags"], event_dict["content"]]
+    data_str = json.dumps(data, separators=(',', ':'), ensure_ascii=False)
+    return data_str
+
+
+def sign_event(seed: Seed, serialized_event: str):
+    return sign_message(seed=seed, full_message=serialized_event)
+
+
+
+"""****************************************************************************
+    NIP-26 Delegation
+****************************************************************************"""
 def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int], valid_until: int):
     token = f"nostr:delegation:{delegatee_pubkey}:"
 
@@ -79,7 +132,7 @@ def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int], val
 
 def parse_nip26_delegation_token(token: str):
     """
-    nostr:delegation:477318cfb5427b9cfc66a9fa376150c1ddbc62115ae27cef72417eb959691396:kind=1&created_at<1675721885
+    nostr:delegation:<delegatee pubkey>:kind=1&created_at<1675721885
     """
     parts = token.split(":")
 
@@ -97,7 +150,7 @@ def parse_nip26_delegation_token(token: str):
 
 def sign_nip26_delegation(seed: Seed, token: str):
     token_dict = parse_nip26_delegation_token(token)
-    signature = sign_message(seed=seed, message=token)
+    signature = sign_message(seed=seed, full_message=token)
 
     return [
         "delegation",

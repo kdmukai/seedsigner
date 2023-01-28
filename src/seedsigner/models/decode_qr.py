@@ -99,6 +99,12 @@ class DecodeQR:
             elif self.qr_type == QRType.NOSTR__NPUB:
                 self.decoder = NostrNpubQrDecoder()
 
+            elif self.qr_type == QRType.NOSTR__SERIALIZED_EVENT:
+                self.decoder = NostrSerializedEventQrDecoder()
+
+            elif self.qr_type == QRType.NOSTR__JSON_EVENT:
+                self.decoder = NostrJsonEventQrDecoder()
+
         elif self.qr_type != qr_type:
             raise Exception('QR Fragment Unexpected Type Change')
         
@@ -247,6 +253,14 @@ class DecodeQR:
         return self.decoder.get_npub()
 
 
+    def get_serialized_event(self) -> str:
+        return self.decoder.get_serialized_event()
+
+
+    def get_json_event(self) -> str:
+        return self.decoder.get_json_event()
+
+
     @property
     def is_complete(self) -> bool:
         return self.complete
@@ -385,6 +399,39 @@ class DecodeQR:
             # This must be listed before the is_bitcoin_address test
             elif s.startswith("npub1"):
                 return QRType.NOSTR__NPUB
+            
+            try:
+                # Nostr Events are serialized as:
+                #   [0, <sender_pubkey: str>, <created_at: int>, <kind: int>, <tags: List[List[str]]>, <content:str>]
+                json_content = json.loads(s)
+                if type(json_content) == list and json_content[0] == 0 and len(json_content) == 6:
+                    return QRType.NOSTR__SERIALIZED_EVENT
+            except Exception:
+                pass
+
+            try:
+                # Nostr raw json Events:
+                """
+                    {
+                        "pubkey": <sender pubkey hex: str>,
+                        "created_at": 1674864298,
+                        "kind": 1,
+                        "tags": [
+                            [
+                                "e",
+                                <event_id being referenced: str>
+                            ]
+                        ],
+                        "content": "Testing a reply! To myself!",
+                        "id": <sha256 hash of serialized Event: str>
+                    }
+                """
+                json_content = json.loads(s)
+                expected_attrs = ["pubkey", "created_at", "kind", "tags", "content", "id"]
+                if len([k for k in json_content.keys() if k in expected_attrs]) == len(expected_attrs):
+                    return QRType.NOSTR__JSON_EVENT
+            except Exception:
+                pass
 
             # Seed
             if re.search(r'\d{48,96}', s):
@@ -1080,6 +1127,34 @@ class NostrNpubQrDecoder(BaseSingleFrameQrDecoder):
 
     def get_npub(self):
         return self.npub
+
+
+
+class NostrSerializedEventQrDecoder(BaseSingleFrameQrDecoder):
+    def __init__(self):
+        super().__init__()
+        self.serialized_event = None
+
+    def add(self, segment, qr_type=QRType.NOSTR__SERIALIZED_EVENT):
+        self.serialized_event = segment.strip()
+        return DecodeQRStatus.COMPLETE
+
+    def get_serialized_event(self):
+        return self.serialized_event
+
+
+
+class NostrJsonEventQrDecoder(BaseSingleFrameQrDecoder):
+    def __init__(self):
+        super().__init__()
+        self.json_event = None
+
+    def add(self, segment, qr_type=QRType.NOSTR__JSON_EVENT):
+        self.json_event = segment.strip()
+        return DecodeQRStatus.COMPLETE
+
+    def get_json_event(self):
+        return self.json_event
 
 
 class SpecterWalletQrDecoder(BaseAnimatedQrDecoder):

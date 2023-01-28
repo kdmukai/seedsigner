@@ -1,4 +1,4 @@
-from embit.bip32 import HDKey
+import json
 from seedsigner.controller import Controller
 from seedsigner.gui.components import FontAwesomeIconConstants
 from seedsigner.helpers import nostr
@@ -26,28 +26,38 @@ class BaseNostrView(View):
     @property
     def nostr_nsec(self) -> str:
         return nostr.get_nsec(self.seed)
+    
+    @property
+    def nostr_pubkey_hex(self) -> str:
+        return nostr.get_pubkey_hex(self.seed)
+
+    @property
+    def nostr_privkey_hex(self) -> str:
+        return nostr.get_privkey_hex(self.seed)
 
 
 
 class NostrKeyOptionsView(View):
     def __init__(self, seed_num: int):
         super().__init__()
+        self.seed = self.controller.storage.seeds[seed_num]
 
         # Always reset temp Nostr data here
         self.controller.nostr_data = {}
-
         self.controller.nostr_data["seed_num"] = seed_num
 
 
     def run(self):
         NIP_26_DELEGATION = ("NIP-26 delegation", FontAwesomeIconConstants.ADDRESS_CARD)
-        EXPORT_PUBLIC_KEY = ("Export public key", FontAwesomeIconConstants.KEY)
-        EXPORT_PRIVATE_KEY = ("Export private key", FontAwesomeIconConstants.TRIANGLE_EXCLAMATION)
+        SIGN = ("Sign event", FontAwesomeIconConstants.PEN)
+        EXPORT_PUBLIC_KEY = ("Export pubkey", FontAwesomeIconConstants.KEY)
+        EXPORT_PRIVATE_KEY = ("Export privkey", FontAwesomeIconConstants.TRIANGLE_EXCLAMATION)
 
-        button_data = [NIP_26_DELEGATION, EXPORT_PUBLIC_KEY, EXPORT_PRIVATE_KEY]
+        button_data = [NIP_26_DELEGATION, SIGN, EXPORT_PUBLIC_KEY, EXPORT_PRIVATE_KEY]
 
         selected_menu_num = ButtonListScreen(
-            title="Nostr Key Options",
+            # title="Nostr Key Options",
+            title=f"npub: {nostr.get_npub(self.seed)[4:13]}",
             button_data=button_data,
             is_bottom_list=True,
             is_button_text_centered=False,
@@ -59,14 +69,20 @@ class NostrKeyOptionsView(View):
         if button_data[selected_menu_num] == NIP_26_DELEGATION:
             return Destination(NostrNIP26DelegationStartView)
 
+        elif button_data[selected_menu_num] == SIGN:
+            return Destination(NostrSignEventStartView)
+
         elif button_data[selected_menu_num] == EXPORT_PUBLIC_KEY:
-            return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=True))
+            return Destination(NostrKeySelectFormatView, view_args=dict(is_pubkey=True))
 
         elif button_data[selected_menu_num] == EXPORT_PRIVATE_KEY:
-            return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=False))
+            return Destination(NostrKeySelectFormatView, view_args=dict(is_pubkey=False))
 
 
 
+"""****************************************************************************
+    NIP-26 Delegation
+****************************************************************************"""
 class NostrNIP26DelegationStartView(BaseNostrView):
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrNIP26DelegationStartScreen
@@ -78,7 +94,7 @@ class NostrNIP26DelegationStartView(BaseNostrView):
         selected_menu_num = NostrNIP26DelegationStartScreen(
             title="NIP-26 Delegation",
             button_data=button_data,
-            npub=self.nostr_npub[:14]
+            npub=f"npub:{self.nostr_npub[4:13]}",
         ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -104,6 +120,9 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
         else:
             self.checked_buttons = []
 
+        # Used to preserve the rendering position in the list
+        self.initial_scroll = 0
+
 
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrNIP26TokenKindsScreen
@@ -111,12 +130,14 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
         button_data = [f"{kind[1]}: {kind[0]}" for kind in nostr.ALL_KINDS]
 
         # Re-use the Settings entry screen for MULTISELECT
-        ret_value = NostrNIP26TokenKindsScreen(
+        screen = NostrNIP26TokenKindsScreen(
             title="Allowed Kinds",
             button_data=button_data,
             checked_buttons=self.checked_buttons,
             selected_button=self.selected_button,
-        ).display()
+            scroll_y_initial_offset=self.initial_scroll,
+        )
+        ret_value = screen.display()
 
         if ret_value == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -135,6 +156,7 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
 
         # Stay in the multi-select Screen via recursion
         self.selected_button = ret_value
+        self.initial_scroll = screen.buttons[0].scroll_y
         return self.run()
 
 
@@ -163,8 +185,15 @@ class NostrNIP26CreateTokenCreatedAt(BaseNostrView):
 class NostrNIP26SelectDelegateeView(BaseNostrView):
     def run(self):
         SCAN = ("Scan npub", FontAwesomeIconConstants.QRCODE)
-
         button_data = [SCAN]
+
+        onboard_seeds = []
+        for i, seed in enumerate(self.controller.storage.seeds):
+            if i == self.seed_num:
+                continue
+            onboard_seeds.append(nostr.get_npub(seed))
+            button_data.append(f"npub: {nostr.get_npub(seed)[4:13]}")
+            
         selected_menu_num = ButtonListScreen(
             title="Select Delegatee",
             button_data=button_data,
@@ -179,6 +208,12 @@ class NostrNIP26SelectDelegateeView(BaseNostrView):
             from seedsigner.views.scan_views import ScanView
             self.controller.resume_main_flow = Controller.FLOW__NOSTR__NIP26_DELEGATION
             return Destination(ScanView)
+        
+        else:
+            for i, npub in enumerate(onboard_seeds):
+                if i + 1 == selected_menu_num:
+                    return Destination(NostrNIP26BuildToken, view_args=dict(npub=npub))
+
 
 
 
@@ -228,7 +263,7 @@ class NostrNIP26ReviewTokenView(BaseNostrView):
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
-        
+
         return Destination(NostrNIP26SignedTokenExportQRView)
 
 
@@ -267,41 +302,165 @@ class NostrNIP26SignedTokenExportQRView(BaseNostrView):
 
 
 
-class NostrKeyDisplayView(BaseNostrView):
-    def __init__(self, is_pubkey: bool = True):
+"""****************************************************************************
+    Sign Event
+****************************************************************************"""
+class NostrSignEventStartView(BaseNostrView):
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrSignEventStartScreen
+        from seedsigner.views.scan_views import ScanView
+        selected_menu_num = NostrSignEventStartScreen().display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        return Destination(ScanView)
+
+
+
+class NostrSignEventReviewView(BaseNostrView):
+    def __init__(self, serialized_event: str = None, json_event: str = None):
+        super().__init__()
+        if json_event:
+            event_dict = json.loads(json_event)
+            serialized_event = nostr.serialize_event(event_dict)
+
+        self.controller.nostr_data["raw_serialized_event"] = serialized_event
+        self.serialized_event = json.loads(serialized_event)
+    
+
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrSignEventReviewScreen
+        sender_pubkey = self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY]
+        sender_npub = nostr.pubkey_hex_to_npub(self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY])
+        kind = f"{self.serialized_event[nostr.SerializedEventFields.KIND]}: {nostr.ALL_KINDS[self.serialized_event[nostr.SerializedEventFields.KIND]][0]}"
+        content = self.serialized_event[nostr.SerializedEventFields.CONTENT]
+
+        if sender_pubkey != self.nostr_pubkey_hex:
+            # This Seed can't sign this Event
+            from seedsigner.gui.screens import DireWarningScreen
+            DireWarningScreen(
+                title="Wrong Seed",
+                status_headline="Cannot sign event",
+                text=f"""Current seed is {self.nostr_npub[:10]} but event expects {sender_npub[:10]}""",
+                button_data=["OK"],
+                show_back_button=False,
+            ).display()
+
+            return Destination(NostrKeyOptionsView, view_args=dict(seed_num=self.seed_num), clear_history=True)
+
+        selected_menu_num = NostrSignEventReviewScreen(
+            title="Sign Event",
+            kind=kind,
+            content=content,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        return Destination(NostrSignEventSignatureQRView)
+
+
+
+class NostrSignEventSignatureQRView(BaseNostrView):
+    def __init__(self):
+        super().__init__()
+
+        signature = nostr.sign_event(seed=self.seed, serialized_event=self.controller.nostr_data["raw_serialized_event"])
+
+        qr_density = self.settings.get_value(SettingsConstants.SETTING__QR_DENSITY)
+        qr_type = QRType.GENERIC__STATIC
+
+        self.qr_encoder = EncodeQR(
+            data=signature,
+            qr_type=qr_type,
+            qr_density=qr_density,
+        )
+
+
+    def run(self):
+        QRDisplayScreen(qr_encoder=self.qr_encoder).display()
+
+        return Destination(NostrKeyOptionsView, view_args=dict(seed_num=self.seed_num), clear_history=True)
+
+
+
+"""****************************************************************************
+    npub / nsec View and Export
+****************************************************************************"""
+class NostrKeySelectFormatView(BaseNostrView):
+    def __init__(self, is_pubkey: bool):
         super().__init__()
         self.is_pubkey = is_pubkey
+
+
+    def run(self):
+        BECH32 = "npub (bech32)" if self.is_pubkey else "nsec (bech32)"
+        HEX = "Hex"
+
+        button_data = [BECH32, HEX]
+        selected_menu_num = ButtonListScreen(
+            title="Key Format",
+            button_data=button_data,
+            is_bottom_list=True,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        elif button_data[selected_menu_num] == BECH32:
+            return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=self.is_pubkey, is_bech32=True))
+
+        elif button_data[selected_menu_num] == HEX:
+            return Destination(NostrKeyDisplayView, view_args=dict(is_pubkey=self.is_pubkey, is_bech32=False))
+
+
+
+class NostrKeyDisplayView(BaseNostrView):
+    def __init__(self, is_pubkey: bool = True, is_bech32: bool = True):
+        super().__init__()
+        self.is_pubkey = is_pubkey
+        self.is_bech32 = is_bech32
 
 
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrBech32KeyDisplayScreen, NostrPrivateKeyDisplayScreen
 
         if self.is_pubkey:
-            selected_menu_num = NostrBech32KeyDisplayScreen(
-                title="Nostr npub Export",
-                key=self.nostr_npub,
-            ).display()
+            if self.is_bech32:
+                title = "npub Export"
+                key = self.nostr_npub
+            else:
+                title = "Hex Pubkey Export"
+                key = self.nostr_pubkey_hex
         else:
-            selected_menu_num = NostrPrivateKeyDisplayScreen(
-                title="Nostr nsec Export",
-                key=self.nostr_nsec,
-            ).display()
+            if self.is_bech32:
+                title = "nsec Export"
+                key = self.nostr_nsec
+            else:
+                title = "Hex Privkey Export"
+                key = self.nostr_privkey_hex
+
+        selected_menu_num = NostrBech32KeyDisplayScreen(
+            title=title,
+            key=key,
+        ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
-        return Destination(NostrKeyExportQRView, view_args=dict(is_pubkey=self.is_pubkey))
+        return Destination(NostrKeyExportQRView, view_args=dict(is_pubkey=self.is_pubkey, is_bech32=self.is_bech32))
 
 
 
 class NostrKeyExportQRView(BaseNostrView):
-    def __init__(self, is_pubkey: bool = True):
+    def __init__(self, is_pubkey: bool = True, is_bech32: bool = True):
         super().__init__()
 
         if is_pubkey:
-            data = self.nostr_npub
+            data = self.nostr_npub if is_bech32 else self.nostr_pubkey_hex
         else:
-            data = self.nostr_nsec
+            data = self.nostr_nsec if is_bech32 else self.nostr_privkey_hex
 
         qr_density = self.settings.get_value(SettingsConstants.SETTING__QR_DENSITY)
         qr_type = QRType.GENERIC__STATIC

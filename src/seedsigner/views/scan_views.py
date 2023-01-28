@@ -110,6 +110,16 @@ class ScanView(View):
                 npub = self.decoder.get_npub()
                 return Destination(NostrNIP26BuildToken, view_args=dict(npub=npub), skip_current_view=True)
 
+            elif self.decoder.qr_type == QRType.NOSTR__SERIALIZED_EVENT:
+                from seedsigner.views.nostr_views import NostrSignEventReviewView
+                serialized_event = self.decoder.get_serialized_event()
+                return Destination(NostrSignEventReviewView, view_args=dict(serialized_event=event_json), skip_current_view=True)
+
+            elif self.decoder.qr_type == QRType.NOSTR__JSON_EVENT:
+                from seedsigner.views.nostr_views import NostrSignEventReviewView
+                json_event = self.decoder.get_json_event()
+                return Destination(NostrSignEventReviewView, view_args=dict(json_event=json_event), skip_current_view=True)
+
             else:
                 return Destination(NotYetImplementedView)
 

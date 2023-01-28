@@ -31,6 +31,8 @@ class QRType:
 
     NOSTR__NIP26_DELEGATION_TOKEN = "nostr__nip26_delegation_token"
     NOSTR__NPUB = "nostr__npub"
+    NOSTR__SERIALIZED_EVENT = "nostr__serialized_event"
+    NOSTR__JSON_EVENT = "nostr__json_event"
 
     GENERIC__STATIC = "generic__static"
 
