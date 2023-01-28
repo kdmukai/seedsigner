@@ -1,16 +1,15 @@
-
-
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List
-from seedsigner.gui.components import Button, CheckboxButton, FontAwesomeIconConstants, GUIConstants, IconButton, TextArea
+from seedsigner.gui.components import Button, CheckboxButton, FontAwesomeIconConstants, GUIConstants, Icon, IconButton, TextArea
 
 from seedsigner.gui.screens.screen import BaseTopNavScreen, ButtonListScreen, WarningEdgesMixin
 from seedsigner.hardware.buttons import HardwareButtonsConstants
 
 
 
-NOSTR_BACKGROUND_COLOR = "#290152"
-NOSTR_ACCENT_COLOR = "#cc33ff"
+NOSTR_BACKGROUND_COLOR = "#5d006f"
+NOSTR_ACCENT_COLOR = "#dd23ef"
 
 
 
@@ -94,6 +93,8 @@ class NostrNIP26TokenKindsScreen(NostrButtonListScreen):
 
 @dataclass
 class NostrNIP26CreateTokenCreatedAtScreen(NostrBaseTopNavScreen):
+    initial_date: datetime = None
+
     def __post_init__(self):
         super().__post_init__()
 
@@ -103,9 +104,9 @@ class NostrNIP26CreateTokenCreatedAtScreen(NostrBaseTopNavScreen):
         ]
         self.cur_digit_button = [0, 1]
 
-        self.year = 2023
-        self.month = 2
-        self.day = 28
+        self.year = self.initial_date.year
+        self.month = self.initial_date.month
+        self.day = self.initial_date.day
 
         digit_font_size = GUIConstants.BODY_FONT_MAX_SIZE + 12
 
@@ -417,27 +418,187 @@ class NostrNIP26CreateTokenCreatedAtScreen(NostrBaseTopNavScreen):
 
 
 @dataclass
-class NostrNIP26ReviewTokenScreen(NostrButtonListScreen):
+class NostrNIP26SelectDelegateeScreen(NostrButtonListScreen):
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        details = TextArea(
+            text="Select or scan the pubkey that will be authorized to sign on your behalf.",
+            is_text_centered=True,
+            screen_y=self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
+        )
+        self.components.append(details)
+
+
+
+@dataclass
+class NostrNIP26ReviewDelegateeScreen(NostrButtonListScreen):
     delegator_npub: str = None
     delegatee_npub: str = None
-    conditions: List[str] = None
 
     def __post_init__(self):
         # Customize defaults
         self.is_bottom_list = True
-        self.button_data = [("Sign delegation", FontAwesomeIconConstants.PEN)]
+        self.button_data = ["Next"]
 
         super().__post_init__()
 
-        text = f"Allow: {self.delegatee_npub}\n"
-        text += f"To post on behalf of: {self.delegator_npub}\n"
-        text += f"""Conditions: {f"{chr(10)}".join(self.conditions)}"""  # inserts \n
         details = TextArea(
-            text=text,
-            is_text_centered=False,
-            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING
+            text="Will authorize:",
+            is_text_centered=True,
+            screen_y=self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
         )
         self.components.append(details)
+
+        text = f"npub:{self.delegatee_npub[4:15]}" + "\n" + "..." + self.delegatee_npub[-13:]
+        delegatee = TextArea(
+            text=text,
+            font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
+            font_size=GUIConstants.BODY_FONT_MAX_SIZE + 2,
+            font_color=NOSTR_ACCENT_COLOR,
+            is_text_centered=True,
+            screen_y=details.screen_y + details.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(delegatee)
+
+        details2 = TextArea(
+            text="To sign on behalf of:",
+            is_text_centered=True,
+            screen_y=delegatee.screen_y + delegatee.height + 2*GUIConstants.COMPONENT_PADDING
+        )
+        self.components.append(details2)
+
+        delegator = TextArea(
+            text=f"npub:{self.delegator_npub[4:13]}",
+            font_name=GUIConstants.FIXED_WIDTH_FONT_NAME,
+            font_size=GUIConstants.BODY_FONT_MAX_SIZE + 2,
+            font_color=NOSTR_ACCENT_COLOR,
+            is_text_centered=True,
+            screen_y=details2.screen_y + details2.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(delegator)
+
+
+
+@dataclass
+class NostrNIP26ReviewKindsScreen(NostrButtonListScreen):
+    kinds: List[str] = None
+
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        self.button_data = ["Next"]
+
+        super().__post_init__()
+
+        details = TextArea(
+            text="Will authorize event kinds:",
+            is_text_centered=False,
+            screen_y=self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
+        )
+        self.components.append(details)
+
+        text = ""
+        for kind in self.kinds:
+            text += kind + "\n"
+        kinds = TextArea(
+            text=text,
+            # font_size=GUIConstants.BODY_FONT_MAX_SIZE,
+            font_color=NOSTR_ACCENT_COLOR,
+            is_text_centered=False,
+            screen_y=details.screen_y + details.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(kinds)
+
+
+
+@dataclass
+class NostrNIP26ReviewCreatedAtScreen(NostrButtonListScreen):
+    valid_from: int = None
+    valid_until: int = None
+
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        screen_y = self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
+        if self.valid_from:
+            details = TextArea(
+                text="Valid from:",
+                is_text_centered=True,
+                screen_y=screen_y
+            )
+            self.components.append(details)
+
+            timestamp = TextArea(
+                text=datetime.fromtimestamp(self.valid_from).strftime('%Y-%m-%d %H:%M:%S'),
+                font_size=GUIConstants.BODY_FONT_MAX_SIZE + 2,
+                font_color=NOSTR_ACCENT_COLOR,
+                is_text_centered=True,
+                screen_y=details.screen_y + details.height + GUIConstants.COMPONENT_PADDING,
+            )
+            self.components.append(timestamp)
+
+            screen_y = timestamp.screen_y + timestamp.height + 2*GUIConstants.COMPONENT_PADDING
+        
+        if self.valid_until:
+            details = TextArea(
+                text="Expires at:",
+                is_text_centered=True,
+                screen_y=screen_y
+            )
+            self.components.append(details)
+
+            timestamp = TextArea(
+                text=datetime.fromtimestamp(self.valid_until).strftime('%Y-%m-%d %H:%M:%S'),
+                font_size=GUIConstants.BODY_FONT_MAX_SIZE + 2,
+                font_color=NOSTR_ACCENT_COLOR,
+                is_text_centered=True,
+                screen_y=details.screen_y + details.height + GUIConstants.COMPONENT_PADDING,
+            )
+            self.components.append(timestamp)
+
+
+
+@dataclass
+class NostrNIP26PromptExportUnsignedDelegationScreen(NostrButtonListScreen):
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        details = TextArea(
+            text="Export this new (unsigned) delegation token to your Nostr client app.",
+            is_text_centered=True,
+            screen_y=self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
+        )
+        self.components.append(details)
+
+
+
+@dataclass
+class NostrNIP26PromptSignTokenScreen(NostrButtonListScreen):
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        icon = Icon(
+            icon_name=FontAwesomeIconConstants.PAPER_PLANE,
+            icon_color=GUIConstants.SUCCESS_COLOR,
+            icon_size=GUIConstants.ICON_LARGE_BUTTON_SIZE,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING
+        )
+        icon.screen_x = int((self.canvas_width - icon.width)/2)
+        self.components.append(icon)
+
+        self.components.append(TextArea(
+            text="Click to authorize this delegation",
+            screen_y=icon.screen_y + icon.height + GUIConstants.COMPONENT_PADDING
+        ))
 
 
 

@@ -9,18 +9,16 @@ from seedsigner.models.seed import Seed
 
 
 
-# Nostr kinds
-KIND__SET_METADATA = ("Set metadata", 0)
-KIND__TEXT_NOTE = ("Text note", 1)
-KIND__RECOMMEND_RELAY = ("Recommend relay", 2)
-KIND__CONTACTS = ("Contacts", 3)
-KIND__ENCRYPTED_DIRECT_MESSAGE = ("Encrypted DM", 4)
-KIND__DELETE = ("Delete", 5)
-
-ALL_KINDS = [
-    KIND__SET_METADATA, KIND__TEXT_NOTE, KIND__RECOMMEND_RELAY, KIND__CONTACTS,
-    KIND__ENCRYPTED_DIRECT_MESSAGE, KIND__DELETE
-]
+KINDS = {
+    0: "Set metadata",
+    1: "Text note",
+    2: "Recommend relay",
+    3: "Contacts",
+    4: "Encrypted DM",
+    5: "Delete",
+    7: "Reactions",
+    3000: "List",
+}
 
 
 
@@ -117,14 +115,19 @@ def sign_event(seed: Seed, serialized_event: str):
 """****************************************************************************
     NIP-26 Delegation
 ****************************************************************************"""
-def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int], valid_until: int):
+def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int] = None, valid_from: int = None, valid_until: int = None):
     token = f"nostr:delegation:{delegatee_pubkey}:"
 
     conditions = []
     if kinds:
-        conditions.append(f"""kind={",".join([str(kind) for kind in kinds])}""")
+        for kind in kinds:
+            conditions.append(f"kind={kind}")
     
-    conditions.append(f"created_at<{valid_until}")
+    if valid_from:
+        conditions.append(f"created_at>{valid_from}")
+
+    if valid_until:
+        conditions.append(f"created_at<{valid_until}")
 
     return token + "&".join(conditions)
 
@@ -148,13 +151,16 @@ def parse_nip26_delegation_token(token: str):
     )
 
 
-def sign_nip26_delegation(seed: Seed, token: str):
+def sign_nip26_delegation(seed: Seed, token: str, compact: bool=True):
     token_dict = parse_nip26_delegation_token(token)
     signature = sign_message(seed=seed, full_message=token)
 
-    return [
-        "delegation",
-        token_dict["delegatee_pubkey"],
-        "&".join(token_dict["conditions"]),
-        hexlify(signature.serialize()).decode(),
-    ]
+    token = []
+    if not compact:
+        token.append("delegation")
+        token.append(token_dict["delegatee_pubkey"])
+    
+    token.append("&".join(token_dict["conditions"]))
+    token.append(hexlify(signature.serialize()).decode())
+
+    return token

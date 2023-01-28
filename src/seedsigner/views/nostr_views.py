@@ -102,11 +102,12 @@ class NostrNIP26DelegationStartView(BaseNostrView):
             return Destination(BackStackView)
 
         elif button_data[selected_menu_num] == CREATE:
+            self.controller.nostr_data["is_external_token"] = False
             return Destination(NostrNIP25CreateTokenKindsView)
 
         elif button_data[selected_menu_num] == SCAN:
             from seedsigner.views.scan_views import ScanView
-            self.controller.nostr_data = dict(seed_num=self.seed_num)
+            self.controller.nostr_data["is_external_token"] = True
             self.controller.resume_main_flow = Controller.FLOW__NOSTR__NIP26_DELEGATION
             return Destination(ScanView)
 
@@ -116,10 +117,12 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
     def __init__(self):
         super().__init__()
         self.selected_button = 0
+        self.checked_buttons = []
         if "nip26_kinds" in self.controller.nostr_data:
-            self.checked_buttons = self.controller.nostr_data["nip26_kinds"]
-        else:
-            self.checked_buttons = []
+            kind_keys = list(nostr.KINDS.keys())
+            for i, kind in enumerate(kind_keys):
+                if kind in self.controller.nostr_data["nip26_kinds"]:
+                    self.checked_buttons.append(i)
 
         # Used to preserve the rendering position in the list
         self.initial_scroll = 0
@@ -128,7 +131,7 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrNIP26TokenKindsScreen
 
-        button_data = [f"{kind[1]}: {kind[0]}" for kind in nostr.ALL_KINDS]
+        button_data = [f"{id}: {description}" for id, description in nostr.KINDS.items()]
 
         # Re-use the Settings entry screen for MULTISELECT
         screen = NostrNIP26TokenKindsScreen(
@@ -143,10 +146,12 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
         if ret_value == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
-        if ret_value == len(nostr.ALL_KINDS):
+        if ret_value == len(nostr.KINDS):
             # "Next" click
-            self.controller.nostr_data["nip26_kinds"] = sorted(self.checked_buttons)
-            return Destination(NostrNIP26CreateTokenCreatedAt)
+            kind_keys = list(nostr.KINDS.keys())
+            kinds = [kind_keys[i] for i in self.checked_buttons]
+            self.controller.nostr_data["nip26_kinds"] = sorted(kinds)
+            return Destination(NostrNIP26CreateTokenValidFromView)
         
         if ret_value not in self.checked_buttons:
             # This is a new selection to add
@@ -162,13 +167,45 @@ class NostrNIP25CreateTokenKindsView(BaseNostrView):
 
 
 
-class NostrNIP26CreateTokenCreatedAt(BaseNostrView):
+class NostrNIP26CreateTokenValidFromView(BaseNostrView):
     def run(self):
         from datetime import datetime, timezone
         import time
         from seedsigner.gui.screens.nostr_screens import NostrNIP26CreateTokenCreatedAtScreen
+        
+        # TODO: Keep updating this starting point
+        initial_valid_from = datetime(2023, 1, 1, 0, 0, 0).replace(tzinfo=timezone.utc)
+
         ret_value = NostrNIP26CreateTokenCreatedAtScreen(
-            title="Valid Until",
+            title="Valid Starting",
+            initial_date=initial_valid_from
+        ).display()
+
+        if ret_value == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        # Otherwise returns a List[year, month, day]
+        date_time = datetime(ret_value[0], ret_value[1], ret_value[2], 0, 0, 0).replace(tzinfo=timezone.utc)
+        timestamp = int(time.mktime(date_time.timetuple()))
+        self.controller.nostr_data["nip26_valid_from"] = timestamp
+
+        return Destination(NostrNIP26CreateTokenValidUntilView)
+
+
+
+class NostrNIP26CreateTokenValidUntilView(BaseNostrView):
+    def run(self):
+        from datetime import datetime, timezone, timedelta
+        import time
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26CreateTokenCreatedAtScreen
+
+        # initialize at 30 days after valid_from
+        valid_from = self.controller.nostr_data["nip26_valid_from"]
+        initial_valid_until = datetime.fromtimestamp(valid_from) + timedelta(days=30)
+
+        ret_value = NostrNIP26CreateTokenCreatedAtScreen(
+            title="Expires After",
+            initial_date=initial_valid_until,
         ).display()
 
         if ret_value == RET_CODE__BACK_BUTTON:
@@ -185,6 +222,7 @@ class NostrNIP26CreateTokenCreatedAt(BaseNostrView):
 
 class NostrNIP26SelectDelegateeView(BaseNostrView):
     def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26SelectDelegateeScreen
         SCAN = ("Scan npub", FontAwesomeIconConstants.QRCODE)
         button_data = [SCAN]
 
@@ -195,7 +233,7 @@ class NostrNIP26SelectDelegateeView(BaseNostrView):
             onboard_seeds.append(nostr.get_npub(seed))
             button_data.append(f"npub: {nostr.get_npub(seed)[4:13]}")
             
-        selected_menu_num = NostrButtonListScreen(
+        selected_menu_num = NostrNIP26SelectDelegateeScreen(
             title="Select Delegatee",
             button_data=button_data,
             is_bottom_list=True,
@@ -224,7 +262,8 @@ class NostrNIP26BuildToken(BaseNostrView):
         token = nostr.assemble_nip26_delegation_token(
             delegatee_pubkey=delegatee_pubkey,
             kinds=self.controller.nostr_data["nip26_kinds"],
-            valid_until=self.controller.nostr_data["nip26_valid_until"]
+            valid_from=self.controller.nostr_data["nip26_valid_from"],
+            valid_until=self.controller.nostr_data["nip26_valid_until"],
         )
 
         self.controller.nostr_data["nip26_delegatee"] = delegatee_pubkey
@@ -234,11 +273,11 @@ class NostrNIP26BuildToken(BaseNostrView):
 
 
     def run(self):
-        return Destination(NostrNIP26ReviewTokenView, skip_current_view=True)
+        return Destination(NostrNIP26ReviewDelegateeView, skip_current_view=True)
 
 
 
-class NostrNIP26ReviewTokenView(BaseNostrView):
+class NostrNIP26ReviewDelegateeView(BaseNostrView):
     """ Can arrive here either by creating a delegation token or by scanning one in """
     def __init__(self, delegation_token: str = None):
         super().__init__()
@@ -253,12 +292,135 @@ class NostrNIP26ReviewTokenView(BaseNostrView):
 
 
     def run(self):
-        from seedsigner.gui.screens.nostr_screens import NostrNIP26ReviewTokenScreen
-        selected_menu_num = NostrNIP26ReviewTokenScreen(
-            title="NIP-26 Delegation",
-            delegator_npub=self.nostr_npub[:10],
-            delegatee_npub=self.parsed_token["delegatee_npub"][:32],
-            conditions=self.parsed_token["conditions"],
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26ReviewDelegateeScreen
+        selected_menu_num = NostrNIP26ReviewDelegateeScreen(
+            title="Delegation Details",
+            delegator_npub=self.nostr_npub[:14],
+            delegatee_npub=self.parsed_token["delegatee_npub"],
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(NostrNIP26ReviewKindsView)
+
+
+
+class NostrNIP26ReviewKindsView(BaseNostrView):
+    def __init__(self):
+        super().__init__()
+        conditions = nostr.parse_nip26_delegation_token(self.controller.nostr_data["nip26_token"])["conditions"]
+        self.kinds = []
+        for c in conditions:
+            # Can have multiple kind entries: `kind=1&kind=2&kind=3000`
+            if c.startswith("kind"):
+                self.kinds.append(int(c.split("=")[1]))
+
+
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26ReviewKindsScreen
+
+        if not self.kinds:
+            # Is this possible for a valid delegation token?
+            return Destination(NostrNIP26ReviewCreatedAtView)
+
+        selected_menu_num = NostrNIP26ReviewKindsScreen(
+            title="Delegation Details",
+            kinds=[f"{k}: {nostr.KINDS[k]}" for k in self.kinds],
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(NostrNIP26ReviewCreatedAtView)
+
+
+
+class NostrNIP26ReviewCreatedAtView(BaseNostrView):
+    def __init__(self):
+        super().__init__()
+        conditions = nostr.parse_nip26_delegation_token(self.controller.nostr_data["nip26_token"])["conditions"]
+        self.valid_from = None
+        self.valid_until = None
+        for c in conditions:
+            # Can have two entries
+            if c.startswith("created_at"):
+                # format: created_at<1675721885
+                timestamp = int(c[-10:])
+                operator = c[len("created_at"):-10]
+                if "<" in operator:
+                    self.valid_until = timestamp
+                elif ">" in operator:
+                    self.valid_from = timestamp
+                else:
+                    raise Exception(f"Unhandled inequality operator '{operator}' in delegation token")
+
+
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26ReviewCreatedAtScreen
+
+        selected_menu_num = NostrNIP26ReviewCreatedAtScreen(
+            title="Delegation Details",
+            valid_from=self.valid_from,
+            valid_until=self.valid_until,
+            button_data=["Next"],
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        if self.controller.nostr_data["is_external_token"]:
+            # Forward straight to the Sign page
+            return Destination(NostrNIP26SignTokenPromptView)
+        else:
+            # Have to first export the token we just created
+            return Destination(NostrNIP26PromptUnsignedTokenExportView)
+
+
+
+class NostrNIP26PromptUnsignedTokenExportView(BaseNostrView):
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26PromptExportUnsignedDelegationScreen
+        selected_menu_num = NostrNIP26PromptExportUnsignedDelegationScreen(
+            title="Export Delegation",
+            button_data = ["Export"]
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(NostrNIP26UnsignedTokenExportQRView)
+
+
+
+class NostrNIP26UnsignedTokenExportQRView(BaseNostrView):
+    """ Export the unsigned delegation token that we just created """
+    def __init__(self):
+        super().__init__()
+        
+        qr_density = self.settings.get_value(SettingsConstants.SETTING__QR_DENSITY)
+        qr_type = QRType.GENERIC__STATIC
+
+        self.qr_encoder = EncodeQR(
+            data=self.controller.nostr_data["nip26_token"],
+            qr_type=qr_type,
+            qr_density=qr_density,
+        )
+
+
+    def run(self):
+        QRDisplayScreen(qr_encoder=self.qr_encoder).display()
+
+        return Destination(NostrNIP26SignTokenPromptView)
+
+
+
+class NostrNIP26SignTokenPromptView(BaseNostrView):
+    def run(self):
+        from seedsigner.gui.screens.nostr_screens import NostrNIP26PromptSignTokenScreen
+        selected_menu_num = NostrNIP26PromptSignTokenScreen(
+            title="Sign Delegation",
+            button_data=["Sign"],
         ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -272,18 +434,13 @@ class NostrNIP26SignedTokenExportQRView(BaseNostrView):
     def __init__(self):
         super().__init__()
         
-        if "nip26_delegatee" in self.controller.nostr_data:
-            # We created this delegation; need to transmit the full "delegation" tag
-            self.data = nostr.sign_nip26_delegation(
-                seed=self.seed,
-                token=self.controller.nostr_data["nip26_token"]
-            )
-        else:
-            # We just need to sign the token and return the signature
-            self.data = nostr.sign_message(
-                seed=self.seed,
-                message=self.controller.nostr_data["nip26_token"]
-            )
+        # We just need to sign the token and return the signature
+        self.data = nostr.sign_message(
+            seed=self.seed,
+            full_message=self.controller.nostr_data["nip26_token"]
+        )
+
+        print(self.controller.nostr_data["nip26_token"])
 
         qr_density = self.settings.get_value(SettingsConstants.SETTING__QR_DENSITY)
         qr_type = QRType.GENERIC__STATIC
