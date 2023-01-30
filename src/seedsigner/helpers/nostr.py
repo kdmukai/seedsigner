@@ -75,8 +75,7 @@ def get_pubkey_hex(seed: Seed) -> str:
 
 def get_privkey_hex(seed: Seed) -> str:
     nostr_root = derive_nostr_key(seed=seed)
-    privkey = ec.PrivateKey(secret=nostr_root.secret)
-    return hexlify(privkey.xonly()).decode()
+    return hexlify(nostr_root.secret).decode()
 
 
 
