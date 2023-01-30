@@ -524,7 +524,7 @@ class NostrNIP26ReviewCreatedAtScreen(NostrButtonListScreen):
         self.is_bottom_list = True
         super().__post_init__()
 
-        screen_y = self.top_nav.height + int(1.5*GUIConstants.COMPONENT_PADDING)
+        screen_y = self.top_nav.height + int(2*GUIConstants.COMPONENT_PADDING)
         if self.valid_from:
             details = TextArea(
                 text="Valid from:",
@@ -542,7 +542,7 @@ class NostrNIP26ReviewCreatedAtScreen(NostrButtonListScreen):
             )
             self.components.append(timestamp)
 
-            screen_y = timestamp.screen_y + timestamp.height + 2*GUIConstants.COMPONENT_PADDING
+            screen_y = timestamp.screen_y + timestamp.height + 3*GUIConstants.COMPONENT_PADDING
         
         if self.valid_until:
             details = TextArea(
@@ -638,9 +638,17 @@ class NostrSignEventReviewScreen(NostrButtonListScreen):
         text += "content: " + self.content
 
         self.components.append(TextArea(
-            text=text,
-            is_text_centered=False,
+            text=self.kind,
+            font_color=NOSTR_ACCENT_COLOR,
+            font_size=GUIConstants.BODY_FONT_MAX_SIZE - 2,
+            is_text_centered=True,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+        ))
+
+        self.components.append(TextArea(
+            text=self.content,
+            is_text_centered=False,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + int(1.5*GUIConstants.COMPONENT_PADDING),
             allow_text_overflow=True,
         ))
 

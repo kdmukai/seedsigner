@@ -9,15 +9,24 @@ from seedsigner.models.seed import Seed
 
 
 
+KIND__SET_METADATA = 0
+KIND__TEXT_NOTE = 1
+KIND__RECOMMEND_RELAY = 2
+KIND__CONTACTS = 3
+KIND__ENCRYPTED_DIRECT_MESSAGE = 4
+KIND__DELETE = 5
+KIND__REACTIONS = 7
+KIND__LIST = 3000
+
 KINDS = {
-    0: "Set metadata",
-    1: "Text note",
-    2: "Recommend relay",
-    3: "Contacts",
-    4: "Encrypted DM",
-    5: "Delete",
-    7: "Reactions",
-    3000: "List",
+    KIND__SET_METADATA: "Set metadata",
+    KIND__TEXT_NOTE: "Text note",
+    KIND__RECOMMEND_RELAY: "Recommend relay",
+    KIND__CONTACTS: "Contacts",
+    KIND__ENCRYPTED_DIRECT_MESSAGE: "Encrypted DM",
+    KIND__DELETE: "Delete",
+    KIND__REACTIONS: "Reactions",
+    KIND__LIST: "List",
 }
 
 

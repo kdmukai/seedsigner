@@ -8,7 +8,7 @@ from seedsigner.models.encode_qr import EncodeQR
 from seedsigner.models.qr_type import QRType
 from seedsigner.models.seed import Seed
 from seedsigner.models.settings_definition import SettingsConstants
-from seedsigner.views.view import BackStackView, Destination, View
+from seedsigner.views.view import BackStackView, Destination, NotYetImplementedView, View
 
 
 class BaseNostrView(View):
@@ -223,8 +223,9 @@ class NostrNIP26CreateTokenValidUntilView(BaseNostrView):
 class NostrNIP26SelectDelegateeView(BaseNostrView):
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrNIP26SelectDelegateeScreen
-        SCAN = ("Scan npub", FontAwesomeIconConstants.QRCODE)
-        button_data = [SCAN]
+        SCAN_NPUB = ("Scan npub", FontAwesomeIconConstants.QRCODE)
+        SCAN_HEX = ("Scan pubkey (hex)", FontAwesomeIconConstants.QRCODE)
+        button_data = [SCAN_NPUB, SCAN_HEX]
 
         onboard_seeds = []
         for i, seed in enumerate(self.controller.storage.seeds):
@@ -243,11 +244,15 @@ class NostrNIP26SelectDelegateeView(BaseNostrView):
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
-        elif button_data[selected_menu_num] == SCAN:
+        elif button_data[selected_menu_num] == SCAN_NPUB:
             from seedsigner.views.scan_views import ScanView
             self.controller.resume_main_flow = Controller.FLOW__NOSTR__NIP26_DELEGATION
             return Destination(ScanView)
-        
+
+        elif button_data[selected_menu_num] == SCAN_HEX:
+            # TODO: Add QR decoder for a "nostr:pubkey:<pubkey hex>" QR format?
+            return Destination(NotYetImplementedView)
+
         else:
             for i, npub in enumerate(onboard_seeds):
                 if i + 1 == selected_menu_num:
@@ -491,13 +496,24 @@ class NostrSignEventReviewView(BaseNostrView):
     def run(self):
         from seedsigner.gui.screens.nostr_screens import NostrSignEventReviewScreen
         sender_pubkey = self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY]
-        sender_npub = nostr.pubkey_hex_to_npub(self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY])
-        kind = f"{self.serialized_event[nostr.SerializedEventFields.KIND]}: {nostr.ALL_KINDS[self.serialized_event[nostr.SerializedEventFields.KIND]][0]}"
+        kind = self.serialized_event[nostr.SerializedEventFields.KIND]
+        kind_description = f"{nostr.KINDS[self.serialized_event[nostr.SerializedEventFields.KIND]]} (kind: {kind})"
         content = self.serialized_event[nostr.SerializedEventFields.CONTENT]
+
+        if kind == nostr.KIND__SET_METADATA:
+            # content is json; display as key/value pairs
+            content_dict = json.loads(content)
+            content = ""
+            for k, v in content_dict.items():
+                content += f"{k}: {v}" + "\n"
+            
+            print(content)
+            print(self.serialized_event[nostr.SerializedEventFields.CONTENT])
 
         if sender_pubkey != self.nostr_pubkey_hex:
             # This Seed can't sign this Event
             from seedsigner.gui.screens import DireWarningScreen
+            sender_npub = nostr.pubkey_hex_to_npub(self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY])
             DireWarningScreen(
                 title="Wrong Seed",
                 status_headline="Cannot sign event",
@@ -510,7 +526,7 @@ class NostrSignEventReviewView(BaseNostrView):
 
         selected_menu_num = NostrSignEventReviewScreen(
             title="Sign Event",
-            kind=kind,
+            kind=kind_description,
             content=content,
         ).display()
 
