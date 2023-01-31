@@ -128,8 +128,7 @@ def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int] = No
 
     conditions = []
     if kinds:
-        for kind in kinds:
-            conditions.append(f"kind={kind}")
+        conditions.append(f"""kind={",".join([str(k) for k in kinds])}""")
     
     if valid_from:
         conditions.append(f"created_at>{valid_from}")
@@ -143,7 +142,7 @@ def assemble_nip26_delegation_token(delegatee_pubkey: str, kinds: List[int] = No
 
 def parse_nip26_delegation_token(token: str):
     """
-    nostr:delegation:<delegatee pubkey>:kind=1&created_at<1675721885
+    nostr:delegation:<delegatee pubkey>:kind=1,3000&created_at<1675721885
     """
     parts = token.split(":")
 

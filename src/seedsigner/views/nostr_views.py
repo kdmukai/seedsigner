@@ -317,9 +317,10 @@ class NostrNIP26ReviewKindsView(BaseNostrView):
         conditions = nostr.parse_nip26_delegation_token(self.controller.nostr_data["nip26_token"])["conditions"]
         self.kinds = []
         for c in conditions:
-            # Can have multiple kind entries: `kind=1&kind=2&kind=3000`
+            # Can have multiple kind entries: `kind=1,2,3000`
             if c.startswith("kind"):
-                self.kinds.append(int(c.split("=")[1]))
+                kind_values = c.split("=")[1]
+                self.kinds = [int(k) for k in kind_values.split(",")]
 
 
     def run(self):
