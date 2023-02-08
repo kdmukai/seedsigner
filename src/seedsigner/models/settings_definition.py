@@ -69,6 +69,11 @@ class SettingsConstants:
         (LOCALE__RUSSIAN, _("Russian")),
         (LOCALE__SPANISH, _("Spanish")),
     ]
+    # Some locales disabled below
+    ALL_LOCALES.remove((LOCALE__ARABIC, _("Arabic")))
+    ALL_LOCALES.remove((LOCALE__HEBREW, _("Hebrew")))
+    ALL_LOCALES.remove((LOCALE__JAPANESE, _("Japanese")))
+    ALL_LOCALES.remove((LOCALE__KOREAN, _("Korean")))
 
     BTC_DENOMINATION__BTC = "btc"
     BTC_DENOMINATION__SATS = "sats"
