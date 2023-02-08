@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2022 ORGANIZATION
+# Copyright (C) 2023 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-18 12:03-0400\n"
+"POT-Creation-Date: 2023-02-08 16:07-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,32 +35,7 @@ msgstr ""
 msgid "No "
 msgstr ""
 
-#: src/seedsigner/gui/screens/main_menu_screens.py
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Home"
-msgstr ""
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Restarting"
-msgstr ""
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid ""
-"SeedSigner is restarting.\n"
-"\n"
-"All in-memory data will be wiped."
-msgstr ""
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Powering Off"
-msgstr ""
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Please wait about 30 seconds before disconnecting power."
-msgstr ""
-
 #: src/seedsigner/gui/screens/psbt_screens.py
-#: src/seedsigner/views/seed_views.py
 msgid "Review PSBT"
 msgstr ""
 
@@ -191,6 +166,10 @@ msgid "Settings QR"
 msgstr ""
 
 #: src/seedsigner/gui/screens/scan_screens.py
+msgid "Home"
+msgstr ""
+
+#: src/seedsigner/gui/screens/scan_screens.py
 msgid "Settings imported successfully!"
 msgstr ""
 
@@ -213,6 +192,25 @@ msgstr ""
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "Classified Info!"
+msgstr ""
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Restarting"
+msgstr ""
+
+#: src/seedsigner/gui/screens/screen.py
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Powering Off"
+msgstr ""
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Please wait about 30 seconds before disconnecting power."
 msgstr ""
 
 #: src/seedsigner/gui/screens/screen.py
@@ -289,7 +287,7 @@ msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/views/seed_views.py
-msgid "Add Passphrase"
+msgid "BIP-39 Passphrase"
 msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py
@@ -379,7 +377,6 @@ msgid "BIP-85 Index"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
-#: src/seedsigner/views/main_menu_views.py
 #: src/seedsigner/views/settings_views.py
 msgid "Settings"
 msgstr ""
@@ -567,22 +564,6 @@ msgid "Spanish"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Btc-only"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Sats-only"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Threshold at 0.01"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Btc | Sats hybrid"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
 msgid "0°"
 msgstr ""
 
@@ -721,30 +702,6 @@ msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
 msgid "QR background color"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Scan"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Seeds"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py src/seedsigner/views/tools_views.py
-msgid "Tools"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Restart"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Power Off"
-msgstr ""
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Reset / Power"
 msgstr ""
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
@@ -972,10 +929,6 @@ msgid "Discard Seed"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py
-msgid " (?)"
-msgstr ""
-
-#: src/seedsigner/views/seed_views.py
 msgid "View Seed Words"
 msgstr ""
 
@@ -1186,6 +1139,10 @@ msgstr ""
 
 #: src/seedsigner/views/tools_views.py
 msgid "Calc 12th/24th word"
+msgstr ""
+
+#: src/seedsigner/views/tools_views.py
+msgid "Tools"
 msgstr ""
 
 #: src/seedsigner/views/tools_views.py

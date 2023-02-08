@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-18 12:03-0400\n"
+"POT-Creation-Date: 2023-02-08 16:07-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Daniel Babaev, 2022\n"
 "Language: ru\n"
@@ -40,35 +40,7 @@ msgstr ""
 msgid "No "
 msgstr ""
 
-#: src/seedsigner/gui/screens/main_menu_screens.py
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Home"
-msgstr "Главная"
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Restarting"
-msgstr "Перезагрузка "
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid ""
-"SeedSigner is restarting.\n"
-"\n"
-"All in-memory data will be wiped."
-msgstr ""
-"SeedSigner перезагружается.\n"
-"\n"
-"Все данные в памяти будут удалены."
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Powering Off"
-msgstr "Выключение"
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Please wait about 30 seconds before disconnecting power."
-msgstr "Пожалуйста подождите около 30 секунд прежде чем отключить питание."
-
 #: src/seedsigner/gui/screens/psbt_screens.py
-#: src/seedsigner/views/seed_views.py
 msgid "Review PSBT"
 msgstr "Обзор PSBT"
 
@@ -203,6 +175,10 @@ msgid "Settings QR"
 msgstr "Настр. QR"
 
 #: src/seedsigner/gui/screens/scan_screens.py
+msgid "Home"
+msgstr "Главная"
+
+#: src/seedsigner/gui/screens/scan_screens.py
 msgid "Settings imported successfully!"
 msgstr "Настройки успешно импортированы!"
 
@@ -226,6 +202,28 @@ msgstr "Я Понимаю"
 #: src/seedsigner/gui/screens/screen.py
 msgid "Classified Info!"
 msgstr "Секретная инфо.!"
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Restarting"
+msgstr "Перезагрузка "
+
+#: src/seedsigner/gui/screens/screen.py
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+"SeedSigner перезагружается.\n"
+"\n"
+"Все данные в памяти будут удалены."
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Powering Off"
+msgstr "Выключение"
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr "Пожалуйста подождите около 30 секунд прежде чем отключить питание."
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "MicroSD removed"
@@ -301,8 +299,8 @@ msgstr "Xpub"
 
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/views/seed_views.py
-msgid "Add Passphrase"
-msgstr "Добавить Парольную Фразу"
+msgid "BIP-39 Passphrase"
+msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Verify Passphrase"
@@ -387,7 +385,6 @@ msgid "BIP-85 Index"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
-#: src/seedsigner/views/main_menu_views.py
 #: src/seedsigner/views/settings_views.py
 msgid "Settings"
 msgstr "Настр."
@@ -575,22 +572,6 @@ msgid "Spanish"
 msgstr "Español"
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Btc-only"
-msgstr "Только Btc"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Sats-only"
-msgstr "Только Sats"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Threshold at 0.01"
-msgstr "Порог 0,01"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Btc | Sats hybrid"
-msgstr "гибрид Btc | Sats"
-
-#: src/seedsigner/models/settings_definition.py
 msgid "0°"
 msgstr "0°"
 
@@ -730,30 +711,6 @@ msgstr "Показать логотипы партнеров"
 #: src/seedsigner/models/settings_definition.py
 msgid "QR background color"
 msgstr "Цвет фона QR-кода"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Scan"
-msgstr "Сканир."
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Seeds"
-msgstr "Ключи"
-
-#: src/seedsigner/views/main_menu_views.py src/seedsigner/views/tools_views.py
-msgid "Tools"
-msgstr "Инстр."
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Restart"
-msgstr "Перезагрузить"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Power Off"
-msgstr "Выключить"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Reset / Power"
-msgstr "Сброс / Питание"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
 #: src/seedsigner/views/tools_views.py
@@ -973,10 +930,6 @@ msgid "Discard Seed"
 msgstr "Сбросить ключ"
 
 #: src/seedsigner/views/seed_views.py
-msgid " (?)"
-msgstr ""
-
-#: src/seedsigner/views/seed_views.py
 msgid "View Seed Words"
 msgstr "Посмотреть Ключевые Слова"
 
@@ -1190,6 +1143,10 @@ msgid "Calc 12th/24th word"
 msgstr "Вычислить 12-е/24-е слово"
 
 #: src/seedsigner/views/tools_views.py
+msgid "Tools"
+msgstr "Инстр."
+
+#: src/seedsigner/views/tools_views.py
 msgid "12 words"
 msgstr "12 слова"
 
@@ -1314,4 +1271,37 @@ msgstr "Ошибка Системы"
 
 #~ msgid "Legacy P2PKH verification not implemented!"
 #~ msgstr "Устаревшая проверка P2PKH не реализована!"
+
+#~ msgid "Add Passphrase"
+#~ msgstr "Добавить Парольную Фразу"
+
+#~ msgid "Btc-only"
+#~ msgstr "Только Btc"
+
+#~ msgid "Sats-only"
+#~ msgstr "Только Sats"
+
+#~ msgid "Threshold at 0.01"
+#~ msgstr "Порог 0,01"
+
+#~ msgid "Btc | Sats hybrid"
+#~ msgstr "гибрид Btc | Sats"
+
+#~ msgid "Scan"
+#~ msgstr "Сканир."
+
+#~ msgid "Seeds"
+#~ msgstr "Ключи"
+
+#~ msgid "Restart"
+#~ msgstr "Перезагрузить"
+
+#~ msgid "Power Off"
+#~ msgstr "Выключить"
+
+#~ msgid "Reset / Power"
+#~ msgstr "Сброс / Питание"
+
+#~ msgid " (?)"
+#~ msgstr ""
 

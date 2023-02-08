@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-18 12:03-0400\n"
+"POT-Creation-Date: 2023-02-08 16:07-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Plasmonic Resonance, 2022\n"
 "Language: cs\n"
@@ -41,35 +41,7 @@ msgstr ""
 msgid "No "
 msgstr ""
 
-#: src/seedsigner/gui/screens/main_menu_screens.py
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Home"
-msgstr "Nabídka"
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Restarting"
-msgstr "Restartuji"
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid ""
-"SeedSigner is restarting.\n"
-"\n"
-"All in-memory data will be wiped."
-msgstr ""
-"SeedSigner se restartuje. \n"
-"\n"
-"Veškerá uložená data budou vymazána."
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Powering Off"
-msgstr "Vypínám"
-
-#: src/seedsigner/gui/screens/main_menu_screens.py
-msgid "Please wait about 30 seconds before disconnecting power."
-msgstr "Vyčkejte minimálně 30 vteřin než odpojíte napájení."
-
 #: src/seedsigner/gui/screens/psbt_screens.py
-#: src/seedsigner/views/seed_views.py
 msgid "Review PSBT"
 msgstr "Kontrola PSBT"
 
@@ -204,6 +176,10 @@ msgid "Settings QR"
 msgstr "Nastavení QR"
 
 #: src/seedsigner/gui/screens/scan_screens.py
+msgid "Home"
+msgstr "Nabídka"
+
+#: src/seedsigner/gui/screens/scan_screens.py
 msgid "Settings imported successfully!"
 msgstr "Nastavení úspěšně načtena!"
 
@@ -227,6 +203,28 @@ msgstr "Rozumím"
 #: src/seedsigner/gui/screens/screen.py
 msgid "Classified Info!"
 msgstr "Tajná informace!"
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Restarting"
+msgstr "Restartuji"
+
+#: src/seedsigner/gui/screens/screen.py
+msgid ""
+"SeedSigner is restarting.\n"
+"\n"
+"All in-memory data will be wiped."
+msgstr ""
+"SeedSigner se restartuje. \n"
+"\n"
+"Veškerá uložená data budou vymazána."
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Powering Off"
+msgstr "Vypínám"
+
+#: src/seedsigner/gui/screens/screen.py
+msgid "Please wait about 30 seconds before disconnecting power."
+msgstr "Vyčkejte minimálně 30 vteřin než odpojíte napájení."
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "MicroSD removed"
@@ -302,8 +300,8 @@ msgstr "Xpub"
 
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/views/seed_views.py
-msgid "Add Passphrase"
-msgstr "Přidat frázi"
+msgid "BIP-39 Passphrase"
+msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Verify Passphrase"
@@ -388,7 +386,6 @@ msgid "BIP-85 Index"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
-#: src/seedsigner/views/main_menu_views.py
 #: src/seedsigner/views/settings_views.py
 msgid "Settings"
 msgstr "Nastavení"
@@ -576,22 +573,6 @@ msgid "Spanish"
 msgstr "Español"
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Btc-only"
-msgstr "pouze BTC"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Sats-only"
-msgstr "pouze Sats"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Threshold at 0.01"
-msgstr "Přechod na 0.01"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Btc | Sats hybrid"
-msgstr "Btc | Sats hybrid"
-
-#: src/seedsigner/models/settings_definition.py
 msgid "0°"
 msgstr "0°"
 
@@ -731,30 +712,6 @@ msgstr "Ukazovat loga partnerů"
 #: src/seedsigner/models/settings_definition.py
 msgid "QR background color"
 msgstr "barva pozadí QR"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Scan"
-msgstr "Naskenovat"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Seeds"
-msgstr "Seedy"
-
-#: src/seedsigner/views/main_menu_views.py src/seedsigner/views/tools_views.py
-msgid "Tools"
-msgstr "Nástroje"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Restart"
-msgstr "Restartovat"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Power Off"
-msgstr "Vypnout"
-
-#: src/seedsigner/views/main_menu_views.py
-msgid "Reset / Power"
-msgstr "Možnosti napájení"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
 #: src/seedsigner/views/tools_views.py
@@ -976,10 +933,6 @@ msgid "Discard Seed"
 msgstr "Zahodit Seed"
 
 #: src/seedsigner/views/seed_views.py
-msgid " (?)"
-msgstr ""
-
-#: src/seedsigner/views/seed_views.py
 msgid "View Seed Words"
 msgstr "Zobrazit slova seedu"
 
@@ -1193,6 +1146,10 @@ msgid "Calc 12th/24th word"
 msgstr "Spočítat 12/24 slovo"
 
 #: src/seedsigner/views/tools_views.py
+msgid "Tools"
+msgstr "Nástroje"
+
+#: src/seedsigner/views/tools_views.py
 msgid "12 words"
 msgstr "12 slov"
 
@@ -1311,4 +1268,37 @@ msgstr "Systémová chyba"
 
 #~ msgid "Legacy P2PKH verification not implemented!"
 #~ msgstr "Funkcionalita `ověření P2PKH` nebyla naimplementována!"
+
+#~ msgid "Add Passphrase"
+#~ msgstr "Přidat frázi"
+
+#~ msgid "Btc-only"
+#~ msgstr "pouze BTC"
+
+#~ msgid "Sats-only"
+#~ msgstr "pouze Sats"
+
+#~ msgid "Threshold at 0.01"
+#~ msgstr "Přechod na 0.01"
+
+#~ msgid "Btc | Sats hybrid"
+#~ msgstr "Btc | Sats hybrid"
+
+#~ msgid "Scan"
+#~ msgstr "Naskenovat"
+
+#~ msgid "Seeds"
+#~ msgstr "Seedy"
+
+#~ msgid "Restart"
+#~ msgstr "Restartovat"
+
+#~ msgid "Power Off"
+#~ msgstr "Vypnout"
+
+#~ msgid "Reset / Power"
+#~ msgstr "Možnosti napájení"
+
+#~ msgid " (?)"
+#~ msgstr ""
 
