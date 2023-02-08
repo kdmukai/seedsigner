@@ -51,6 +51,11 @@ class PSBTSelectSeedView(View):
         button_data.append(TYPE_12WORD)
         button_data.append(TYPE_24WORD)
 
+        if self.controller.psbt_seed:
+         if PSBTParser.has_matching_input_fingerprint(psbt=self.controller.psbt, seed=self.controller.psbt_seed, network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)):
+             # skip the seed prompt if a seed was previous selected and has matching input fingerprint
+             return Destination(PSBTOverviewView)
+
         selected_menu_num = ButtonListScreen(
             title=_("Select Signer"),
             is_button_text_centered=False,
@@ -145,6 +150,7 @@ class PSBTOverviewView(View):
         selected_menu_num = screen.display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
+            self.controller.psbt_seed = None
             return Destination(BackStackView)
 
         # expecting p2sh (legacy multisig) and p2pkh to have no policy set
@@ -454,11 +460,8 @@ class PSBTAddressVerificationFailedView(View):
             show_back_button=False,
         ).display()
 
-        # Clear out the bad PSBT
-        self.controller.psbt = None
-        self.controller.psbt_parser = None
-        self.controller.psbt_seed = None
-        
+        # We're done with this PSBT. Route back to MainMenuView which always
+        #   clears all ephemeral data (except in-memory seeds).
         return Destination(MainMenuView, clear_history=True)
 
 
@@ -509,11 +512,8 @@ class PSBTSignedQRDisplayView(View):
         )
         QRDisplayScreen(qr_encoder=qr_encoder).display()
 
-        # We're done with this PSBT. Remove all related data
-        self.controller.psbt = None
-        self.controller.psbt_parser = None
-        self.controller.psbt_seed = None
-
+        # We're done with this PSBT. Route back to MainMenuView which always
+        #   clears all ephemeral data (except in-memory seeds).
         return Destination(MainMenuView, clear_history=True)
 
 

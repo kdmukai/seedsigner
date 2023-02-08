@@ -642,7 +642,7 @@ class SeedAddPassphraseScreen(BaseTopNavScreen):
 
 
     def __post_init__(self):
-        self.title = _("Add Passphrase")
+        self.title = _("BIP-39 Passphrase")
         super().__post_init__()
 
         keys_lower = "abcdefghijklmnopqrstuvwxyz"
@@ -852,9 +852,7 @@ class SeedAddPassphraseScreen(BaseTopNavScreen):
                 self.hw_button3.is_selected = True
                 self.hw_button3.render()
                 self.renderer.show_image()
-
-                if len(self.passphrase) > 0:
-                    return self.passphrase.strip()
+                return self.passphrase
 
             elif input == HardwareButtonsConstants.KEY_PRESS and self.top_nav.is_selected:
                 # Back button clicked
@@ -1062,9 +1060,11 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
             screen_y=screen_y,
         ))
 
-        available_height = fingerprint_change_label.screen_y - self.top_nav.height
-        max_font_size = 28
-        min_font_size = 16
+        if self.passphrase != self.passphrase.strip() or "  " in self.passphrase:
+            self.passphrase = self.passphrase.replace(" ", "\u2589")
+        available_height = self.components[-1].screen_y - self.top_nav.height + GUIConstants.COMPONENT_PADDING
+        max_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8
+        min_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE - 4
         font_size = max_font_size
         max_lines = 3
         passphrase = [self.passphrase]

@@ -10,10 +10,13 @@ from .view import View, Destination
 
 
 class SettingsMenuView(View):
-    def __init__(self, visibility: str = SettingsConstants.VISIBILITY__GENERAL, selected_attr: str = None):
+    def __init__(self, visibility: str = SettingsConstants.VISIBILITY__GENERAL, selected_attr: str = None, initial_scroll: int = 0):
         super().__init__()
         self.visibility = visibility
         self.selected_attr = selected_attr
+
+        # Used to preserve the rendering position in the list
+        self.initial_scroll = initial_scroll
 
 
     def run(self):
@@ -21,7 +24,7 @@ class SettingsMenuView(View):
         DONATE = _("Donate")
 
         settings_entries = SettingsDefinition.get_settings_entries(
-            visibiilty=self.visibility
+            visibility=self.visibility
         )
         button_data=[_(e.display_name) for e in settings_entries]
 
@@ -54,12 +57,17 @@ class SettingsMenuView(View):
             title = _("Dev Options")
             next = None
 
-        selected_menu_num = ButtonListScreen(
+        screen = ButtonListScreen(
             title=title,
             is_button_text_centered=False,
             button_data=button_data,
             selected_button=selected_button,
-        ).display()
+            scroll_y_initial_offset=self.initial_scroll,
+        )
+        selected_menu_num = screen.display()
+
+        # Preserve our scroll position in this Screen so we can return
+        initial_scroll = screen.buttons[0].scroll_y
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             if self.visibility == SettingsConstants.VISIBILITY__GENERAL:
@@ -79,8 +87,7 @@ class SettingsMenuView(View):
             return Destination(DonateView)
 
         else:
-            # TODO: Free-entry types (are there any?) will need their own SettingsEntryUpdateFreeEntryView(?).
-            return Destination(SettingsEntryUpdateSelectionView, view_args={"attr_name": settings_entries[selected_menu_num].attr_name})
+            return Destination(SettingsEntryUpdateSelectionView, view_args=dict(attr_name=settings_entries[selected_menu_num].attr_name, parent_initial_scroll=initial_scroll))
 
 
 
@@ -89,10 +96,11 @@ class SettingsEntryUpdateSelectionView(View):
         Handles changes to all selection-type settings (Multiselect, SELECT_1,
         Enabled/Disabled, etc).
     """
-    def __init__(self, attr_name: str):
+    def __init__(self, attr_name: str, parent_initial_scroll: int = 0):
         super().__init__()
         self.settings_entry = SettingsDefinition.get_settings_entry(attr_name)
         self.selected_button = None
+        self.parent_initial_scroll = parent_initial_scroll
 
 
     def run(self):
@@ -130,7 +138,8 @@ class SettingsEntryUpdateSelectionView(View):
             SettingsMenuView,
             view_args={
                 "visibility": self.settings_entry.visibility,
-                "selected_attr": self.settings_entry.attr_name
+                "selected_attr": self.settings_entry.attr_name,
+                "initial_scroll": self.parent_initial_scroll,
             }
         )
 

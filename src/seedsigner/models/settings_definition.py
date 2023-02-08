@@ -75,10 +75,10 @@ class SettingsConstants:
     BTC_DENOMINATION__THRESHOLD = "thr"
     BTC_DENOMINATION__BTCSATSHYBRID = "hyb"
     ALL_BTC_DENOMINATIONS = [
-        (BTC_DENOMINATION__BTC, _("Btc-only")),
-        (BTC_DENOMINATION__SATS, _("Sats-only")),
-        (BTC_DENOMINATION__THRESHOLD, _("Threshold at 0.01")),
-        (BTC_DENOMINATION__BTCSATSHYBRID, _("Btc | Sats hybrid")),
+        (BTC_DENOMINATION__BTC, "BTC"),
+        (BTC_DENOMINATION__SATS, "sats"),
+        (BTC_DENOMINATION__THRESHOLD, "Threshold at 0.01"),
+        (BTC_DENOMINATION__BTCSATSHYBRID, "BTC | sats hybrid"),
     ]
 
     CAMERA_ROTATION__0 = 0
@@ -459,7 +459,7 @@ class SettingsDefinition:
                       attr_name=SettingsConstants.SETTING__COMPACT_SEEDQR,
                       display_name=_("Compact SeedQR"),
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
-                      default_value=SettingsConstants.OPTION__DISABLED),
+                      default_value=SettingsConstants.OPTION__ENABLED),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__BIP85_CHILD_SEEDS,
@@ -510,10 +510,10 @@ class SettingsDefinition:
 
 
     @classmethod
-    def get_settings_entries(cls, visibiilty: str = SettingsConstants.VISIBILITY__GENERAL) -> List[SettingsEntry]:
+    def get_settings_entries(cls, visibility: str = SettingsConstants.VISIBILITY__GENERAL) -> List[SettingsEntry]:
         entries = []
         for entry in cls.settings_entries:
-            if entry.visibility == visibiilty:
+            if entry.visibility == visibility:
                 entries.append(entry)
         return entries
     
