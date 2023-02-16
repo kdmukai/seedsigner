@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-08 16:07-0400\n"
+"POT-Creation-Date: 2023-02-16 06:14-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Jp Prudhomme <jpprudhomme@gmail.com>, 2022\n"
 "Language: fr\n"
@@ -164,8 +164,8 @@ msgid "Click to approve this transaction"
 msgstr "Cliquer pour approuver cette transaction"
 
 #: src/seedsigner/gui/screens/scan_screens.py
-msgid "Scan a QR code"
-msgstr "Scanner un code QR"
+msgid "< back  |  Scan a QR code"
+msgstr "< retour  |  Scanner un code QR"
 
 #: src/seedsigner/gui/screens/scan_screens.py
 msgid "Settings QR"
@@ -425,7 +425,7 @@ msgstr "SeedSigner est 100%% gratuit & open source, financé par la communauté 
 #. Instructions when taking a picture; "back" should point left.
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "< back  |  click joystick"
-msgstr "< retour | clic joystick"
+msgstr "< retour  |  clic joystick"
 
 #. Instructions when reviewing an image; "reshoot" must point left, "accept"
 #. must point right
@@ -1300,4 +1300,7 @@ msgstr "Erreur Système"
 
 #~ msgid " (?)"
 #~ msgstr " (?)"
+
+#~ msgid "Scan a QR code"
+#~ msgstr "Scanner un code QR"
 

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-08 16:07-0400\n"
+"POT-Creation-Date: 2023-02-16 06:14-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Bitcoin Hornet, 2022\n"
 "Language: es\n"
@@ -167,8 +167,8 @@ msgid "Click to approve this transaction"
 msgstr "Clic para aprobar esta transacción"
 
 #: src/seedsigner/gui/screens/scan_screens.py
-msgid "Scan a QR code"
-msgstr "Escanear un código QR"
+msgid "< back  |  Scan a QR code"
+msgstr ""
 
 #: src/seedsigner/gui/screens/scan_screens.py
 msgid "Settings QR"
@@ -1308,4 +1308,7 @@ msgstr "Error del Sistema"
 
 #~ msgid " (?)"
 #~ msgstr ""
+
+#~ msgid "Scan a QR code"
+#~ msgstr "Escanear un código QR"
 
