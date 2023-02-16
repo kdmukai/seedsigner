@@ -516,9 +516,9 @@ class NostrSignEventReviewView(BaseNostrView):
             from seedsigner.gui.screens import DireWarningScreen
             sender_npub = nostr.pubkey_hex_to_npub(self.serialized_event[nostr.SerializedEventFields.SENDER_PUBKEY])
             DireWarningScreen(
-                title="Wrong Seed",
+                title="Wrong Nostr Key",
                 status_headline="Cannot sign event",
-                text=f"""Current seed is {self.nostr_npub[:10]} but event expects {sender_npub[:10]}""",
+                text=f"""Current key is {self.nostr_npub[:10]} but event expects {sender_npub[:10]}""",
                 button_data=["OK"],
                 show_back_button=False,
             ).display()
@@ -600,7 +600,7 @@ class NostrKeyDisplayView(BaseNostrView):
 
 
     def run(self):
-        from seedsigner.gui.screens.nostr_screens import NostrBech32KeyDisplayScreen, NostrPrivateKeyDisplayScreen
+        from seedsigner.gui.screens.nostr_screens import NostrKeyDisplayScreen, NostrPrivateKeyDisplayScreen
 
         if self.is_pubkey:
             if self.is_bech32:
@@ -609,6 +609,12 @@ class NostrKeyDisplayView(BaseNostrView):
             else:
                 title = "Hex Pubkey Export"
                 key = self.nostr_pubkey_hex
+
+            selected_menu_num = NostrKeyDisplayScreen(
+                title=title,
+                key=key,
+            ).display()
+
         else:
             if self.is_bech32:
                 title = "nsec Export"
@@ -617,10 +623,10 @@ class NostrKeyDisplayView(BaseNostrView):
                 title = "Hex Privkey Export"
                 key = self.nostr_privkey_hex
 
-        selected_menu_num = NostrBech32KeyDisplayScreen(
-            title=title,
-            key=key,
-        ).display()
+            selected_menu_num = NostrPrivateKeyDisplayScreen(
+                title=title,
+                key=key,
+            ).display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)

@@ -658,7 +658,7 @@ class NostrSignEventReviewScreen(NostrButtonListScreen):
     npub / nsec Display and Export
 ****************************************************************************"""
 @dataclass
-class NostrBech32KeyDisplayScreen(NostrButtonListScreen):
+class NostrKeyDisplayScreen(NostrButtonListScreen):
     key: str = None
     is_pubkey: bool = True
 
@@ -689,6 +689,6 @@ class NostrBech32KeyDisplayScreen(NostrButtonListScreen):
 
 
 @dataclass
-class NostrPrivateKeyDisplayScreen(WarningEdgesMixin, NostrBech32KeyDisplayScreen):
+class NostrPrivateKeyDisplayScreen(WarningEdgesMixin, NostrKeyDisplayScreen):
     status_color: str = GUIConstants.DIRE_WARNING_COLOR
     is_pubkey: bool = False
