@@ -222,6 +222,7 @@ def test_generate_screenshots(target_locale):
                 num_locale_translations = locale_translations.count("msgid \"") - locale_translations.count("""msgstr ""\n\n""") - 1
 
             locale_readme += f"## Translation progress: {num_locale_translations / num_source_messages:.1%}\n\n"
+            locale_readme += f"[{display_name} messages.po catalog](messages.po)\n"
             locale_readme += "---\n\n"
 
         for section_name, screenshot_list in screenshot_sections.items():

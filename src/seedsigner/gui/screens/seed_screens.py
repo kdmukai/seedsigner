@@ -1063,8 +1063,8 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
         if self.passphrase != self.passphrase.strip() or "  " in self.passphrase:
             self.passphrase = self.passphrase.replace(" ", "\u2589")
         available_height = self.components[-1].screen_y - self.top_nav.height + GUIConstants.COMPONENT_PADDING
-        max_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8
-        min_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE - 4
+        max_font_size = GUIConstants.get_top_nav_title_font_size() + 8
+        min_font_size = GUIConstants.get_top_nav_title_font_size() - 4
         font_size = max_font_size
         max_lines = 3
         passphrase = [self.passphrase]
