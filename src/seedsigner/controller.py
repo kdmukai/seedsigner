@@ -190,8 +190,7 @@ class Controller(Singleton):
 
 
     def start(self) -> None:
-        from .views import BackStackView
-        from .views.main_menu_views import MainMenuView
+        from .views import MainMenuView, BackStackView
         from .views.screensaver import OpeningSplashScreen
 
         opening_splash = OpeningSplashScreen()

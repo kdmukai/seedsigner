@@ -223,7 +223,6 @@ class NotYetImplementedView(View):
         Temporary View to use during dev.
     """
     def run(self):
-        from seedsigner.views.main_menu_views import MainMenuView
         WarningScreen(
             title=_("Work In Progress"),
             status_headline=_("Not Yet Implemented"),
@@ -241,7 +240,6 @@ class UnhandledExceptionView(View):
 
 
     def run(self):
-        from seedsigner.views.main_menu_views import MainMenuView
         DireWarningScreen(
             title=_("System Error"),
             status_headline=self.error[0],

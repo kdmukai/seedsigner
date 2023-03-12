@@ -1,11 +1,10 @@
 from gettext import gettext as _
 
 from seedsigner.gui.components import SeedSignerCustomIconConstants
-from seedsigner.views.main_menu_views import MainMenuView
 from seedsigner.gui.screens import (RET_CODE__BACK_BUTTON, ButtonListScreen, settings_screens)
 from seedsigner.models.settings import SettingsConstants, SettingsDefinition
 
-from .view import View, Destination
+from .view import View, Destination, BackStackView, MainMenuView
 
 
 
