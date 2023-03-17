@@ -36,11 +36,13 @@ class SettingsConstants:
     COORDINATOR__NUNCHUK = "nun"
     COORDINATOR__SPARROW = "spa"
     COORDINATOR__SPECTER_DESKTOP = "spd"
+    COORDINATOR__KEEPER = "kpr"
     ALL_COORDINATORS = [
         (COORDINATOR__BLUE_WALLET, "BlueWallet"),
         (COORDINATOR__NUNCHUK, "Nunchuk"),
         (COORDINATOR__SPARROW, "Sparrow"),
         (COORDINATOR__SPECTER_DESKTOP, "Specter Desktop"),
+        (COORDINATOR__KEEPER, "Keeper"),
     ]
 
     LANGUAGE__ENGLISH = "en"
@@ -53,10 +55,10 @@ class SettingsConstants:
     BTC_DENOMINATION__THRESHOLD = "thr"
     BTC_DENOMINATION__BTCSATSHYBRID = "hyb"
     ALL_BTC_DENOMINATIONS = [
-        (BTC_DENOMINATION__BTC, "Btc-only"),
-        (BTC_DENOMINATION__SATS, "Sats-only"),
+        (BTC_DENOMINATION__BTC, "BTC"),
+        (BTC_DENOMINATION__SATS, "sats"),
         (BTC_DENOMINATION__THRESHOLD, "Threshold at 0.01"),
-        (BTC_DENOMINATION__BTCSATSHYBRID, "Btc | Sats hybrid"),
+        (BTC_DENOMINATION__BTCSATSHYBRID, "BTC | sats hybrid"),
     ]
 
     CAMERA_ROTATION__0 = 0
@@ -364,7 +366,12 @@ class SettingsDefinition:
                       display_name="Coordinator software",
                       type=SettingsConstants.TYPE__MULTISELECT,
                       selection_options=SettingsConstants.ALL_COORDINATORS,
-                      default_value=SettingsConstants.ALL_COORDINATORS),
+                      default_value=[
+                          SettingsConstants.COORDINATOR__BLUE_WALLET,
+                          SettingsConstants.COORDINATOR__NUNCHUK,
+                          SettingsConstants.COORDINATOR__SPARROW,
+                          SettingsConstants.COORDINATOR__SPECTER_DESKTOP,
+                      ]),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__BTC_DENOMINATION,
