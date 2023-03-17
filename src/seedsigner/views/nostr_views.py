@@ -174,7 +174,7 @@ class NostrNIP26CreateTokenValidFromView(BaseNostrView):
         from seedsigner.gui.screens.nostr_screens import NostrNIP26CreateTokenCreatedAtScreen
         
         # TODO: Keep updating this starting point
-        initial_valid_from = datetime(2023, 1, 1, 0, 0, 0).replace(tzinfo=timezone.utc)
+        initial_valid_from = datetime(2023, 3, 18, 0, 0, 0).replace(tzinfo=timezone.utc)
 
         ret_value = NostrNIP26CreateTokenCreatedAtScreen(
             title="Valid Starting",
@@ -201,7 +201,7 @@ class NostrNIP26CreateTokenValidUntilView(BaseNostrView):
 
         # initialize at 30 days after valid_from
         valid_from = self.controller.nostr_data["nip26_valid_from"]
-        initial_valid_until = datetime.fromtimestamp(valid_from) + timedelta(days=30)
+        initial_valid_until = datetime.fromtimestamp(valid_from) + timedelta(days=90)
 
         ret_value = NostrNIP26CreateTokenCreatedAtScreen(
             title="Expires After",
