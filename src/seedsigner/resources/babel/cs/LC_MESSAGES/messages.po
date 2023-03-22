@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-16 06:14-0400\n"
+"POT-Creation-Date: 2023-03-22 10:08-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Plasmonic Resonance, 2022\n"
 "Language: cs\n"
@@ -175,7 +175,7 @@ msgstr ""
 msgid "Settings QR"
 msgstr "Nastavení QR"
 
-#: src/seedsigner/gui/screens/scan_screens.py
+#: src/seedsigner/gui/screens/scan_screens.py src/seedsigner/views/view.py
 msgid "Home"
 msgstr "Nabídka"
 
@@ -386,7 +386,7 @@ msgid "BIP-85 Index"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
-#: src/seedsigner/views/settings_views.py
+#: src/seedsigner/views/settings_views.py src/seedsigner/views/view.py
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -1145,7 +1145,7 @@ msgstr "Nový seed"
 msgid "Calc 12th/24th word"
 msgstr "Spočítat 12/24 slovo"
 
-#: src/seedsigner/views/tools_views.py
+#: src/seedsigner/views/tools_views.py src/seedsigner/views/view.py
 msgid "Tools"
 msgstr "Nástroje"
 
@@ -1226,6 +1226,26 @@ msgstr ""
 
 #: src/seedsigner/views/tools_views.py
 msgid "Change Addrs"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Scan"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Seeds"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Restart"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Power Off"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Reset / Power"
 msgstr ""
 
 #: src/seedsigner/views/view.py

@@ -129,14 +129,14 @@ class MainMenuView(View):
         from .tools_views import ToolsMenuView
         from seedsigner.gui.screens import LargeButtonScreen
         menu_items = [
-            (("Scan", FontAwesomeIconConstants.QRCODE), ScanView),
-            (("Seeds", FontAwesomeIconConstants.KEY), SeedsMenuView),
-            (("Tools", FontAwesomeIconConstants.SCREWDRIVER_WRENCH), ToolsMenuView),
-            (("Settings", FontAwesomeIconConstants.GEAR), SettingsMenuView),
+            ((_("Scan"), FontAwesomeIconConstants.QRCODE), ScanView),
+            ((_("Seeds"), FontAwesomeIconConstants.KEY), SeedsMenuView),
+            ((_("Tools"), FontAwesomeIconConstants.SCREWDRIVER_WRENCH), ToolsMenuView),
+            ((_("Settings"), FontAwesomeIconConstants.GEAR), SettingsMenuView),
         ]
 
         screen = LargeButtonScreen(
-            title="Home",
+            title=_("Home"),
             title_font_size=26,
             button_data=[entry[0] for entry in menu_items],
             show_back_button=False,
@@ -153,11 +153,11 @@ class MainMenuView(View):
 
 class PowerOptionsView(View):
     def run(self):
-        RESET = ("Restart", FontAwesomeIconConstants.ROTATE_RIGHT)
-        POWER_OFF = ("Power Off", FontAwesomeIconConstants.POWER_OFF)
+        RESET = (_("Restart"), FontAwesomeIconConstants.ROTATE_RIGHT)
+        POWER_OFF = (_("Power Off"), FontAwesomeIconConstants.POWER_OFF)
         button_data = [RESET, POWER_OFF]
         selected_menu_num = LargeButtonScreen(
-            title="Reset / Power",
+            title=_("Reset / Power"),
             show_back_button=True,
             button_data=button_data
         ).display()

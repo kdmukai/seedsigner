@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-16 06:14-0400\n"
+"POT-Creation-Date: 2023-03-22 10:08-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Jp Prudhomme <jpprudhomme@gmail.com>, 2022\n"
 "Language: fr\n"
@@ -171,7 +171,7 @@ msgstr "< retour  |  Scanner un code QR"
 msgid "Settings QR"
 msgstr "Paramètres QR"
 
-#: src/seedsigner/gui/screens/scan_screens.py
+#: src/seedsigner/gui/screens/scan_screens.py src/seedsigner/views/view.py
 msgid "Home"
 msgstr "Accueil"
 
@@ -382,7 +382,7 @@ msgid "BIP-85 Index"
 msgstr "Index BIP-85"
 
 #: src/seedsigner/gui/screens/settings_screens.py
-#: src/seedsigner/views/settings_views.py
+#: src/seedsigner/views/settings_views.py src/seedsigner/views/view.py
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -1138,7 +1138,7 @@ msgstr "Nouvelle seed"
 msgid "Calc 12th/24th word"
 msgstr "Calc. 12ème/24ème mots"
 
-#: src/seedsigner/views/tools_views.py
+#: src/seedsigner/views/tools_views.py src/seedsigner/views/view.py
 msgid "Tools"
 msgstr "Outils"
 
@@ -1222,6 +1222,26 @@ msgid "Change Addrs"
 msgstr "Adrs Monnaie"
 
 #: src/seedsigner/views/view.py
+msgid "Scan"
+msgstr "Scan"
+
+#: src/seedsigner/views/view.py
+msgid "Seeds"
+msgstr "Seeds"
+
+#: src/seedsigner/views/view.py
+msgid "Restart"
+msgstr "Redémarrer"
+
+#: src/seedsigner/views/view.py
+msgid "Power Off"
+msgstr "Éteindre"
+
+#: src/seedsigner/views/view.py
+msgid "Reset / Power"
+msgstr "Redémarrer / Arrêt"
+
+#: src/seedsigner/views/view.py
 msgid "Work In Progress"
 msgstr "Travaux en cours"
 
@@ -1282,21 +1302,6 @@ msgstr "Erreur Système"
 
 #~ msgid "Btc | Sats hybrid"
 #~ msgstr "Btc | Sats hybrides"
-
-#~ msgid "Scan"
-#~ msgstr "Scan"
-
-#~ msgid "Seeds"
-#~ msgstr "Seeds"
-
-#~ msgid "Restart"
-#~ msgstr "Redémarrer"
-
-#~ msgid "Power Off"
-#~ msgstr "Éteindre"
-
-#~ msgid "Reset / Power"
-#~ msgstr "Redémarrer / Arrêt"
 
 #~ msgid " (?)"
 #~ msgstr " (?)"
