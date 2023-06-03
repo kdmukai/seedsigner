@@ -324,12 +324,12 @@ class PSBTParser():
 
 
     @staticmethod
-    def has_matching_input_fingerprint(psbt: PSBT, seed: Seed, network: str = SettingsConstants.MAINNET):
+    def has_matching_input_fingerprint(psbt: PSBT, seed: Seed):
         """
             Extracts the fingerprint from each psbt input utxo. Returns True if any match
             the current seed.
         """
-        seed_fingerprint = seed.get_fingerprint(network)
+        seed_fingerprint = seed.get_fingerprint()
         for input in psbt.inputs:
             for pub, derivation_path in input.bip32_derivations.items():
                 if seed_fingerprint == hexlify(derivation_path.fingerprint).decode():
@@ -339,6 +339,32 @@ class PSBTParser():
                 if seed_fingerprint == hexlify(derivation_path.fingerprint).decode():
                     return True
         return False
+    
+
+    @staticmethod
+    def is_possible_payjoin(psbt: PSBT, seed: Seed):
+        """
+            A PayJoin will have input utxos from both the sender and the receiver.
+
+            Extracts the fingerprint from each psbt input utxo. Returns True if at least
+            one fingerprint matches the seed and at least one does not.
+        """
+        seed_fingerprint = seed.get_fingerprint()
+        matches = 0
+        misses = 0
+        for input in psbt.inputs:
+            for pub, derivation_path in input.bip32_derivations.items():
+                if seed_fingerprint == hexlify(derivation_path.fingerprint).decode():
+                    matches += 1
+                else:
+                    misses += 1
+
+            for pub, (leaf_hashes, derivation_path) in input.taproot_bip32_derivations.items():
+                if seed_fingerprint == hexlify(derivation_path.fingerprint).decode():
+                    matches += 1
+                else:
+                    misses += 1
+        return matches > 0 and misses > 0
 
 
     def verify_multisig_output(self, descriptor: Descriptor, change_num: int) -> bool:

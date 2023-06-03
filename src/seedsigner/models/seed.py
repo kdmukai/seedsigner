@@ -1,7 +1,7 @@
 import unicodedata
 
 from binascii import hexlify
-from embit import bip39, bip32, bip85
+from embit import bip32, bip39, bip85
 from embit.networks import NETWORKS
 from typing import List
 
