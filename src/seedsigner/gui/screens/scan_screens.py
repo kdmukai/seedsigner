@@ -89,8 +89,7 @@ class ScanScreen(BaseScreen):
                                     int(self.renderer.canvas_width/2),
                                     self.renderer.canvas_height - GUIConstants.EDGE_PADDING
                                 ),
-                                # text=scan_text,
-                                text=f"{framerate:0.2f} fps",
+                                text=f"{scan_text} | {framerate:0.2f} fps",
                                 fill=GUIConstants.BODY_FONT_COLOR,
                                 font=instructions_font,
                                 stroke_width=4,
