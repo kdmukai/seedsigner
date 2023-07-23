@@ -64,6 +64,7 @@ class ScanScreen(BaseScreen):
             from timeit import default_timer as timer
 
             instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+            framerate = 0
             while self.keep_running:
                 start = timer()
                 frame = self.camera.read_video_stream(as_image=True)
@@ -82,13 +83,14 @@ class ScanScreen(BaseScreen):
                             (self.render_rect[0], self.render_rect[1])
                         )
 
-                        if scan_text:
+                        if scan_text or True:
                             self.renderer.draw.text(
                                 xy=(
                                     int(self.renderer.canvas_width/2),
                                     self.renderer.canvas_height - GUIConstants.EDGE_PADDING
                                 ),
-                                text=scan_text,
+                                # text=scan_text,
+                                text=f"{framerate:0.2f} fps",
                                 fill=GUIConstants.BODY_FONT_COLOR,
                                 font=instructions_font,
                                 stroke_width=4,
@@ -99,7 +101,7 @@ class ScanScreen(BaseScreen):
                         self.renderer.show_image()
 
                         end = timer()
-                        # print(f"{1.0/(end - start)} fps") # Time in seconds, e.g. 5.38091952400282
+                        framerate = 1.0/(end - start)
 
                 time.sleep(0.05) # turn this up or down to tune performance while decoding psbt
                 if self.camera._video_stream is None:
