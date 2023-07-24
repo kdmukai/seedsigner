@@ -51,94 +51,94 @@ class ScanScreen(BaseScreen):
         # Initialize the base class
         super().__post_init__()
 
-        self.camera = Camera.get_instance()
-        self.camera.start_video_stream_mode(resolution=self.resolution, framerate=self.framerate, format="rgb")
+        # self.camera = Camera.get_instance()
+        # self.camera.start_video_stream_mode(resolution=self.resolution, framerate=self.framerate, format="rgb")
 
-        self.threads.append(ScanScreen.LivePreviewThread(
-            camera=self.camera,
-            decoder=self.decoder,
-            renderer=self.renderer,
-            instructions_text=self.instructions_text,
-            render_rect=self.render_rect,
-        ))
-
-
-    class LivePreviewThread(BaseThread):
-        def __init__(self, camera: Camera, decoder: DecodeQR, renderer: renderer.Renderer, instructions_text: str, render_rect: tuple[int,int,int,int]):
-            self.camera = camera
-            self.decoder = decoder
-            self.renderer = renderer
-            self.instructions_text = instructions_text
-            if render_rect:
-                self.render_rect = render_rect            
-            else:
-                self.render_rect = (0, 0, self.renderer.canvas_width, self.renderer.canvas_height)
-            self.render_width = self.render_rect[2] - self.render_rect[0]
-            self.render_height = self.render_rect[3] - self.render_rect[1]
-
-            super().__init__()
+        # self.threads.append(ScanScreen.LivePreviewThread(
+        #     camera=self.camera,
+        #     decoder=self.decoder,
+        #     renderer=self.renderer,
+        #     instructions_text=self.instructions_text,
+        #     render_rect=self.render_rect,
+        # ))
 
 
-        def run(self):
-            from timeit import default_timer as timer
+    # class LivePreviewThread(BaseThread):
+    #     def __init__(self, camera: Camera, decoder: DecodeQR, renderer: renderer.Renderer, instructions_text: str, render_rect: tuple[int,int,int,int]):
+    #         self.camera = camera
+    #         self.decoder = decoder
+    #         self.renderer = renderer
+    #         self.instructions_text = instructions_text
+    #         if render_rect:
+    #             self.render_rect = render_rect            
+    #         else:
+    #             self.render_rect = (0, 0, self.renderer.canvas_width, self.renderer.canvas_height)
+    #         self.render_width = self.render_rect[2] - self.render_rect[0]
+    #         self.render_height = self.render_rect[3] - self.render_rect[1]
 
-            instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+    #         super().__init__()
 
-            start_time = time.time()
-            num_frames = 0
-            show_framerate = True  # enable for debugging / testing
-            while self.keep_running:
-                start = timer()
-                frame = self.camera.read_video_stream(as_image=True)
-                if frame is not None:
-                    num_frames += 1
-                    cur_time = time.time()
-                    cur_fps = num_frames / (cur_time - start_time)
-                    if self.decoder and self.decoder.get_percent_complete() > 0 and self.decoder.is_psbt:
-                        scan_text = str(self.decoder.get_percent_complete()) + "% Complete"
-                        if show_framerate:
-                            scan_text += f" {cur_fps:0.2f} fps"
-                    else:
-                        if show_framerate:
-                            scan_text = f"{cur_fps:0.2f} fps"
-                        else:
-                            scan_text = self.instructions_text
 
-                    with self.renderer.lock:
-                        if frame.width > self.render_width or frame.height > self.render_height:
-                            frame = frame.resize(
-                                (self.render_width, self.render_height),
-                                resample=Image.NEAREST
-                            )
-                        # self.renderer.canvas.paste(
-                        #     frame,
-                        #     (self.render_rect[0], self.render_rect[1])
-                        # )
+    #     def run(self):
+    #         from timeit import default_timer as timer
 
-                        draw = ImageDraw.Draw(frame)
+    #         instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
 
-                        if scan_text:
-                            draw.text(
-                                xy=(
-                                    int(self.renderer.canvas_width/2),
-                                    self.renderer.canvas_height - GUIConstants.EDGE_PADDING
-                                ),
-                                text=scan_text,
-                                fill=GUIConstants.BODY_FONT_COLOR,
-                                font=instructions_font,
-                                stroke_width=4,
-                                stroke_fill=GUIConstants.BACKGROUND_COLOR,
-                                anchor="ms"
-                            )
+    #         start_time = time.time()
+    #         num_frames = 0
+    #         show_framerate = True  # enable for debugging / testing
+    #         while self.keep_running:
+    #             start = timer()
+    #             frame = self.camera.read_video_stream(as_image=True)
+    #             if frame is not None:
+    #                 num_frames += 1
+    #                 cur_time = time.time()
+    #                 cur_fps = num_frames / (cur_time - start_time)
+    #                 if self.decoder and self.decoder.get_percent_complete() > 0 and self.decoder.is_psbt:
+    #                     scan_text = str(self.decoder.get_percent_complete()) + "% Complete"
+    #                     if show_framerate:
+    #                         scan_text += f" {cur_fps:0.2f} fps"
+    #                 else:
+    #                     if show_framerate:
+    #                         scan_text = f"{cur_fps:0.2f} fps"
+    #                     else:
+    #                         scan_text = self.instructions_text
 
-                        self.renderer.disp.ShowImage(frame, 0, 0)
+    #                 with self.renderer.lock:
+    #                     if frame.width > self.render_width or frame.height > self.render_height:
+    #                         frame = frame.resize(
+    #                             (self.render_width, self.render_height),
+    #                             resample=Image.NEAREST
+    #                         )
+    #                     # self.renderer.canvas.paste(
+    #                     #     frame,
+    #                     #     (self.render_rect[0], self.render_rect[1])
+    #                     # )
 
-                        end = timer()
-                        framerate = 1.0/(end - start)
-                        # print(f"{framerate:0.2f} fps")
+    #                     draw = ImageDraw.Draw(frame)
 
-                if self.camera._video_stream is None:
-                    break
+    #                     if scan_text:
+    #                         draw.text(
+    #                             xy=(
+    #                                 int(self.renderer.canvas_width/2),
+    #                                 self.renderer.canvas_height - GUIConstants.EDGE_PADDING
+    #                             ),
+    #                             text=scan_text,
+    #                             fill=GUIConstants.BODY_FONT_COLOR,
+    #                             font=instructions_font,
+    #                             stroke_width=4,
+    #                             stroke_fill=GUIConstants.BACKGROUND_COLOR,
+    #                             anchor="ms"
+    #                         )
+
+    #                     self.renderer.disp.ShowImage(frame, 0, 0)
+
+    #                     end = timer()
+    #                     framerate = 1.0/(end - start)
+    #                     # print(f"{framerate:0.2f} fps")
+
+    #             if self.camera._video_stream is None:
+    #                 break
 
 
     def _run(self):
@@ -148,27 +148,31 @@ class ScanScreen(BaseScreen):
             _run(). The live preview is an extra-complex case.
         """
         from timeit import default_timer as timer
-        while True:
-            start = timer()
-            frame = self.camera.read_video_stream()
-            if frame is not None:
-                # print("Decoder checking next frame")
-                status = self.decoder.add_image(frame)
 
-                if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
-                    self.camera.stop_video_stream_mode()
-                    break
+        from seedsigner.helpers import livepreview_qrdecode
+        livepreview_qrdecode.start(self.decoder)
+
+        # while True:
+        #     start = timer()
+        #     frame = self.camera.read_video_stream()
+        #     if frame is not None:
+        #         # print("Decoder checking next frame")
+        #         status = self.decoder.add_image(frame)
+
+        #         if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
+        #             self.camera.stop_video_stream_mode()
+        #             break
                 
-                # TODO: KEY_UP gives control to NavBar; use its back arrow to cancel
-                if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
-                    self.camera.stop_video_stream_mode()
-                    break
+        #         # TODO: KEY_UP gives control to NavBar; use its back arrow to cancel
+        #         if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
+        #             self.camera.stop_video_stream_mode()
+        #             break
 
-            # Have the decoder thread sleep until (roughly) the next frame is ready in
-            # order to avoid wasting CPU cycles re-checking the same frame.
-            elapsed = (timer() - start)
-            if elapsed < 1.0/float(self.framerate):
-                time.sleep(1.0/float(self.framerate) - elapsed)
+        #     # Have the decoder thread sleep until (roughly) the next frame is ready in
+        #     # order to avoid wasting CPU cycles re-checking the same frame.
+        #     elapsed = (timer() - start)
+        #     if elapsed < 1.0/float(self.framerate):
+        #         time.sleep(1.0/float(self.framerate) - elapsed)
 
 
 
