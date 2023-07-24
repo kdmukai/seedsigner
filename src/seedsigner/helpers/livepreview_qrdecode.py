@@ -6,9 +6,7 @@ import picamera
 from seedsigner.gui.components import Fonts, GUIConstants
 from seedsigner.gui.renderer import Renderer
 
-from seedsigner.hardware.ST7789 import ST7789
 from PIL import Image, ImageDraw
-from pyzbar import pyzbar
 from seedsigner.hardware.buttons import HardwareButtons, HardwareButtonsConstants
 
 from seedsigner.models.decode_qr import DecodeQR, DecodeQRStatus
@@ -167,7 +165,7 @@ class ProcessOutput(object):
 
 
 def start(decoder: DecodeQR):
-    with picamera.PiCamera(resolution=(480,480), framerate=5) as camera:
+    with picamera.PiCamera(resolution=(480,480), framerate=4) as camera:
         camera.start_preview()
 
         try:
