@@ -77,6 +77,8 @@ class PyzbarProcessor(threading.Thread):
         self.last_update = time.time()
         self.instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
 
+        self.start_time = time.time()
+        self.num_frames = 0
         self.start()
 
 
@@ -90,7 +92,11 @@ class PyzbarProcessor(threading.Thread):
                     img = Image.open(self.stream)
                     status = self.decoder.add_image(img)
 
+                    self.num_frames += 1
+                    print(f"{self.num_frames / (time.time() - self.start_time):.2f} fps (pyzbar)")
+
                     if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
+                        print("QR DECODED!")
                         self.owner.done = True
                         break
                 finally:
@@ -99,9 +105,10 @@ class PyzbarProcessor(threading.Thread):
                     self.stream.truncate()
                     self.event.clear()
 
-                    # Return ourselves to the available pool
-                    with self.owner.lock:
-                        self.owner.pool.append(self)
+                    if not self.terminated:
+                        # Return ourselves to the available pool
+                        with self.owner.lock:
+                            self.owner.pool.append(self)
 
 
 
@@ -146,7 +153,8 @@ class ProcessOutput(object):
             self.processor.stream.write(buf)
 
         if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
-            self.flush()
+            print("HW BUTTON!!")
+            self.done = True
 
 
     def flush(self):
@@ -154,19 +162,22 @@ class ProcessOutput(object):
         # down in an orderly fashion. First, add the current processor
         # back to the pool
         print("flush")
+        start = time.time()
         if self.processor:
-            with self.lock:
-                self.pool.append(self.processor)
-                self.processor = None
-        # Now, empty the pool, joining each thread as we go
+            self.processor.terminated = True
+            self.processor.join()
+
+        # Now, empty the pool
         while True:
             with self.lock:
                 try:
                     proc = self.pool.pop()
-                    proc.terminated = True
+                    if proc:
+                        proc.terminated = True
                     proc.join()
                 except IndexError:
                     break
+        print(f"flushed in {time.time() - start} seconds")
 
 
 
@@ -181,6 +192,10 @@ def start(decoder: DecodeQR):
             while not output.done:
                 camera.wait_recording(0.1)
         finally:
+            print("CLEANING UP!")
             output.flush()
+
+            start = time.time()
             camera.stop_recording()
+            print(f"stopped recording in {time.time() - start} seconds")
 
