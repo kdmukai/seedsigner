@@ -62,7 +62,7 @@ class DisplayProcessor(threading.Thread):
                     self.event.clear()
                     # Return ourselves to the available pool
                     with self.owner.lock:
-                        self.owner.pool.append(self)
+                        self.owner.display_pool.append(self)
 
 
 
@@ -86,6 +86,7 @@ class PyzbarProcessor(threading.Thread):
             # Wait for an image to be written to the stream
             if self.event.wait(0.1):
                 try:
+                    print("decoder")
                     self.stream.seek(0)
                     img = Image.open(self.stream)
                     status = self.decoder.add_image(img)
@@ -103,7 +104,7 @@ class PyzbarProcessor(threading.Thread):
                     if not self.terminated:
                         # Return ourselves to the available pool
                         with self.owner.lock:
-                            self.owner.pool.append(self)
+                            self.owner.decoder_pool.append(self)
 
 
 
@@ -115,11 +116,16 @@ class ProcessOutput(object):
         # to control access between threads
         self.lock = threading.Lock()
         display_lock = threading.Lock()
-        self.pool = [
+        self.display_pool = [
             DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
             DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
+        ]
+        self.decoder_pool = [
+            PyzbarProcessor(owner=self, decoder=decoder),
+            PyzbarProcessor(owner=self, decoder=decoder),
             PyzbarProcessor(owner=self, decoder=decoder),
         ]
+        self.cur_pool = self.display_pool
         self.processor = None
         self.num_display_updates = 0
         self.num_pyzbar_updates = 0
@@ -133,26 +139,43 @@ class ProcessOutput(object):
             # a spare one
             if self.processor:
                 self.processor.event.set()
+ 
             with self.lock:
-                if self.pool:
-                    self.processor = self.pool.pop()
+                if self.cur_pool:
+                    self.processor = self.cur_pool.pop()
+                    if self.cur_pool == self.display_pool:
+                        self.cur_pool = self.decoder_pool
+                    else:
+                        self.cur_pool = self.display_pool
+
                 else:
-                    # No processor's available, we'll have to skip
+                    # No processors available, we'll have to skip
                     # this frame; you may want to print a warning
                     # here to see whether you hit this case
-                    print("SKIP")
+
+                    # Try the other pool
                     self.processor = None
-        if self.processor:
-            cur_time = time.time()
-            if type(self.processor) == DisplayProcessor:
-                self.num_display_updates += 1
-                cur_display_fps = self.num_display_updates / (cur_time - self.start_at)
-                cur_pyzbar_fps = self.num_pyzbar_updates / (cur_time - self.start_at)
-                self.processor.cur_fps = f"{cur_display_fps:.2f} | {cur_pyzbar_fps:.2f}"
-                print(self.processor.cur_fps)
-            else:
-                self.num_pyzbar_updates += 1
-            self.processor.stream.write(buf)
+
+                    if self.cur_pool == self.display_pool and self.decoder_pool:
+                        print("display pool BUSY")
+                        self.processor = self.decoder_pool.pop()
+                    elif self.cur_pool == self.decoder_pool and self.display_pool:
+                        print("decoder pool BUSY")
+                        self.processor = self.display_pool.pop()
+                    if not self.processor:                   
+                        print("SKIP")
+
+            if self.processor:
+                cur_time = time.time()
+                if type(self.processor) == DisplayProcessor:
+                    self.num_display_updates += 1
+                    cur_display_fps = self.num_display_updates / (cur_time - self.start_at)
+                    cur_pyzbar_fps = self.num_pyzbar_updates / (cur_time - self.start_at)
+                    self.processor.cur_fps = f"{cur_display_fps:.2f} | {cur_pyzbar_fps:.2f}"
+                    print(self.processor.cur_fps)
+                else:
+                    self.num_pyzbar_updates += 1
+                self.processor.stream.write(buf)
 
         if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
             print("HW BUTTON!!")
@@ -170,13 +193,19 @@ class ProcessOutput(object):
             self.processor.join()
 
         # Now, empty the pool
-        while True:
+        while self.display_pool or self.decoder_pool:
             with self.lock:
                 try:
-                    proc = self.pool.pop()
-                    if proc:
-                        proc.terminated = True
-                    proc.join()
+                    if self.display_pool:
+                        proc = self.pool.pop()
+                        if proc:
+                            proc.terminated = True
+                        proc.join()
+                    elif self.decoder_pool:
+                        proc = self.pool.pop()
+                        if proc:
+                            proc.terminated = True
+                        proc.join()
                 except IndexError:
                     break
         self.renderer.clear()
@@ -185,7 +214,7 @@ class ProcessOutput(object):
 
 
 def start(decoder: DecodeQR):
-    with picamera.PiCamera(resolution=(480,480)) as camera:
+    with picamera.PiCamera(resolution=(480,480), framerate=9) as camera:
         camera.start_preview()
 
         try:
