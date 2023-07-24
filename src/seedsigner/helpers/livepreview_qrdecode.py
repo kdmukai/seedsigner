@@ -2,6 +2,7 @@ import io
 import time
 import threading
 import picamera
+
 from seedsigner.gui.components import Fonts, GUIConstants
 from seedsigner.gui.renderer import Renderer
 
@@ -14,97 +15,104 @@ from seedsigner.models.decode_qr import DecodeQR, DecodeQRStatus
 
 
 class DisplayProcessor(threading.Thread):
-    def __init__(self, owner, renderer: Renderer, display_lock: threading.Lock):
+    def __init__(self, owner, renderer: Renderer):
         super(DisplayProcessor, self).__init__(daemon=True)
         self.stream = io.BytesIO()
         self.event = threading.Event()
         self.terminated = False
         self.owner = owner
         self.renderer = renderer
-        self.display_lock = display_lock
-        self.cur_fps = "0"
+        self.cur_fps = 0.0
+        self.num_frames = 0
         self.instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+        self.debug_display = ""
+
         self.start()
 
 
     def run(self):
         # This method runs in a separate thread
+        start_time = time.time()
         while not self.terminated:
             # Wait for an image to be written to the stream
-            if self.event.wait(0.1):
-                try:
+            try:
+                img = None
+                with self.owner.cur_frame_lock:
                     print("display")
-                    self.stream.seek(0)
-                    # Read the image and do some processing on it
-                    img = Image.open(self.stream).resize(size=(240,240), resample=Image.NEAREST).rotate(90 + 180)
-                    draw = ImageDraw.Draw(img)
-                    draw.text(
-                                xy=(
-                                    int(240/2),
-                                    240 - 8
-                                ),
-                                text=self.cur_fps,
-                                fill=GUIConstants.BODY_FONT_COLOR,
-                                font=self.instructions_font,
-                                # stroke_width=4,
-                                # stroke_fill=GUIConstants.BACKGROUND_COLOR,
-                                anchor="ms"
-                            )
+                    if self.owner.cur_frame:
+                        img = self.owner.cur_frame.copy()
+                    print("display DONE")
+                if not img:
+                    time.sleep(0.1)
+                    continue
                     
-                    with self.display_lock:
-                        with self.renderer.lock:
-                            self.renderer.show_image(img, show_direct=True)
+                img = img.resize(size=(240,240), resample=Image.NEAREST).rotate(90 + 180)
+                self.num_frames += 1
+                self.cur_fps = self.num_frames / (time.time() - start_time)
+                img = img
+                draw = ImageDraw.Draw(img)
+                draw.text(
+                            xy=(
+                                int(240/2),
+                                240 - 8
+                            ),
+                            text=self.debug_display,
+                            fill=GUIConstants.BODY_FONT_COLOR,
+                            font=self.instructions_font,
+                            # stroke_width=4,
+                            # stroke_fill=GUIConstants.BACKGROUND_COLOR,
+                            anchor="ms"
+                        )
+                
+                with self.renderer.lock:
+                    self.renderer.show_image(img, show_direct=True)
 
-                finally:
-                    # Reset the stream and event
-                    self.stream.seek(0)
-                    self.stream.truncate()
-                    self.event.clear()
-                    # Return ourselves to the available pool
-                    with self.owner.lock:
-                        self.owner.display_pool.append(self)
+            finally:
+                pass
 
 
 
 class PyzbarProcessor(threading.Thread):
     def __init__(self, owner, decoder: DecodeQR):
         super(PyzbarProcessor, self).__init__(daemon=True)
-        self.stream = io.BytesIO()
         self.event = threading.Event()
         self.terminated = False
         self.owner = owner
         self.decoder = decoder
 
         self.instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
+        self.num_frames = 0
+        self.cur_fps = 0.0
 
         self.start()
 
 
     def run(self):
         # This method runs in a separate thread
+        start_time = time.time()
         while not self.terminated:
             # Wait for an image to be written to the stream
-            if self.event.wait(0.1):
-                try:
+            try:
+                img = None
+                with self.owner.cur_frame_lock:
                     print("decoder")
-                    self.stream.seek(0)
-                    img = Image.open(self.stream)
-                    status = self.decoder.add_image(img)
+                    if self.owner.cur_frame:
+                        img = self.owner.cur_frame.copy()
+                    print("decoder DONE")
+                if not img:
+                    time.sleep(0.1)
+                    continue
+                status = self.decoder.add_image(img)
 
-                    if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
-                        print("QR DECODED!")
-                        self.owner.done = True
-                        break
-                finally:
-                    # Reset the stream and event
-                    self.stream.seek(0)
-                    self.stream.truncate()
-                    self.event.clear()
+                self.num_frames += 1
+                self.cur_fps = self.num_frames / (time.time() - start_time)
 
-                    if not self.terminated:
-                        # Return ourselves to the available pool
-                        with self.owner.lock:
-                            self.owner.decoder_pool.append(self)
+                if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
+                    print("QR DECODED!")
+                    self.owner.done = True
+                    break
+            finally:
+                pass
 
 
 
@@ -112,74 +120,35 @@ class ProcessOutput(object):
     def __init__(self, decoder: DecodeQR):
         self.renderer = Renderer.get_instance()
         self.done = False
-        # Construct a pool of 4 image processors along with a lock
-        # to control access between threads
-        self.lock = threading.Lock()
-        display_lock = threading.Lock()
-        self.display_pool = [
-            DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
-            DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
-        ]
-        self.decoder_pool = [
-            PyzbarProcessor(owner=self, decoder=decoder),
-            PyzbarProcessor(owner=self, decoder=decoder),
-            PyzbarProcessor(owner=self, decoder=decoder),
-        ]
-        self.cur_pool = self.display_pool
-        self.processor = None
+
         self.num_display_updates = 0
         self.num_pyzbar_updates = 0
         self.start_at = time.time()
         self.hw_inputs = HardwareButtons.get_instance()
 
+        self.cur_frame_lock = threading.Lock()
+        self.cur_frame = None
+        self.framebuffer = io.BytesIO()
+
+        self.display_processor = DisplayProcessor(owner=self, renderer=self.renderer)
+        self.decoder_processor = PyzbarProcessor(owner=self, decoder=decoder)
+
 
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
-            # New frame; set the current processor going and grab
-            # a spare one
-            if self.processor:
-                self.processor.event.set()
- 
-            with self.lock:
-                if self.cur_pool:
-                    self.processor = self.cur_pool.pop()
-                    if self.cur_pool == self.display_pool:
-                        self.cur_pool = self.decoder_pool
-                    else:
-                        self.cur_pool = self.display_pool
+            with self.cur_frame_lock:
+                print("Update cur_frame")
+                self.framebuffer.seek(0)
+                self.framebuffer.truncate()
+                self.framebuffer.write(buf)
+                self.cur_frame = Image.open(self.framebuffer)
+                print("Update cur_frame DONE")
 
-                else:
-                    # No processors available, we'll have to skip
-                    # this frame; you may want to print a warning
-                    # here to see whether you hit this case
-
-                    # Try the other pool
-                    self.processor = None
-
-                    if self.cur_pool == self.display_pool and self.decoder_pool:
-                        print("display pool BUSY")
-                        self.processor = self.decoder_pool.pop()
-                    elif self.cur_pool == self.decoder_pool and self.display_pool:
-                        print("decoder pool BUSY")
-                        self.processor = self.display_pool.pop()
-                    if not self.processor:                   
-                        print("SKIP")
-
-            if self.processor:
-                cur_time = time.time()
-                if type(self.processor) == DisplayProcessor:
-                    self.num_display_updates += 1
-                    cur_display_fps = self.num_display_updates / (cur_time - self.start_at)
-                    cur_pyzbar_fps = self.num_pyzbar_updates / (cur_time - self.start_at)
-                    self.processor.cur_fps = f"{cur_display_fps:.2f} | {cur_pyzbar_fps:.2f}"
-                    print(self.processor.cur_fps)
-                else:
-                    self.num_pyzbar_updates += 1
-                self.processor.stream.write(buf)
-
-        if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
-            print("HW BUTTON!!")
-            self.done = True
+            if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
+                print("HW BUTTON!!")
+                self.done = True
+            
+            self.display_processor.debug_display = f"{self.display_processor.cur_fps:0.2f} | {self.decoder_processor.cur_fps:0.2f}"
 
 
     def flush(self):
@@ -188,33 +157,17 @@ class ProcessOutput(object):
         # back to the pool
         print("flush")
         start = time.time()
-        if self.processor:
-            self.processor.terminated = True
-            self.processor.join()
-
-        # Now, empty the pool
-        while self.display_pool or self.decoder_pool:
-            with self.lock:
-                try:
-                    if self.display_pool:
-                        proc = self.pool.pop()
-                        if proc:
-                            proc.terminated = True
-                        proc.join()
-                    elif self.decoder_pool:
-                        proc = self.pool.pop()
-                        if proc:
-                            proc.terminated = True
-                        proc.join()
-                except IndexError:
-                    break
+        self.display_processor.terminated = True
+        self.decoder_processor.terminated = True
+        self.display_processor.join()
+        self.decoder_processor.join()
         self.renderer.clear()
         print(f"flushed in {time.time() - start} seconds")
 
 
 
 def start(decoder: DecodeQR):
-    with picamera.PiCamera(resolution=(480,480), framerate=9) as camera:
+    with picamera.PiCamera(resolution=(480,480), framerate=5) as camera:
         camera.start_preview()
 
         try:
