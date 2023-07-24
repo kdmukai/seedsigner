@@ -14,13 +14,13 @@ from seedsigner.models.decode_qr import DecodeQR, DecodeQRStatus
 
 
 class DisplayProcessor(threading.Thread):
-    def __init__(self, owner, display: ST7789, display_lock: threading.Lock):
+    def __init__(self, owner, renderer: Renderer, display_lock: threading.Lock):
         super(DisplayProcessor, self).__init__(daemon=True)
         self.stream = io.BytesIO()
         self.event = threading.Event()
         self.terminated = False
         self.owner = owner
-        self.display = display
+        self.renderer = renderer
         self.display_lock = display_lock
         self.cur_fps = "0"
         self.instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
@@ -43,16 +43,17 @@ class DisplayProcessor(threading.Thread):
                                     int(240/2),
                                     240 - 8
                                 ),
-                                text=f"{self.cur_fps:.2f} fps",
+                                text=self.cur_fps,
                                 fill=GUIConstants.BODY_FONT_COLOR,
                                 font=self.instructions_font,
-                                stroke_width=4,
-                                stroke_fill=GUIConstants.BACKGROUND_COLOR,
+                                # stroke_width=4,
+                                # stroke_fill=GUIConstants.BACKGROUND_COLOR,
                                 anchor="ms"
                             )
                     
                     with self.display_lock:
-                        self.display.ShowImage(img, 0, 0)
+                        with self.renderer.lock:
+                            self.renderer.show_image(img, show_direct=True)
 
                 finally:
                     # Reset the stream and event
@@ -74,11 +75,8 @@ class PyzbarProcessor(threading.Thread):
         self.owner = owner
         self.decoder = decoder
 
-        self.last_update = time.time()
         self.instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
 
-        self.start_time = time.time()
-        self.num_frames = 0
         self.start()
 
 
@@ -91,9 +89,6 @@ class PyzbarProcessor(threading.Thread):
                     self.stream.seek(0)
                     img = Image.open(self.stream)
                     status = self.decoder.add_image(img)
-
-                    self.num_frames += 1
-                    print(f"{self.num_frames / (time.time() - self.start_time):.2f} fps (pyzbar)")
 
                     if status in (DecodeQRStatus.COMPLETE, DecodeQRStatus.INVALID):
                         print("QR DECODED!")
@@ -113,19 +108,21 @@ class PyzbarProcessor(threading.Thread):
 
 
 class ProcessOutput(object):
-    def __init__(self, display: ST7789, decoder: DecodeQR):
+    def __init__(self, decoder: DecodeQR):
+        self.renderer = Renderer.get_instance()
         self.done = False
         # Construct a pool of 4 image processors along with a lock
         # to control access between threads
         self.lock = threading.Lock()
         display_lock = threading.Lock()
         self.pool = [
-            DisplayProcessor(owner=self, display=display, display_lock=display_lock),
-            DisplayProcessor(owner=self, display=display, display_lock=display_lock),
+            DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
+            DisplayProcessor(owner=self, renderer=self.renderer, display_lock=display_lock),
             PyzbarProcessor(owner=self, decoder=decoder),
         ]
         self.processor = None
         self.num_display_updates = 0
+        self.num_pyzbar_updates = 0
         self.start_at = time.time()
         self.hw_inputs = HardwareButtons.get_instance()
 
@@ -146,10 +143,15 @@ class ProcessOutput(object):
                     print("SKIP")
                     self.processor = None
         if self.processor:
+            cur_time = time.time()
             if type(self.processor) == DisplayProcessor:
-                cur_time = time.time()
                 self.num_display_updates += 1
-                self.processor.cur_fps = self.num_display_updates / (cur_time - self.start_at)
+                cur_display_fps = self.num_display_updates / (cur_time - self.start_at)
+                cur_pyzbar_fps = self.num_pyzbar_updates / (cur_time - self.start_at)
+                self.processor.cur_fps = f"{cur_display_fps:.2f} | {cur_pyzbar_fps:.2f}"
+                print(self.processor.cur_fps)
+            else:
+                self.num_pyzbar_updates += 1
             self.processor.stream.write(buf)
 
         if self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_RIGHT) or self.hw_inputs.check_for_low(HardwareButtonsConstants.KEY_LEFT):
@@ -177,6 +179,7 @@ class ProcessOutput(object):
                     proc.join()
                 except IndexError:
                     break
+        self.renderer.clear()
         print(f"flushed in {time.time() - start} seconds")
 
 
@@ -184,17 +187,14 @@ class ProcessOutput(object):
 def start(decoder: DecodeQR):
     with picamera.PiCamera(resolution=(480,480)) as camera:
         camera.start_preview()
-        display = Renderer.get_instance().disp
 
         try:
-            output = ProcessOutput(display=display, decoder=decoder)
+            output = ProcessOutput(decoder=decoder)
             camera.start_recording(output, format='mjpeg')
             while not output.done:
                 camera.wait_recording(0.1)
         finally:
             print("CLEANING UP!")
-            output.flush()
-
             start = time.time()
             camera.stop_recording()
             print(f"stopped recording in {time.time() - start} seconds")

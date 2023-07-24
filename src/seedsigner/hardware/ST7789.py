@@ -164,7 +164,7 @@ class ST7789(object):
         
     def clear(self):
         """Clear contents of image buffer"""
-        _buffer = [0xff]*(self.width * self.height * 2)
+        _buffer = [0x00]*(self.width * self.height * 2)
         self.SetWindows ( 0, 0, self.width, self.height)
         GPIO.output(self._dc,GPIO.HIGH)
         for i in range(0,len(_buffer),4096):

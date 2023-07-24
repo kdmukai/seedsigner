@@ -34,15 +34,18 @@ class Renderer(ConfigurableSingleton):
         renderer.draw = ImageDraw.Draw(renderer.canvas)
 
 
-    def show_image(self, image=None, alpha_overlay=None):
+    def show_image(self, image=None, alpha_overlay=None, show_direct=False):
         if alpha_overlay:
             if image == None:
                 image = self.canvas
             image = Image.alpha_composite(image, alpha_overlay)
 
         if image:
-            # Always write to the current canvas, rather than trying to replace it
-            self.canvas.paste(image)
+            if show_direct:
+                self.disp.ShowImage(image, 0, 0)
+                return
+            else:
+                self.canvas.paste(image)
 
         self.disp.ShowImage(self.canvas, 0, 0)
 
