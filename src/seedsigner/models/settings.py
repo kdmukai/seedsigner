@@ -228,8 +228,4 @@ class Settings(Singleton):
                 # set persistent settings to only have disabled as an option, adding additional help text that microSD is removed
                 entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__PERSISTENT_SETTINGS)
                 entry.selection_options = SettingsConstants.OPTIONS__ONLY_DISABLED
-<<<<<<< HEAD
                 entry.help_text = _("MicroSD card is removed")
-=======
-                entry.help_text = "MicroSD card is removed"
->>>>>>> dev

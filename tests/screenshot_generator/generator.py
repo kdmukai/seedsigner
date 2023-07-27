@@ -14,7 +14,7 @@ from seedsigner.models.qr_type import QRType
 from seedsigner.models.seed import Seed
 from seedsigner.models.settings import Settings
 from seedsigner.models.settings_definition import SettingsConstants, SettingsDefinition
-from seedsigner.views import (main_menu_views, psbt_views, scan_views, seed_views,
+from seedsigner.views import (MainMenuView, PowerOptionsView, RestartView, psbt_views, scan_views, seed_views,
     settings_views, tools_views)
 from seedsigner.views.view import View
 
@@ -105,9 +105,9 @@ def test_generate_screenshots(target_locale):
 
     screenshot_sections = {
         "Main Menu Views": [
-            main_menu_views.MainMenuView,
-            main_menu_views.PowerOptionsView,
-            main_menu_views.RestartView,
+            MainMenuView,
+            PowerOptionsView,
+            RestartView,
             #main_menu_views.PowerOffView,
             (scan_views.SettingsUpdatedView, dict(config_name="Keith's Settings")),
         ],
