@@ -83,13 +83,11 @@ class ScanScreen(BaseScreen):
 
 
         def run(self):
-            from timeit import default_timer as timer
-
             instructions_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, GUIConstants.BUTTON_FONT_SIZE)
 
             start_time = time.time()
             num_frames = 0
-            show_framerate = False  # enable for debugging / testing
+            show_framerate = True  # enable for debugging / testing
             while self.keep_running:
                 frame = self.camera.read_video_stream(as_image=True)
                 if frame is not None:
