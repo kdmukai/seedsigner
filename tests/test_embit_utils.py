@@ -426,3 +426,110 @@ def test_parse_derivation_path():
             assert actual_result["index"] == expected_result[3]
         else:
             assert actual_result["index"] == int(derivation_path.split("/")[-1])
+
+
+def test_miniscript_parsing():
+    from binascii import a2b_base64, b2a_base64
+    from embit import bip32, script
+    from embit.descriptor import Descriptor
+    from embit.networks import NETWORKS
+    from embit.psbt import PSBT
+    from seedsigner.models.seed import Seed
+
+    zoe_seed = Seed(mnemonic="sign sword lift deer ocean insect web lazy sick pencil start select".split())
+    malcolm_seed = Seed(mnemonic="better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
+    milwaukee_seed = Seed(mnemonic="latin because turn chalk stadium defense candy recipe deal budget walnut pottery".split())
+
+    # 2-of-3 multisig with 10-block decay to 1-of-3 (e.g. typical Liana wallet)
+    miniscript_descriptor = """
+        wsh(
+            or_d(
+                multi(
+                    2,
+                    [0f889044/48'/1'/0'/2']tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31/<0;1>/*,
+                    [03cd0a2b/48'/1'/0'/2']tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15/<0;1>/*,
+                    [3666c686/48'/1'/0'/2']tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr/<0;1>/*
+                ),
+                and_v(
+                    v:thresh(
+                        1,
+                        pkh([0f889044/48'/1'/0'/2']tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31/<2;3>/*),
+                        a:pkh([03cd0a2b/48'/1'/0'/2']tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15/<2;3>/*),
+                        a:pkh([3666c686/48'/1'/0'/2']tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr/<2;3>/*)
+                    ),
+                    older(10)
+                )
+            )
+        )#f2sxf7er"""
+
+    dstr = miniscript_descriptor.replace("\n", "").replace(" ", "").replace("<0;1>", "{0,1}").replace("<2;3>", "{2,3}")
+    print(dstr)
+    desc = Descriptor.from_string(dstr)
+
+    # Generate the nth receive addr
+    derived = desc.derive(1)
+    addr = derived.address(NETWORKS["regtest"])
+    print(addr)
+
+    assert addr == "bcrt1q82szwgm9n459mq3tyy64x6hfjap8qx2u69gqj30863uewjq32dcqky8tsn"
+
+
+
+    # Internal utxo "refresh" cycle: 9764953 sats to change addr bcrt1qfhuz20r7njdl4t09djzqhpfgyyfnszyfmwr9ce5wegdaw7kmeuvq4u6a7y; 672 sat fee
+    psbt_data = """cHNidP8BAF4CAAAAAc4Nla07UEY2nAbBwjKNnO0JjnEwWaIixtWY/GKz4YRJAAAAAAD9////AVkAlQAAAAAAIgAgTfglPH6cm/qt5WyEC4UoIRM4CInbhlxmjsob13rbzxgAAAAAAAEAtQIAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////8EAmYFAP////8C+QKVAAAAAAAiACA6oCcjZZ1oXYIrITVTaumXQnAZXNFQCUXn1HmXSBFTcAAAAAAAAAAAJmokqiGp7eL2HD9x0d79P6mZ36NpU3VcaQaJeZlitIvr2DaXToz5ASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABASv5ApUAAAAAACIAIDqgJyNlnWhdgishNVNq6ZdCcBlc0VAJRefUeZdIEVNwAQXBUiECG8zKAhj7bmRRg2x7/E/RSDhfD8dIEmA1bd6jTAZmDwIhAhTrcS5MFMnKmXr/ydThniOJtIu/AiO4CkQpTyJs7EH7IQJb4PMWYxQsnO5iqIiCtYhWmTrONlCfTsMiBq8VoF46t1Ouc2R2qRTWK8rD1cOxyFx/1k/3hplubrwQQoisa3apFDiN44lIJ7NcqW8bH9X+mJ1JmDWWiKxsk2t2qRRTuOOoe0GBzm4LUbR5BWx5g30guIisbJNRiFqyaCIGAhTrcS5MFMnKmXr/ydThniOJtIu/AiO4CkQpTyJs7EH7HAPNCiswAACAAQAAgAAAAIACAACAAAAAAAEAAAAiBgIbzMoCGPtuZFGDbHv8T9FIOF8Px0gSYDVt3qNMBmYPAhwPiJBEMAAAgAEAAIAAAACAAgAAgAAAAAABAAAAIgYCW+DzFmMULJzuYqiIgrWIVpk6zjZQn07DIgavFaBeOrccNmbGhjAAAIABAACAAAAAgAIAAIAAAAAAAQAAACIGAoVLEtZlGqF/fT8jVvxho+aH1XoRbm4fUCLO+rI4nb1kHDZmxoYwAACAAQAAgAAAAIACAACAAgAAAAEAAAAiBgMCbIHAuZ6y6tmF9XFo5Ut6ZF5bBsUgKiGpU+6k4VeJLxwDzQorMAAAgAEAAIAAAACAAgAAgAIAAAABAAAAIgYD+QjKqc2ayVyxNrqsKO7Pd9BbunU4jV+ArbEJHxKIzY8cD4iQRDAAAIABAACAAAAAgAIAAIACAAAAAQAAAAAiAgI2Q2biEzYwFoQjtIV9U5Q+z7qy1UpyUQd22dgnPe8mIRwPiJBEMAAAgAEAAIAAAACAAgAAgAEAAAADAAAAIgICuUuZhPU0mWnc4UokjYy2LJzIdNKyDrgaPS+QmgAqnMocD4iQRDAAAIABAACAAAAAgAIAAIADAAAAAwAAACICAtfEp5BsoAPxZtsznTMAqLAREmeYG7QAffBYfbzOc/gSHDZmxoYwAACAAQAAgAAAAIACAACAAwAAAAMAAAAiAgMbvFBdMph5m0aNyM+31B8pgPh/ZEqpE1+SncQqVeDEkBw2ZsaGMAAAgAEAAIAAAACAAgAAgAEAAAADAAAAIgIDaxZh+JIlPhABfpl9ANqn8wVIRU7vdQ0EgUawLwYk7F4cA80KKzAAAIABAACAAAAAgAIAAIABAAAAAwAAACICA4y4AsDbc53d8mqZhCp3wvTH11S9dccBvQURq8bxtOPAHAPNCiswAACAAQAAgAAAAIACAACAAwAAAAMAAAAA"""
+
+    # Spend via recovery path
+    recovery_psbt = """cHNidP8BAFICAAAAAUpfb835e/9N4mRAbxOG4HIFUmb5aO8Uh/Y2Q09yKwEEAAAAAAAKAAAAAdr9lAAAAAAAFgAUcuaORk6FSS1iXIK898NiiFj9b1wAAAAAAAEA/bQBAgAAAAABAc4Nla07UEY2nAbBwjKNnO0JjnEwWaIixtWY/GKz4YRJAAAAAAD9////AVkAlQAAAAAAIgAgTfglPH6cm/qt5WyEC4UoIRM4CInbhlxmjsob13rbzxgEAEcwRAIgSnmQftkEx/Kfoat917ogM1zp/oyDD81beaygcaPKmXECICsL2KI+rNR4N8tfRWkGOFq8QSK2rKNwdKeIcCBH70jtAUcwRAIgQB40q4o3UjH7I3WHgadevVCYTKbTcp0t2T4wcuiAeZgCIDTfHUFSzzjleAmJXHcRtIvad53EhRaXx1d5WxmRgCclAcFSIQIbzMoCGPtuZFGDbHv8T9FIOF8Px0gSYDVt3qNMBmYPAiECFOtxLkwUycqZev/J1OGeI4m0i78CI7gKRClPImzsQfshAlvg8xZjFCyc7mKoiIK1iFaZOs42UJ9OwyIGrxWgXjq3U65zZHapFNYrysPVw7HIXH/WT/eGmW5uvBBCiKxrdqkUOI3jiUgns1ypbxsf1f6YnUmYNZaIrGyTa3apFFO446h7QYHObgtRtHkFbHmDfSC4iKxsk1GIWrJoAAAAAAEBK1kAlQAAAAAAIgAgTfglPH6cm/qt5WyEC4UoIRM4CInbhlxmjsob13rbzxgBBcFSIQI2Q2biEzYwFoQjtIV9U5Q+z7qy1UpyUQd22dgnPe8mISEDaxZh+JIlPhABfpl9ANqn8wVIRU7vdQ0EgUawLwYk7F4hAxu8UF0ymHmbRo3Iz7fUHymA+H9kSqkTX5KdxCpV4MSQU65zZHapFOQIKz1WQuaa9bjF+2E9h1eQ3BYSiKxrdqkUieUhOI1Y2OscVrXinWi0pwnbN9iIrGyTa3apFLEiuM/OL8b5cwe54EIjaM9YlI9iiKxsk1GIWrJoIgYCNkNm4hM2MBaEI7SFfVOUPs+6stVKclEHdtnYJz3vJiEcD4iQRDAAAIABAACAAAAAgAIAAIABAAAAAwAAACIGArlLmYT1NJlp3OFKJI2MtiycyHTSsg64Gj0vkJoAKpzKHA+IkEQwAACAAQAAgAAAAIACAACAAwAAAAMAAAAiBgLXxKeQbKAD8WbbM50zAKiwERJnmBu0AH3wWH28znP4Ehw2ZsaGMAAAgAEAAIAAAACAAgAAgAMAAAADAAAAIgYDG7xQXTKYeZtGjcjPt9QfKYD4f2RKqRNfkp3EKlXgxJAcNmbGhjAAAIABAACAAAAAgAIAAIABAAAAAwAAACIGA2sWYfiSJT4QAX6ZfQDap/MFSEVO73UNBIFGsC8GJOxeHAPNCiswAACAAQAAgAAAAIACAACAAQAAAAMAAAAiBgOMuALA23Od3fJqmYQqd8L0x9dUvXXHAb0FEavG8bTjwBwDzQorMAAAgAEAAIAAAACAAgAAgAMAAAADAAAAAAA="""
+
+    raw = a2b_base64(psbt_data)
+    tx = PSBT.parse(raw)
+
+    fingerprint = zoe_seed.get_fingerprint()
+    root = bip32.HDKey.from_seed(zoe_seed.seed_bytes, version=NETWORKS["regtest"]["xprv"])
+
+    # print how much we are spending and where
+    total_in = 0
+    for inp in tx.inputs:
+        total_in += inp.witness_utxo.value
+    print("Inputs:", total_in, "satoshi")
+    change_out = 0  # value that goes back to us
+    send_outputs = []
+    for i, out in enumerate(tx.outputs):
+        # check if it is a change or not:
+        change = False
+        # should be one or zero for single-key addresses
+        for pub in out.bip32_derivations:
+            # check if it is our key
+            if out.bip32_derivations[pub].fingerprint == fingerprint:
+                hdkey = root.derive(out.bip32_derivations[pub].derivation)
+                mypub = hdkey.key.get_public_key()
+                if mypub != pub:
+                    raise ValueError("Derivation path doesn't look right")
+                # now check if provided scriptpubkey matches
+                sc = script.p2wpkh(mypub)
+                if sc == tx.tx.vout[i].script_pubkey:
+                    change = True
+                    continue
+        if change:
+            change_out += tx.tx.vout[i].value
+        else:
+            send_outputs.append(tx.tx.vout[i])
+    print("Spending", total_in - change_out, "satoshi")
+
+    fee = total_in - change_out
+    for out in send_outputs:
+        fee -= out.value
+        print(out.value, "to", out.script_pubkey.address(NETWORKS["regtest"]))
+    print("Fee:", fee, "satoshi")
+
+    # sign the transaction
+    tx.sign_with(root)
+    raw = tx.serialize()
+    # convert to base64
+    b64_psbt = b2a_base64(raw)
+    # somehow b2a ends with \n...
+    if b64_psbt[-1:] == b"\n":
+        b64_psbt = b64_psbt[:-1]
+    # print
+    print("\nSigned transaction:")
+    print(b64_psbt.decode("utf-8"))

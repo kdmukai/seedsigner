@@ -369,8 +369,8 @@ class DecodeQR:
 
             elif "multisig setup file" in s.lower():
                 return QRType.WALLET__CONFIGFILE
-
-            elif "sortedmulti" in s:
+            
+            elif "sortedmulti" in s or "wsh(or_d(multi" in s:
                 return QRType.WALLET__GENERIC
 
             # Seed
@@ -1072,6 +1072,9 @@ class GenericWalletQrDecoder(BaseSingleFrameQrDecoder):
     def add(self, segment, qr_type=QRType.WALLET__GENERIC):
         from embit.descriptor import Descriptor
         try:
+            # Replace <1;2> notation with {1,2}
+            segment = re.sub(r"<(\d);(\d)>", r"{\1,\2}", segment)
+
             # Validate via embit
             Descriptor.from_string(segment)
             self.descriptor = segment

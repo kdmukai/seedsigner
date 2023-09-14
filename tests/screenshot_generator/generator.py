@@ -220,7 +220,7 @@ def test_generate_screenshots(target_locale):
             #seed_views.AddressVerificationSuccessView,
 
             seed_views.LoadMultisigWalletDescriptorView,
-            seed_views.MultisigWalletDescriptorView,
+            seed_views.MultisigWalletDescriptorInitialPolicyView,
             (seed_views.SeedDiscardView, dict(seed_num=0)),
 
             seed_views.SeedSignMessageConfirmMessageView,

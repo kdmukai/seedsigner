@@ -2013,6 +2013,91 @@ class MultisigWalletDescriptorView(View):
 
 
 
+class MiniscriptDescriptorStartView(View):
+    def __init__(self):
+        super().__init__()
+
+        # Initially we only support one specific template
+        ms_data = embit_utils.parse_miniscript_n_of_m_decays_to_1_of_m(self.controller.miniscript_data)
+        self.controller.miniscript_data = ms_data
+
+        self.set_redirect(Destination(MiniscriptDescriptorRecoveryTimelockView))
+
+
+
+class MiniscriptDescriptorRecoveryTimelockView(View):
+    def __init__(self):
+        from datetime import timedelta
+        super().__init__()
+
+        ms_data = self.controller.miniscript_data
+        self.recovery_timelock = ms_data[1].get("timelock")
+        self.recovery_time_estimate = timedelta(minutes=10*ms_data[1].get("timelock")).days
+
+
+    def run(self):
+        selected_menu_num = seed_screens.MiniscriptDescriptorRecoveryTimelockScreen(
+            button_data=["Next"],
+            recovery_timelock_blocks=self.recovery_timelock,
+            recovery_timelock_days_estimate=self.recovery_time_estimate,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            # Completely exiting the descriptor review flow
+            self.controller.miniscript_data = None
+            return Destination(BackStackView)
+
+        return Destination(MiniscriptDescriptorInitialPolicyView)
+
+
+
+class MiniscriptDescriptorInitialPolicyView(View):
+    def __init__(self):
+        super().__init__()
+
+        ms_data = self.controller.miniscript_data
+        self.base_policy = f"""{ms_data[0].get("n")} of {ms_data[0].get("m")}"""
+        self.base_fingerprints = [k[0] for k in ms_data[0].get("keys")]
+
+
+    def run(self):
+        selected_menu_num = seed_screens.MiniscriptDescriptorInitialPolicyScreen(
+            button_data=["Next"],
+            base_policy=self.base_policy,
+            base_fingerprints=self.base_fingerprints,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(MiniscriptDescriptorRecoveryPolicyView)
+
+
+
+class MiniscriptDescriptorRecoveryPolicyView(View):
+    def __init__(self):
+        from datetime import timedelta
+        super().__init__()
+
+        ms_data = self.controller.miniscript_data
+        self.recovery_policy = f"""{ms_data[1].get("n")} of {ms_data[1].get("m")}"""
+        self.recovery_fingerprints = [k[0] for k in ms_data[1].get("keys")]
+
+
+    def run(self):
+        selected_menu_num = seed_screens.MiniscriptDescriptorRecoveryPolicyScreen(
+            button_data=["Next"],
+            recovery_policy=self.recovery_policy,
+            recovery_fingerprints=self.recovery_fingerprints,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(MainMenuView)
+
+
+
 """****************************************************************************
     Sign Message Views
 ****************************************************************************"""

@@ -1504,6 +1504,158 @@ class MultisigWalletDescriptorScreen(ButtonListScreen):
 
 
 @dataclass
+class MiniscriptDescriptorInitialPolicyScreen(ButtonListScreen):
+    base_policy: str = None
+    base_fingerprints: list = None
+
+    def __post_init__(self):
+        self.title = "Miniscript Details"
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        policy_label = TextArea(
+            text="Initial Policy",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(policy_label)
+
+        policy_details = TextArea(
+            text=self.base_policy,
+            font_name=GUIConstants.BUTTON_FONT_NAME,
+            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2,
+            is_text_centered=True,
+            screen_y=policy_label.screen_y + policy_label.height + 2
+        )
+        self.components.append(policy_details)
+
+        keys_label = TextArea(
+            text="Signing Keys",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=policy_details.screen_y + policy_details.height + 3*GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(keys_label)
+
+        keys_details = TextArea(
+            text=" ".join(self.base_fingerprints),
+            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 4,
+            font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
+            screen_y=keys_label.screen_y + keys_label.height + 4,
+            is_text_centered=True,
+            auto_line_break=True,
+            allow_text_overflow=True,
+        )
+        self.components.append(keys_details)
+
+
+
+@dataclass
+class MiniscriptDescriptorRecoveryTimelockScreen(ButtonListScreen):
+    recovery_timelock_days_estimate: int = None
+    recovery_timelock_blocks: int = None
+
+    def __post_init__(self):
+        self.title = "Miniscript Details"
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        self.components.append(TextArea(
+            text="Initial spend path",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+        ))
+        self.components.append(TextArea(
+            text=f"Available immediately",
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 3,
+        ))
+
+        self.components.append(TextArea(
+            text="Recovery spend path",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING,
+        ))
+        self.components.append(TextArea(
+            text=f"Locked until the utxo ages about {self.recovery_timelock_days_estimate} days",
+            is_text_centered=True,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 3,
+        ))
+
+        self.components.append(TextArea(
+            text=f"({self.recovery_timelock_blocks} blocks)",
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 2,
+        ))
+
+        # self.components.append(TextArea(
+        #     text="Recovery path unlocks",
+        #     font_color="#777",
+        #     supersampling_factor=2,
+        #     screen_y=self.top_nav.height + 3*GUIConstants.COMPONENT_PADDING,
+        # ))
+
+        # self.components.append(TextArea(
+        #     text=f"In about {self.recovery_timelock_days_estimate} days",
+        #     font_name=GUIConstants.BUTTON_FONT_NAME,
+        #     font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2,
+        #     is_text_centered=True,
+        #     screen_y=self.components[-1].screen_y + self.components[-1].height + 2,
+        # ))
+
+        # self.components.append(TextArea(
+        #     text=f"({self.recovery_timelock_blocks} blocks)",
+        #     screen_y=self.components[-1].screen_y + self.components[-1].height + 2,
+        # ))
+
+
+
+@dataclass
+class MiniscriptDescriptorRecoveryPolicyScreen(ButtonListScreen):
+    recovery_policy: str = None
+    recovery_fingerprints: list = None
+
+    def __post_init__(self):
+        self.title = "Miniscript Details"
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        self.components.append(TextArea(
+            text="Recovery Policy",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+        ))
+
+        self.components.append(TextArea(
+            text=self.recovery_policy,
+            font_name=GUIConstants.BUTTON_FONT_NAME,
+            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2,
+            is_text_centered=True,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 2,
+        ))
+
+        self.components.append(TextArea(
+            text="Recovery Keys",
+            font_color="#777",
+            supersampling_factor=2,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 2 + 3*GUIConstants.COMPONENT_PADDING,
+        ))
+
+        self.components.append(TextArea(
+            text=" ".join(self.recovery_fingerprints),
+            font_size=GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 4,
+            font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
+            screen_y=self.components[-1].screen_y + self.components[-1].height + 2,
+            is_text_centered=True,
+            auto_line_break=True,
+            allow_text_overflow=True,
+        ))
+
+
+
+@dataclass
 class SeedSignMessageConfirmMessageScreen(ButtonListScreen):
     page_num: int = None
 

@@ -115,6 +115,7 @@ class Controller(Singleton):
     unverified_address = None
 
     multisig_wallet_descriptor: Descriptor = None
+    miniscript_data: dict = None
 
     image_entropy_preview_frames: list[Image] = None
     image_entropy_final_image: Image = None

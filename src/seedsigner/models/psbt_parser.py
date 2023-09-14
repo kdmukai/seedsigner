@@ -256,6 +256,7 @@ class PSBTParser():
         """Parse scope and get policy"""
         # we don't know the policy yet, let's parse it
         script_type = scriptpubkey.script_type()
+        print("script_type", script_type)
         # p2sh can be either legacy multisig, or nested segwit multisig
         # or nested segwit singlesig
         if script_type == "p2sh":

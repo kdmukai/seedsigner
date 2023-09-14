@@ -99,7 +99,7 @@ class ScanView(View):
                 return Destination(SettingsIngestSettingsQRView, view_args=dict(data=data))
             
             elif self.decoder.is_wallet_descriptor:
-                from seedsigner.views.seed_views import MultisigWalletDescriptorView
+                from seedsigner.views.seed_views import MultisigWalletDescriptorView, MultisigWalletDescriptorView
                 descriptor_str = self.decoder.get_wallet_descriptor()
 
                 try:
@@ -118,7 +118,13 @@ class ScanView(View):
 
                 descriptor = Descriptor.from_string(descriptor_str)
 
-                if not descriptor.is_basic_multisig:
+                if descriptor.miniscript is not None:
+                    from seedsigner.views.seed_views import MiniscriptDescriptorStartView
+                    print(f"Received miniscript descriptor: {descriptor}")
+                    self.controller.miniscript_data = descriptor.miniscript
+                    return Destination(MiniscriptDescriptorStartView, skip_current_view=True)
+
+                elif not descriptor.is_basic_multisig:
                     # TODO: Handle single-sig descriptors?
                     logger.info(f"Received single sig descriptor: {descriptor}")
                     return Destination(NotYetImplementedView)

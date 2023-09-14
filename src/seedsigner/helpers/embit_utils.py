@@ -1,6 +1,6 @@
 import embit
 
-from binascii import b2a_base64
+from binascii import b2a_base64, hexlify, unhexlify
 from hashlib import sha256
 
 from embit import bip32, compact, ec
@@ -200,3 +200,167 @@ def sign_message(seed_bytes: bytes, derivation: str, msg: bytes, compressed: boo
     flag = bytes([27 + flag + c])
     ser = flag + secp256k1.ecdsa_signature_serialize_compact(sig._sig)
     return b2a_base64(ser).strip().decode()
+
+
+
+def parse_miniscript_n_of_m(spend_path: Descriptor):
+    """
+    Validates that the provided fragment is an n-of-m and returns relevant data.
+
+    Expected structure:
+    Multi(
+        n,
+        key1,
+        key2,
+        ...,
+        keym
+    )
+    """
+    from embit.descriptor.miniscript import Multi
+
+    if not isinstance(spend_path, Multi):
+        raise Exception(f"Spend path starts with `{type(spend_path)}` instead of `Multi`")
+
+    path1_n = spend_path.args[0].num
+    path1_m = len(spend_path.args) - 1
+    print(path1_n, "of", path1_m)
+
+    keys = []
+    for key in spend_path.args[1:]:
+        keys.append((
+            hexlify(key.fingerprint).decode(),
+            bip32.path_to_str(key.derivation),
+            key.branches,
+            key.key.to_base58(),
+        ))
+    return dict(
+        n=path1_n,
+        m=path1_m,
+        keys=keys,
+    )
+
+
+
+def parse_miniscript_timelocked_1_of_m(spend_path: Descriptor):
+    """
+    Validates that the provided fragment is a 1-of-m WITH a timelock and returns relevant
+    data.
+
+    Expected structure:
+    AndV(
+        # First condition must be satisfied (threshold of 1 of m)
+        V(Thresh(
+            1,
+            Pkh(KeyHash),
+            A(Pkh(key2),
+            ...,
+            A(Pkh(keym)
+        )),
+
+        # AND second condition must be satisified (timelock elapsed)
+        Older(timelock_blocks)
+    )
+    """
+    from embit.descriptor.miniscript import AndV, Number, Older, Pkh, Thresh, V
+
+    # TODO: add support for args[0] and args[1] to be flipped; order doesn't matter in
+    # the AndV() args.
+    if not isinstance(spend_path, AndV):
+        raise Exception(f"Spend path starts with `{type(spend_path)}` instead of `AndV`")
+
+    if not isinstance(spend_path.args[0], V):
+        raise Exception(f"Expected miniscript type `V`, got `{type(spend_path.args[0])}`")
+
+    if not isinstance(spend_path.args[0].args[0], Thresh):
+        raise Exception(f"Expected miniscript type `Thresh`, got `{type(spend_path.args[0].args[0])}`")
+
+    if not isinstance(spend_path.args[0].args[0].args[0], Number):
+        raise Exception(f"Expected miniscript type `Number`, got `{type(spend_path.args[0].args[0].args[0])}`")
+
+    if spend_path.args[0].args[0].args[0].num != 1:
+        raise Exception(f"Expected threshold quorum of 1, got `{type(spend_path.args[0].args[0].args[0].num)}`")
+
+    if not isinstance(spend_path.args[1], Older):
+        raise Exception(f"Expected miniscript type `Older`, got `{type(spend_path.args[1])}`")
+    
+    path_n = 1
+    path_m = len(spend_path.args[0].args[0].args) - 1
+    print(path_n, "of", path_m)
+
+    keys = []
+    for option in spend_path.args[0].args[0].args[1:]:
+        key = option.args[0]
+        if type(key) == Pkh:
+            key = key.args[0]
+        keys.append((
+            hexlify(key.fingerprint).decode(),
+            bip32.path_to_str(key.derivation),
+            key.branches,
+            key.key.to_base58(),
+        ))
+    
+    timelock = spend_path.args[1].args[0].num
+
+    return dict(
+        n=path_n,
+        m=path_m,
+        keys=keys,
+        timelock=timelock,
+    )
+
+
+
+def parse_miniscript_n_of_m_decays_to_1_of_m(ms: Descriptor) -> bool:
+    """
+    Checks if a miniscript is an n-of-m that decays to a 1-of-m
+
+    Output format:
+    [
+        {
+            'n': 2,
+            'm': 3,
+            'keys': [
+                ('0f889044', 'm/48h/1h/0h/2h', [0, 1], 'tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31'),
+                ('03cd0a2b', 'm/48h/1h/0h/2h', [0, 1], 'tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15'),
+                ('3666c686', 'm/48h/1h/0h/2h', [0, 1], 'tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr')
+            ]
+        },
+        {
+            'n': 1,
+            'm': 3,
+            'keys': [
+                ('0f889044', 'm/48h/1h/0h/2h', [2, 3], 'tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31'),
+                ('03cd0a2b', 'm/48h/1h/0h/2h', [2, 3], 'tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15'),
+                ('3666c686', 'm/48h/1h/0h/2h', [2, 3], 'tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr')
+            ],
+            'timelock': 10
+        }
+    ]
+    """
+    from embit.descriptor.miniscript import OrD, Multi
+    # Root is an OrD
+    if not isinstance(ms, OrD):
+        raise Exception(f"Expected miniscript type `OrD`, got `{type(ms)}`")
+
+    if not len(ms.args) == 2:
+        raise Exception(f"Expected 2 args in the `OrD`, got `{len(ms.args)}`")
+
+    if not isinstance(ms.args[0], Multi):
+        raise Exception(f"Expected miniscript type `Multi`, got `{type(ms.args[0])}`")
+
+    # TODO: add support for the decay path to be first; order doesn't matter in the
+    # OrD() args.
+    path_1 = parse_miniscript_n_of_m(ms.args[0])
+    path_2 = parse_miniscript_timelocked_1_of_m(ms.args[1])
+
+    return [
+        path_1,
+        path_2
+    ]
+
+
+def parse_miniscript_descriptor(descriptor: str) -> Descriptor:
+    dstr = descriptor.replace("\n", "").replace(" ", "").replace("<0;1>", "{0,1}").replace("<2;3>", "{2,3}")
+    print(dstr)
+    return Descriptor.from_string(dstr)
+
