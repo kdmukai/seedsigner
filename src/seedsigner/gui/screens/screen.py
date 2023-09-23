@@ -662,12 +662,13 @@ class QRDisplayScreen(BaseScreen):
 
     class QRDisplayThread(BaseThread):
         def __init__(self, qr_encoder: BaseQrEncoder, qr_brightness: ThreadsafeCounter, renderer: Renderer,
-                     tips_start_time: ThreadsafeCounter):
+                     tips_start_time: ThreadsafeCounter, reset: ThreadsafeCounter):
             super().__init__()
             self.qr_encoder = qr_encoder
             self.qr_brightness = qr_brightness
             self.renderer = renderer
             self.tips_start_time = tips_start_time
+            self.reset = reset
 
 
         def add_brightness_tips(self, image: Image.Image) -> None:
@@ -750,14 +751,21 @@ class QRDisplayScreen(BaseScreen):
             # Loop whether the QR is a single frame or animated; each loop might adjust
             # brightness setting.
             while self.keep_running:
+                if self.reset.cur_count == 1:
+                    self.qr_encoder.restart()
+                    self.reset.set_value(0)
+
                 # convert the self.qr_brightness integer (31-255) into hex triplets
                 hex_color = (hex(self.qr_brightness.cur_count).split('x')[1]) * 3
-                image = self.qr_encoder.next_part_image(240, 240, border=2, background_color=hex_color)
 
                 # Display the brightness tips toast
                 duration = 10 ** 9 * 1.2  # 1.2 seconds
                 if show_brightness_tips and time.time_ns() - self.tips_start_time.cur_count < duration:
+                    image = self.qr_encoder.part_to_image(self.qr_encoder.cur_part(), 240, 240, border=2, background_color=hex_color)
                     self.add_brightness_tips(image)
+                else:
+                    # Only advance the QR animation when the brightness tip is not displayed
+                    image = self.qr_encoder.next_part_image(240, 240, border=2, background_color=hex_color)
 
                 with self.renderer.lock:
                     self.renderer.show_image(image)
@@ -775,12 +783,14 @@ class QRDisplayScreen(BaseScreen):
         self.qr_brightness = ThreadsafeCounter(
             initial_value=settings.get_value(SettingsConstants.SETTING__QR_BRIGHTNESS))
         self.tips_start_time = ThreadsafeCounter(initial_value=time.time_ns())
+        self.reset = ThreadsafeCounter(initial_value=0)
 
         self.threads.append(QRDisplayScreen.QRDisplayThread(
             qr_encoder=self.qr_encoder,
             qr_brightness=self.qr_brightness,
             renderer=self.renderer,
-            tips_start_time=self.tips_start_time
+            tips_start_time=self.tips_start_time,
+            reset=self.reset,
         ))
 
 
@@ -807,6 +817,9 @@ class QRDisplayScreen(BaseScreen):
                 # Incrase QR code background brightness
                 self.qr_brightness.set_value(min(self.qr_brightness.cur_count + 31, 255))
                 self.tips_start_time.set_value(time.time_ns())
+            
+            elif user_input in [HardwareButtonsConstants.KEY1, HardwareButtonsConstants.KEY3]:
+                self.reset.set_value(1)
 
             else:
                 # Any other input exits the screen
