@@ -1,58 +1,70 @@
+from dataclasses import dataclass
 import hashlib
 import os
-
 import time
 
 from gettext import gettext as _
 from embit.descriptor import Descriptor
 from PIL import Image
 from PIL.ImageOps import autocontrast
-from seedsigner.controller import Controller
-from seedsigner.gui.screens.screen import LoadingScreenThread, QRDisplayScreen
 
-from seedsigner.hardware.camera import Camera
-from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants, SeedSignerCustomIconConstants
+from seedsigner.controller import Controller
+from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants, SeedSignerIconConstants
 from seedsigner.gui.screens import (RET_CODE__BACK_BUTTON, ButtonListScreen)
-from seedsigner.gui.screens.tools_screens import ToolsCalcFinalWordDoneScreen, ToolsCalcFinalWordFinalizePromptScreen, ToolsCalcFinalWordScreen, ToolsCoinFlipEntryScreen, ToolsDiceEntropyEntryScreen, ToolsImageEntropyFinalImageScreen, ToolsImageEntropyLivePreviewScreen, ToolsAddressExplorerAddressTypeScreen
+from seedsigner.gui.screens.tools_screens import (ToolsCalcFinalWordDoneScreen, ToolsCalcFinalWordFinalizePromptScreen,
+    ToolsCalcFinalWordScreen, ToolsCoinFlipEntryScreen, ToolsDiceEntropyEntryScreen, ToolsImageEntropyFinalImageScreen,
+    ToolsImageEntropyLivePreviewScreen, ToolsAddressExplorerAddressTypeScreen)
 from seedsigner.helpers import embit_utils, mnemonic_generation
 from seedsigner.models.encode_qr import EncodeQR
 from seedsigner.models.qr_type import QRType
 from seedsigner.models.seed import Seed
 from seedsigner.models.settings_definition import SettingsConstants
-from seedsigner.views.seed_views import SeedDiscardView, SeedFinalizeView, SeedMnemonicEntryView, SeedWordsWarningView, SeedExportXpubScriptTypeView
+from seedsigner.views.seed_views import SeedDiscardView, SeedFinalizeView, SeedMnemonicEntryView, SeedOptionsView, SeedWordsWarningView, SeedExportXpubScriptTypeView
 
 from .view import View, Destination, BackStackView
 
 
 
 class ToolsMenuView(View):
+    IMAGE = ("New seed", FontAwesomeIconConstants.CAMERA)
+    DICE = ("New seed", FontAwesomeIconConstants.DICE)
+    KEYBOARD = ("Calc 12th/24th word", FontAwesomeIconConstants.KEYBOARD)
+    EXPLORER = "Address Explorer"
+    ADDRESS = "Verify address"
+
     def run(self):
-        IMAGE = (_(" New seed"), FontAwesomeIconConstants.CAMERA)
-        DICE = (_("New seed"), FontAwesomeIconConstants.DICE)
-        KEYBOARD = (_("Calc 12th/24th word"), FontAwesomeIconConstants.KEYBOARD)
-        EXPLORER = _("Address Explorer")
-        button_data = [IMAGE, DICE, KEYBOARD, EXPLORER]
-        screen = ButtonListScreen(
+        self.IMAGE = (_("New seed"), FontAwesomeIconConstants.CAMERA)
+        self.DICE = (_("New seed"), FontAwesomeIconConstants.DICE)
+        self.KEYBOARD = (_("Calc 12th/24th word"), FontAwesomeIconConstants.KEYBOARD)
+        self.EXPLORER = _("Address Explorer")
+        button_data = [self.IMAGE, self.DICE, self.KEYBOARD, self.EXPLORER, self.ADDRESS]
+
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
             title=_("Tools"),
             is_button_text_centered=False,
             button_data=button_data
         )
-        selected_menu_num = screen.display()
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
 
-        elif button_data[selected_menu_num] == IMAGE:
+        elif button_data[selected_menu_num] == self.IMAGE:
             return Destination(ToolsImageEntropyLivePreviewView)
 
-        elif button_data[selected_menu_num] == DICE:
+        elif button_data[selected_menu_num] == self.DICE:
             return Destination(ToolsDiceEntropyMnemonicLengthView)
 
-        elif button_data[selected_menu_num] == KEYBOARD:
+        elif button_data[selected_menu_num] == self.KEYBOARD:
             return Destination(ToolsCalcFinalWordNumWordsView)
 
-        elif button_data[selected_menu_num] == EXPLORER:
+        elif button_data[selected_menu_num] == self.EXPLORER:
             return Destination(ToolsAddressExplorerSelectSourceView)
+
+        elif button_data[selected_menu_num] == self.ADDRESS:
+            from seedsigner.views.scan_views import ScanAddressView
+            return Destination(ScanAddressView)
+
 
 
 """****************************************************************************
@@ -74,6 +86,7 @@ class ToolsImageEntropyLivePreviewView(View):
 class ToolsImageEntropyFinalImageView(View):
     def run(self):
         if not self.controller.image_entropy_final_image:
+            from seedsigner.hardware.camera import Camera
             # Take the final full-res image
             camera = Camera.get_instance()
             camera.start_single_frame_mode(resolution=(720, 480))
@@ -216,9 +229,7 @@ class ToolsDiceEntropyEntryView(View):
         if ret == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
-        print(f"Dice rolls: {ret}")
         dice_seed_phrase = mnemonic_generation.generate_mnemonic_from_dice(ret)
-        print(f"""Mnemonic: "{dice_seed_phrase}" """)
 
         # Add the mnemonic as an in-memory Seed
         seed = Seed(dice_seed_phrase, wordlist_language_code=self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE))
@@ -233,28 +244,33 @@ class ToolsDiceEntropyEntryView(View):
     Calc final word Views
 ****************************************************************************"""
 class ToolsCalcFinalWordNumWordsView(View):
+    TWELVE = "12 words"
+    TWENTY_FOUR = "24 words"
+
     def run(self):
-        TWELVE = _("12 words")
-        TWENTY_FOUR = _("24 words")
+        self.TWELVE = _("12 words")
+        self.TWENTY_FOUR = _("24 words")
         
-        button_data = [TWELVE, TWENTY_FOUR]
-        selected_menu_num = ButtonListScreen(
+        button_data = [self.TWELVE, self.TWENTY_FOUR]
+
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
             title=_("Mnemonic Length"),
             is_bottom_list=True,
             is_button_text_centered=True,
             button_data=button_data,
-        ).display()
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
 
-        elif button_data[selected_menu_num] == TWELVE:
+        elif button_data[selected_menu_num] == self.TWELVE:
             self.controller.storage.init_pending_mnemonic(12)
 
             # return Destination(SeedMnemonicEntryView, view_args=dict(is_calc_final_word=True))
             return Destination(SeedMnemonicEntryView, view_args=dict(is_calc_final_word=True))
 
-        elif button_data[selected_menu_num] == TWENTY_FOUR:
+        elif button_data[selected_menu_num] == self.TWENTY_FOUR:
             self.controller.storage.init_pending_mnemonic(24)
 
             # return Destination(SeedMnemonicEntryView, view_args=dict(is_calc_final_word=True))
@@ -307,8 +323,7 @@ class ToolsCalcFinalWordFinalizePromptView(View):
 
 class ToolsCalcFinalWordCoinFlipsView(View):
     def run(self):
-        mnemonic = self.controller.storage.pending_mnemonic
-        mnemonic_length = len(mnemonic)
+        mnemonic_length = len(self.controller.storage.pending_mnemonic)
 
         if mnemonic_length == 12:
             total_flips = 7
@@ -323,70 +338,76 @@ class ToolsCalcFinalWordCoinFlipsView(View):
             return Destination(BackStackView)
         
         else:
-            print(ret_val)
-            binary_string = ret_val + "0" * (11 - total_flips)
-            wordlist_index = int(binary_string, 2)
-            wordlist = Seed.get_wordlist(self.controller.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE))
-            word = wordlist[wordlist_index]
-            self.controller.storage.update_pending_mnemonic(word, mnemonic_length - 1)
-
             return Destination(ToolsCalcFinalWordShowFinalWordView, view_args=dict(coin_flips=ret_val))
 
 
 
 class ToolsCalcFinalWordShowFinalWordView(View):
-    def __init__(self, coin_flips=None):
+    def __init__(self, coin_flips: str = None):
         super().__init__()
-        self.coin_flips = coin_flips
-
-
-    def run(self):
         # Construct the actual final word. The user's selected_final_word
         # contributes:
         #   * 3 bits to a 24-word seed (plus 8-bit checksum)
         #   * 7 bits to a 12-word seed (plus 4-bit checksum)
         from seedsigner.helpers import mnemonic_generation
 
-        mnemonic = self.controller.storage.pending_mnemonic
-        mnemonic_length = len(mnemonic)
         wordlist_language_code = self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE)
         wordlist = Seed.get_wordlist(wordlist_language_code)
 
+        # Prep the user's selected word / coin flips and the actual final word for
+        # the display.
+        if coin_flips:
+            self.selected_final_word = None
+            self.selected_final_bits = coin_flips
+        else:
+            # Convert the user's final word selection into its binary index equivalent
+            self.selected_final_word = self.controller.storage.pending_mnemonic[-1]
+            self.selected_final_bits = format(wordlist.index(self.selected_final_word), '011b')
+
+        if coin_flips:
+            # fill the last bits (what will eventually be the checksum) with zeros
+            binary_string = coin_flips + "0" * (11 - len(coin_flips))
+
+            # retrieve the matching word for the resulting index
+            wordlist_index = int(binary_string, 2)
+            wordlist = Seed.get_wordlist(self.controller.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE))
+            word = wordlist[wordlist_index]
+
+            # update the pending mnemonic with our new "final" (pre-checksum) word
+            self.controller.storage.update_pending_mnemonic(word, -1)
+
+        # Now calculate the REAL final word (has a proper checksum)
         final_mnemonic = mnemonic_generation.calculate_checksum(
             mnemonic=self.controller.storage.pending_mnemonic,
             wordlist_language_code=wordlist_language_code,
         )
-        self.controller.storage.update_pending_mnemonic(final_mnemonic[-1], mnemonic_length - 1)
 
-        # Prep the user's selected word (if there was one) and the actual final word for
-        # the display.
-        if self.coin_flips:
-            selected_final_word = None
-            selected_final_bits = self.coin_flips
-        else:
-            # Convert the user's final word selection into its binary index equivalent
-            selected_final_word = mnemonic[-1]
-            selected_final_bits = format(wordlist.index(selected_final_word), '011b')
+        # Update our pending mnemonic with the real final word
+        self.controller.storage.update_pending_mnemonic(final_mnemonic[-1], -1)
+
+        mnemonic = self.controller.storage.pending_mnemonic
+        mnemonic_length = len(mnemonic)
 
         # And grab the actual final word's checksum bits
-        actual_final_word = self.controller.storage.pending_mnemonic[-1]
-        if mnemonic_length == 12:
-            checksum_bits = format(wordlist.index(actual_final_word), '011b')[-4:]
-        else:
-            checksum_bits = format(wordlist.index(actual_final_word), '011b')[-8:]
+        self.actual_final_word = self.controller.storage.pending_mnemonic[-1]
+        num_checksum_bits = 4 if mnemonic_length == 12 else 8
+        self.checksum_bits = format(wordlist.index(self.actual_final_word), '011b')[-num_checksum_bits:]
 
+
+    def run(self):
         # l10n_note already exists.
         NEXT = _("Next")
         button_data = [NEXT]
-        selected_menu_num = ToolsCalcFinalWordScreen(
+        selected_menu_num = self.run_screen(
+            ToolsCalcFinalWordScreen,
             # TRANSLATOR_NOTE: label to calculate the last word of a BIP-39 mnemonic seed phrase
             title=_("Final Word Calc"),
             button_data=button_data,
-            selected_final_word=selected_final_word,
-            selected_final_bits=selected_final_bits,
-            checksum_bits=checksum_bits,
-            actual_final_word=actual_final_word,
-        ).display()
+            selected_final_word=self.selected_final_word,
+            selected_final_bits=self.selected_final_bits,
+            checksum_bits=self.checksum_bits,
+            actual_final_word=self.actual_final_word,
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -429,29 +450,31 @@ class ToolsCalcFinalWordDoneView(View):
     Address Explorer Views
 ****************************************************************************"""
 class ToolsAddressExplorerSelectSourceView(View):
-    def run(self):
-        SCAN_SEED = (_("Scan a seed"), FontAwesomeIconConstants.QRCODE)
-        SCAN_DESCRIPTOR = (_("Scan wallet descriptor"), FontAwesomeIconConstants.QRCODE)
-        TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
-        TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
-        button_data = []
+    SCAN_SEED = ("Scan a seed", SeedSignerIconConstants.QRCODE)
+    SCAN_DESCRIPTOR = ("Scan wallet descriptor", SeedSignerIconConstants.QRCODE)
+    TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
+    TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)
 
+
+    def run(self):
         seeds = self.controller.storage.seeds
+        self.SCAN_SEED = ("Scan a seed", SeedSignerIconConstants.QRCODE)
+        self.SCAN_DESCRIPTOR = ("Scan wallet descriptor", SeedSignerIconConstants.QRCODE)
+        self.TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
+        self.TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)
+        button_data = []
         for seed in seeds:
             button_str = seed.get_fingerprint(self.settings.get_value(SettingsConstants.SETTING__NETWORK))
-            button_data.append((button_str, SeedSignerCustomIconConstants.FINGERPRINT, "blue"))
-
-        button_data.append(SCAN_SEED)
-        button_data.append(SCAN_DESCRIPTOR)
-        button_data.append(TYPE_12WORD)
-        button_data.append(TYPE_24WORD)
-
-        selected_menu_num = ButtonListScreen(
+            button_data.append((button_str, SeedSignerIconConstants.FINGERPRINT))
+        button_data = button_data + [self.SCAN_SEED, self.SCAN_DESCRIPTOR, self.TYPE_12WORD, self.TYPE_24WORD]
+        
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
             title=_("Address Explorer"),
             button_data=button_data,
             is_button_text_centered=False,
             is_bottom_list=True,
-        ).display()
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -471,13 +494,17 @@ class ToolsAddressExplorerSelectSourceView(View):
                 )
             )
 
-        elif button_data[selected_menu_num] in [SCAN_SEED, SCAN_DESCRIPTOR]:
-            from seedsigner.views.scan_views import ScanView
-            return Destination(ScanView)
+        elif button_data[selected_menu_num] == self.SCAN_SEED:
+            from seedsigner.views.scan_views import ScanSeedQRView
+            return Destination(ScanSeedQRView)
 
-        elif button_data[selected_menu_num] in [TYPE_12WORD, TYPE_24WORD]:
+        elif button_data[selected_menu_num] == self.SCAN_DESCRIPTOR:
+            from seedsigner.views.scan_views import ScanWalletDescriptorView
+            return Destination(ScanWalletDescriptorView)
+
+        elif button_data[selected_menu_num] in [self.TYPE_12WORD, self.TYPE_24WORD]:
             from seedsigner.views.seed_views import SeedMnemonicEntryView
-            if button_data[selected_menu_num] == TYPE_12WORD:
+            if button_data[selected_menu_num] == self.TYPE_12WORD:
                 self.controller.storage.init_pending_mnemonic(num_words=12)
             else:
                 self.controller.storage.init_pending_mnemonic(num_words=24)
@@ -486,6 +513,10 @@ class ToolsAddressExplorerSelectSourceView(View):
 
 
 class ToolsAddressExplorerAddressTypeView(View):
+    RECEIVE = "Receive Addresses"
+    CHANGE = "Change Addresses"
+
+
     def __init__(self, seed_num: int = None, script_type: str = None, custom_derivation: str = None):
         """
             If the explorer source is a seed, `seed_num` and `script_type` must be
@@ -535,10 +566,9 @@ class ToolsAddressExplorerAddressTypeView(View):
         data = self.controller.address_explorer_data
 
         # TRANSLATOR_NOTE: label for addresses where others send us incoming payments
-        RECEIVE = _("Receive Addresses")
+        self.RECEIVE = _("Receive Addresses")
         # TRANSLATOR_NOTE: label for addresses that collect the change from our own outgoing payments
-        CHANGE = _("Change Addresses")
-        button_data = [RECEIVE, CHANGE]
+        self.CHANGE = _("Change Addresses")
 
         wallet_descriptor_display_name = None
         if "wallet_descriptor" in data:
@@ -547,19 +577,30 @@ class ToolsAddressExplorerAddressTypeView(View):
 
         script_type = data["script_type"] if "script_type" in data else None
 
-        selected_menu_num = ToolsAddressExplorerAddressTypeScreen(
+        button_data = [self.RECEIVE, self.CHANGE]
+
+        selected_menu_num = self.run_screen(
+            ToolsAddressExplorerAddressTypeScreen,
             button_data=button_data,
             fingerprint=self.seed.get_fingerprint() if self.seed_num is not None else None,
             wallet_descriptor_display_name=wallet_descriptor_display_name,
             script_type=script_type,
             custom_derivation_path=self.custom_derivation,
-        ).display()
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
+            # If we entered this flow via an already-loaded seed's SeedOptionsView, we
+            # need to clear the `resume_main_flow` so that we don't get stuck in a 
+            # SeedOptionsView redirect loop.
+            # TODO: Refactor to a cleaner `BackStack.get_previous_View_cls()`
+            if len(self.controller.back_stack) > 1 and self.controller.back_stack[-2].View_cls == SeedOptionsView:
+                # The BackStack has the current View on the top with the real "back" in second position.
+                self.controller.resume_main_flow = None
+                self.controller.address_explorer_data = None
             return Destination(BackStackView)
         
-        elif button_data[selected_menu_num] in [RECEIVE, CHANGE]:
-            return Destination(ToolsAddressExplorerAddressListView, view_args=dict(is_change=button_data[selected_menu_num] == CHANGE))
+        elif button_data[selected_menu_num] in [self.RECEIVE, self.CHANGE]:
+            return Destination(ToolsAddressExplorerAddressListView, view_args=dict(is_change=button_data[selected_menu_num] == self.CHANGE))
 
 
 
@@ -574,21 +615,23 @@ class ToolsAddressExplorerAddressListView(View):
 
     def run(self):
         self.loading_screen = None
-        try:
-            addresses = []
-            button_data = []
-            data = self.controller.address_explorer_data
-            addrs_per_screen = 10
 
-            addr_storage_key = "receive_addrs"
-            if self.is_change:
-                addr_storage_key = "change_addrs"
+        addresses = []
+        button_data = []
+        data = self.controller.address_explorer_data
+        addrs_per_screen = 10
 
-            if addr_storage_key in data and len(data[addr_storage_key]) >= self.start_index + addrs_per_screen:
-                # We already calculated this range addresses; just retrieve them
-                addresses = data[addr_storage_key][self.start_index:self.start_index + addrs_per_screen]
+        addr_storage_key = "receive_addrs"
+        if self.is_change:
+            addr_storage_key = "change_addrs"
 
-            else:
+        if addr_storage_key in data and len(data[addr_storage_key]) >= self.start_index + addrs_per_screen:
+            # We already calculated this range of addresses; just retrieve them
+            addresses = data[addr_storage_key][self.start_index:self.start_index + addrs_per_screen]
+
+        else:
+            try:
+                from seedsigner.gui.screens.screen import LoadingScreenThread
                 # TRANSLATOR_NOTE: a status message that our payment addresses are being calculated
                 self.loading_screen = LoadingScreenThread(text=_("Calculating addrs..."))
                 self.loading_screen.start()
@@ -618,35 +661,36 @@ class ToolsAddressExplorerAddressListView(View):
 
                     else:
                         raise Exception("Single sig descriptors not yet supported")
-
-            for i, address in enumerate(addresses):
-                cur_index = i + self.start_index
-                if cur_index < 10:
-                    end_digits = -6
-                elif cur_index < 100:
-                    end_digits = -5
-                else:
-                    end_digits = -4
-                button_data.append(f"{cur_index}:{address[:8]}...{address[end_digits:]}")
-
-            button_data.append((_("Next {}").format(addrs_per_screen), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
-
-            screen = ButtonListScreen(
-                title=_("Receive Addrs") if not self.is_change else _("Change Addrs"),
-                button_data=button_data,
-                button_font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
-                button_font_size=GUIConstants.get_button_font_size() + 4,
-                is_button_text_centered=False,
-                is_bottom_list=True,
-                selected_button=self.selected_button_index,
-                scroll_y_initial_offset=self.initial_scroll,
-            )
-        finally:
-            # Everything is set. Stop the loading screen
-            if self.loading_screen:
+            finally:
+                # Everything is set. Stop the loading screen
                 self.loading_screen.stop()
 
-        selected_menu_num = screen.display()
+        for i, address in enumerate(addresses):
+            cur_index = i + self.start_index
+
+            # Adjust the trailing addr display length based on available room
+            # (the index number will push it out on each order of magnitude)
+            if cur_index < 10:
+                end_digits = -6
+            elif cur_index < 100:
+                end_digits = -5
+            else:
+                end_digits = -4
+            button_data.append(f"{cur_index}:{address[:8]}...{address[end_digits:]}")
+
+        button_data.append((_("Next {}").format(addrs_per_screen), None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
+
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
+            title=_("Receive Addrs") if not self.is_change else _("Change Addrs"),
+            button_data=button_data,
+            button_font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
+            button_font_size=GUIConstants.get_button_font_size() + 4,
+            is_button_text_centered=False,
+            is_bottom_list=True,
+            selected_button=self.selected_button_index,
+            scroll_y_initial_offset=self.initial_scroll,
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -656,7 +700,7 @@ class ToolsAddressExplorerAddressListView(View):
             return Destination(ToolsAddressExplorerAddressListView, view_args=dict(is_change=self.is_change, start_index=self.start_index + addrs_per_screen))
         
         # Preserve the list's current scroll so we can return to the same spot
-        initial_scroll = screen.buttons[0].scroll_y
+        initial_scroll = self.screen.buttons[0].scroll_y
 
         index = selected_menu_num + self.start_index
         return Destination(ToolsAddressExplorerAddressView, view_args=dict(index=index, address=addresses[selected_menu_num], is_change=self.is_change, start_index=self.start_index, parent_initial_scroll=initial_scroll), skip_current_view=True)
@@ -674,10 +718,12 @@ class ToolsAddressExplorerAddressView(View):
 
     
     def run(self):
+        from seedsigner.gui.screens.screen import QRDisplayScreen
         qr_encoder = EncodeQR(qr_type=QRType.BITCOIN_ADDRESS, bitcoin_address=self.address)
-        QRDisplayScreen(
+        self.run_screen(
+            QRDisplayScreen,
             qr_encoder=qr_encoder,
-        ).display()
+        )
     
         # Exiting/Cancelling the QR display screen always returns to the list
         return Destination(ToolsAddressExplorerAddressListView, view_args=dict(is_change=self.is_change, start_index=self.start_index, selected_button_index=self.index - self.start_index, initial_scroll=self.parent_initial_scroll), skip_current_view=True)

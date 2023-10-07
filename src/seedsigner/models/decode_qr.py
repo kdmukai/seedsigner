@@ -9,14 +9,13 @@ from embit import psbt, bip39
 from pyzbar import pyzbar
 from pyzbar.pyzbar import ZBarSymbol
 from urtypes.crypto import PSBT as UR_PSBT
-from urtypes.crypto import Account, HDKey, Output, Keypath, PathComponent, SCRIPT_EXPRESSION_TAG_MAP
+from urtypes.crypto import Account, Output
 from urtypes.bytes import Bytes
 
 from seedsigner.helpers.ur2.ur_decoder import URDecoder
-from seedsigner.models.psbt_parser import PSBTParser
-
-from . import QRType, Seed
-from .settings import SettingsConstants
+from seedsigner.models.qr_type import QRType
+from seedsigner.models.seed import Seed
+from seedsigner.models.settings import SettingsConstants
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +83,9 @@ class DecodeQR:
             elif self.qr_type == QRType.BITCOIN_ADDRESS:
                 self.decoder = BitcoinAddressQrDecoder() # Single Segment bitcoin address
 
+            elif self.qr_type == QRType.SIGN_MESSAGE:
+                self.decoder = SignMessageQrDecoder() # Single Segment sign message request
+
             elif self.qr_type == QRType.WALLET__SPECTER:
                 self.decoder = SpecterWalletQrDecoder() # Specter Desktop Wallet Export decoder
 
@@ -132,6 +134,9 @@ class DecodeQR:
             return rt
 
 
+    # TODO: Refactor all of these specific `get_` to just something generic like
+    #   `get_data` and let each QRDecoder class return whatever it needs to as a
+    #   str, tuple, dict, etc?
     def get_psbt(self):
         if self.complete:
             data = self.get_data_psbt()
@@ -175,12 +180,7 @@ class DecodeQR:
 
     def get_settings_data(self):
         if self.is_settings:
-            return self.decoder.settings
-
-
-    def get_settings_config_name(self):
-        if self.is_settings:
-            return self.decoder.config_name
+            return self.decoder.data
 
 
     def get_address(self):
@@ -191,6 +191,15 @@ class DecodeQR:
     def get_address_type(self):
         if self.is_address:
             return self.decoder.get_address_type()
+
+
+    def get_qr_data(self) -> dict:
+        """
+        This provides a single access point for external code to retrieve the QR data,
+        regardless of which decoder is actually instantiated.
+        """
+        # TODO: Implement this approach across all decoders
+        return self.decoder.get_qr_data()
 
 
     def get_wallet_descriptor(self):
@@ -271,6 +280,11 @@ class DecodeQR:
     @property
     def is_address(self):
         return self.qr_type == QRType.BITCOIN_ADDRESS
+        
+
+    @property
+    def is_sign_message(self):
+        return self.qr_type == QRType.SIGN_MESSAGE
         
 
     @property
@@ -363,8 +377,12 @@ class DecodeQR:
             elif DecodeQR.is_bitcoin_address(s):
                 return QRType.BITCOIN_ADDRESS
 
+            # message signing
+            elif DecodeQR.is_sign_message(s):
+                return QRType.SIGN_MESSAGE
+
             # config data
-            if "type=settings" in s:
+            if s.startswith("settings::"):
                 return QRType.SETTINGS
 
             # Seed
@@ -482,7 +500,13 @@ class DecodeQR:
             return True
         else:
             return False
-    
+
+
+    @staticmethod
+    def is_sign_message(s):
+        return type(s) == str and s.startswith("signmessage")
+
+
     @staticmethod
     def multisig_setup_file_to_descriptor(text) -> str:
         # sample text file, parse the contents and create descriptor
@@ -578,6 +602,8 @@ class DecodeQR:
 
         return descriptor
 
+
+
 class BaseQrDecoder:
     def __init__(self):
         self.total_segments = None
@@ -590,6 +616,10 @@ class BaseQrDecoder:
 
     def add(self, segment, qr_type):
         raise Exception("Not implemented in child class")
+    
+    def get_qr_data(self) -> dict:
+        # TODO: standardize this approach across all decoders (example: SignMessageQrDecoder)
+        raise Exception("get_qr_data must be implemented in decoder child class")
 
 
 
@@ -672,6 +702,8 @@ class SpecterPsbtQrDecoder(BaseAnimatedQrDecoder):
 
     def parse_segment(self, segment) -> str:
         return segment.split(" ")[-1].strip()
+
+
 
 class Base64PsbtQrDecoder(BaseSingleFrameQrDecoder):
     """
@@ -826,106 +858,67 @@ class SeedQrDecoder(BaseSingleFrameQrDecoder):
 
 
 
-# TODO: Refactor this to work with the new SettingsDefinition
 class SettingsQrDecoder(BaseSingleFrameQrDecoder):
+    """
+        Decodes settings data from the SettingsQR Generator.
+    """
     def __init__(self):
         super().__init__()
-        self.settings = {}
-        self.config_name = None
+        self.data = None
 
 
     def add(self, segment, qr_type=QRType.SETTINGS):
-        # print(f"SettingsQR:\n{segment}")
-        try:
-            self.settings = {}
+        """
+            * Ignores unrecognized settings options.
+            * Raises an Exception if a settings value is invalid.
 
-            # QR Settings format is space-separated key/value pairs, but should also
-            # parse \n-separated keys.
-            for entry in segment.split():
-                key = entry.split("=")[0].strip()
-                value = entry.split("=")[1].strip()
-                self.settings[key] = value
+            See `Settings.update()` for info on settings validation, especially for
+            missing settings.
+        """
+        if not segment.startswith("settings::"):
+            raise Exception("Invalid SettingsQR data")
+        
+        # Leave any other parsing or validation up to the Settings class itself.
+        # SettingsQR are just ascii data to hand it over as-is.
+        self.data = segment
 
-            # Remove values only needed for import
-            self.settings.pop("type", None)
-            version = self.settings.pop("version", None)
-            if not version or int(version) != 1:
-                raise Exception(f"Settings QR version {version} not supported")
+        self.complete = True
+        self.collected_segments = 1
+        return DecodeQRStatus.COMPLETE
 
-            self.config_name = self.settings.pop("name", None)
-            if self.config_name:
-                self.config_name = self.config_name.replace("_", " ")
-            
-            # Have to translate the abbreviated settings into the human-readable values
-            # used in the normal Settings.
-            map_abbreviated_enable = {
-                "0": SettingsConstants.OPTION__DISABLED,
-                "1": SettingsConstants.OPTION__ENABLED,
-                "2": SettingsConstants.OPTION__PROMPT,
-            }
-            map_abbreviated_sig_types = {
-                "s": SettingsConstants.SINGLE_SIG,
-                "m": SettingsConstants.MULTISIG,
-            }
-            map_abbreviated_scripts = {
-                "na": SettingsConstants.NATIVE_SEGWIT,
-                "ne": SettingsConstants.NESTED_SEGWIT,
-                "tr": SettingsConstants.TAPROOT,
-                "cu": SettingsConstants.CUSTOM_DERIVATION,
-            }
-            map_abbreviated_coordinators = {
-                "bw": SettingsConstants.COORDINATOR__BLUE_WALLET,
-                "sw": SettingsConstants.COORDINATOR__SPARROW,
-                "sd": SettingsConstants.COORDINATOR__SPECTER_DESKTOP,
-            }
 
-            def convert_abbreviated_value(category, key, abbreviation_map, is_list=False, new_key_name=None):
-                try:
-                    if key not in self.settings:
-                        print(f"'{key}' not found in settings")
-                        return
-                    value = self.settings[key]
 
-                    if not is_list:
-                        new_value = abbreviation_map.get(value)
-                        if not new_value:
-                            logger.error(f"No abbreviation map value for \"{value}\" for setting {key}")
-                            return
-                    else:
-                        # `value` is a comma-separated list; yields list of map matches
-                        values = value.split(",")
-                        new_value = []
-                        for v in values:
-                            mapped_value = abbreviation_map.get(v)
-                            if not mapped_value:
-                                logger.error(f"No abbreviation map value for \"{v}\" for setting {key}")
-                                return
-                            new_value.append(mapped_value)
-                    del self.settings[key]
-                    if new_key_name:
-                        key = new_key_name
-                    if category not in self.settings:
-                        self.settings[category] = {}
-                    self.settings[category][key] = new_value
-                except Exception as e:
-                    logger.exception(e)
-                    return
+class SignMessageQrDecoder(BaseSingleFrameQrDecoder):
+    def __init__(self):
+        super().__init__()
+        self.message = None
+        self.derivation_path = None
 
-            convert_abbreviated_value("wallet", "coord", map_abbreviated_coordinators, is_list=True, new_key_name="coordinators")
-            convert_abbreviated_value("features", "xpub", map_abbreviated_enable, new_key_name="xpub_export")
-            convert_abbreviated_value("features", "sigs", map_abbreviated_sig_types, is_list=True, new_key_name="sig_types")
-            convert_abbreviated_value("features", "scripts", map_abbreviated_scripts, is_list=True, new_key_name="script_types")
-            convert_abbreviated_value("features", "xp_det", map_abbreviated_enable, new_key_name="show_xpub_details")
-            convert_abbreviated_value("features", "passphrase", map_abbreviated_enable)
-            convert_abbreviated_value("features", "priv_warn", map_abbreviated_enable, new_key_name="show_privacy_warnings")
-            convert_abbreviated_value("features", "dire_warn", map_abbreviated_enable, new_key_name="show_dire_warnings")
 
-            self.complete = True
-            self.collected_segments = 1
-            return DecodeQRStatus.COMPLETE
-        except Exception as e:
-            logger.exception(e)
+    def add(self, segment, qr_type=QRType.SIGN_MESSAGE):
+        """
+            Expected QR data format:
+
+            signmessage {derivation_path} ascii:{message}
+        """
+        parts = segment.split()
+        self.derivation_path = parts[1].replace("h", "'")
+        fmt = parts[2].split(":")[0]
+        self.message = segment.split(f"{fmt}:")[1]
+
+        # TODO: support formats other than ascii?
+        if fmt != "ascii":
+            print(f"Sign message: Unsupported format: {fmt}")
             return DecodeQRStatus.INVALID
+
+        self.complete = True
+        self.collected_segments = 1
+
+        return DecodeQRStatus.COMPLETE
+
+
+    def get_qr_data(self) -> dict:
+        return dict(derivation_path=self.derivation_path, message=self.message)
 
 
 
@@ -1091,11 +1084,10 @@ class GenericWalletQrDecoder(BaseSingleFrameQrDecoder):
 
     def get_wallet_descriptor(self):
         return self.descriptor
-        
-class MultiSigConfigFileQRDecoder(GenericWalletQrDecoder):
-    
+
+
+
+class MultiSigConfigFileQRDecoder(GenericWalletQrDecoder):    
     def add(self, segment, qr_type=QRType.WALLET__CONFIGFILE):
         descriptor = DecodeQR.multisig_setup_file_to_descriptor(segment)
         return super().add(descriptor,qr_type=QRType.WALLET__CONFIGFILE)
-        
-

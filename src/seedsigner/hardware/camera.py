@@ -1,9 +1,9 @@
 import io
-import numpy
 
 from PIL import Image
-from seedsigner.models import Singleton
-from seedsigner.models.settings import SettingsConstants
+from seedsigner.hardware.pivideostream import PiVideoStream
+from seedsigner.models.settings import Settings, SettingsConstants
+from seedsigner.models.singleton import Singleton
 
 
 
@@ -15,7 +15,6 @@ class Camera(Singleton):
     @classmethod
     def get_instance(cls):
         # This is the only way to access the one and only Controller
-        from seedsigner.models import Settings
         if cls._instance is None:
             cls._instance = cls.__new__(cls)
         cls._instance._camera_rotation = int(Settings.get_instance().get_value(SettingsConstants.SETTING__CAMERA_ROTATION))

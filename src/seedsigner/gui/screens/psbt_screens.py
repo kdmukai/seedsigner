@@ -9,7 +9,7 @@ from seedsigner.gui.renderer import Renderer
 from seedsigner.models.threads import BaseThread
 
 from .screen import ButtonListScreen, WarningScreen
-from ..components import (BtcAmount, Button, Icon, FontAwesomeIconConstants, IconTextLine, FormattedAddress, GUIConstants, Fonts, SeedSignerCustomIconConstants, TextArea,
+from ..components import (BtcAmount, Button, Icon, FontAwesomeIconConstants, IconTextLine, FormattedAddress, GUIConstants, Fonts, SeedSignerIconConstants, TextArea,
     calc_bezier_curve, linear_interp)
 
 
@@ -661,10 +661,10 @@ class PSBTChangeDetailsScreen(ButtonListScreen):
             # Adjust the vertical spacing
             screen_y -= GUIConstants.COMPONENT_PADDING
         self.components.append(IconTextLine(
-            icon_name=SeedSignerCustomIconConstants.FINGERPRINT,
-            icon_color="blue",
             # TRANSLATOR_NOTE: First variable is either "Multisig" or the fingerprint for single sig; Second is "Change" or "Addr" (change vs receive addr); Third is the address index number (e.g. your #4 receive addr).
             value_text="""{}: {} #{}""".format(_("Multisig") if self.is_multisig else self.fingerprint, _("Change") if self.is_change_derivation_path else _("Addr"), self.derivation_path_addr_index),
+            icon_name=SeedSignerIconConstants.FINGERPRINT,
+            icon_color=GUIConstants.INFO_COLOR,
             is_text_centered=False,
             screen_x=GUIConstants.EDGE_PADDING,
             screen_y=screen_y,
@@ -672,8 +672,8 @@ class PSBTChangeDetailsScreen(ButtonListScreen):
 
         if self.is_change_addr_verified:
             self.components.append(IconTextLine(
-                icon_name=SeedSignerCustomIconConstants.CIRCLE_CHECK,
-                icon_color="#00dd00",
+                icon_name=SeedSignerIconConstants.SUCCESS,
+                icon_color=GUIConstants.SUCCESS_COLOR,
                 value_text=_("Address verified!"),
                 is_text_centered=False,
                 screen_x=GUIConstants.EDGE_PADDING,
@@ -691,8 +691,8 @@ class PSBTFinalizeScreen(ButtonListScreen):
         super().__post_init__()
 
         icon = Icon(
-            icon_name=FontAwesomeIconConstants.FILE_SIGNATURE,
-            icon_color=GUIConstants.LIGHT_BLUE,
+            icon_name=FontAwesomeIconConstants.PAPER_PLANE,
+            icon_color=GUIConstants.INFO_COLOR,
             icon_size=GUIConstants.ICON_LARGE_BUTTON_SIZE,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING
         )

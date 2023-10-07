@@ -1,14 +1,24 @@
 from gettext import gettext as _
+import logging
+from seedsigner.gui.components import SeedSignerIconConstants
+from seedsigner.hardware.microsd import MicroSD
 
-from seedsigner.gui.components import SeedSignerCustomIconConstants
+from .view import View, Destination, MainMenuView
+
+from seedsigner.gui.components import SeedSignerIconConstants
 from seedsigner.gui.screens import (RET_CODE__BACK_BUTTON, ButtonListScreen, settings_screens)
-from seedsigner.models.settings import SettingsConstants, SettingsDefinition
+from seedsigner.models.settings import Settings, SettingsConstants, SettingsDefinition
+
+logger = logging.getLogger(__name__)
 
 from .view import View, Destination, BackStackView, MainMenuView
 
 
 
 class SettingsMenuView(View):
+    IO_TEST = "I/O test"
+    DONATE = "Donate"
+
     def __init__(self, visibility: str = SettingsConstants.VISIBILITY__GENERAL, selected_attr: str = None, initial_scroll: int = 0):
         super().__init__()
         self.visibility = visibility
@@ -19,8 +29,8 @@ class SettingsMenuView(View):
 
 
     def run(self):
-        IO_TEST = _("I/O test")
-        DONATE = _("Donate")
+        self.IO_TEST = _("I/O test")
+        self.DONATE = _("Donate")
 
         settings_entries = SettingsDefinition.get_settings_entries(
             visibility=self.visibility
@@ -38,35 +48,35 @@ class SettingsMenuView(View):
             title = _("Settings")
 
             # Set up the next nested level of menuing
-            button_data.append((_("Advanced"), None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
-            next = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__ADVANCED})
+            button_data.append((_("Advanced"), None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
+            next_destination = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__ADVANCED})
 
-            button_data.append(IO_TEST)
-            button_data.append(DONATE)
+            button_data.append(self.IO_TEST)
+            button_data.append(self.DONATE)
 
         elif self.visibility == SettingsConstants.VISIBILITY__ADVANCED:
             title = _("Advanced")
 
             # So far there are no real Developer options; disabling for now
-            # button_data.append(("Developer Options", None, None, None, SeedSignerCustomIconConstants.SMALL_CHEVRON_RIGHT))
-            # next = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__DEVELOPER})
-            next = None
+            # button_data.append(("Developer Options", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
+            # next_destination = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__DEVELOPER})
+            next_destination = None
         
         elif self.visibility == SettingsConstants.VISIBILITY__DEVELOPER:
             title = _("Dev Options")
-            next = None
+            next_destination = None
 
-        screen = ButtonListScreen(
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
             title=title,
             is_button_text_centered=False,
             button_data=button_data,
             selected_button=selected_button,
             scroll_y_initial_offset=self.initial_scroll,
         )
-        selected_menu_num = screen.display()
 
         # Preserve our scroll position in this Screen so we can return
-        initial_scroll = screen.buttons[0].scroll_y
+        initial_scroll = self.screen.buttons[0].scroll_y
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             if self.visibility == SettingsConstants.VISIBILITY__GENERAL:
@@ -77,12 +87,12 @@ class SettingsMenuView(View):
                 return Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__ADVANCED})
         
         elif selected_menu_num == len(settings_entries):
-            return next
+            return next_destination
 
-        elif len(button_data) > selected_menu_num and button_data[selected_menu_num] == IO_TEST:
+        elif len(button_data) > selected_menu_num and button_data[selected_menu_num] == self.IO_TEST:
             return Destination(IOTestView)
 
-        elif len(button_data) > selected_menu_num and button_data[selected_menu_num] == DONATE:
+        elif len(button_data) > selected_menu_num and button_data[selected_menu_num] == self.DONATE:
             return Destination(DonateView)
 
         else:
@@ -95,10 +105,10 @@ class SettingsEntryUpdateSelectionView(View):
         Handles changes to all selection-type settings (Multiselect, SELECT_1,
         Enabled/Disabled, etc).
     """
-    def __init__(self, attr_name: str, parent_initial_scroll: int = 0):
+    def __init__(self, attr_name: str, parent_initial_scroll: int = 0, selected_button: int = None):
         super().__init__()
         self.settings_entry = SettingsDefinition.get_settings_entry(attr_name)
-        self.selected_button = None
+        self.selected_button = selected_button
         self.parent_initial_scroll = parent_initial_scroll
 
 
@@ -112,6 +122,7 @@ class SettingsEntryUpdateSelectionView(View):
             else:
                 display_name = value
             button_data.append(_(display_name))
+
             if (type(initial_value) == list and value in initial_value) or value == initial_value:
                 checked_buttons.append(i)
 
@@ -120,17 +131,18 @@ class SettingsEntryUpdateSelectionView(View):
                     # selected option).
                     self.selected_button = i
         
-        if not self.selected_button:
+        if self.selected_button is None:
             self.selected_button = 0
-
-        ret_value = settings_screens.SettingsEntryUpdateSelectionScreen(
+            
+        ret_value = self.run_screen(
+            settings_screens.SettingsEntryUpdateSelectionScreen,
             display_name=self.settings_entry.display_name,
             help_text=self.settings_entry.help_text,
             button_data=button_data,
             selected_button=self.selected_button,
             checked_buttons=checked_buttons,
             settings_entry_type=self.settings_entry.type,
-        ).display()
+        )
 
         destination = None
         settings_menu_view_destination = Destination(
@@ -178,7 +190,37 @@ class SettingsEntryUpdateSelectionView(View):
 
         # All selects stay in place; re-initialize where in the list we left off
         self.selected_button = ret_value
-        return self.run()
+
+        return Destination(SettingsEntryUpdateSelectionView, view_args=dict(attr_name=self.settings_entry.attr_name, parent_initial_scroll=self.parent_initial_scroll, selected_button=self.selected_button), skip_current_view=True)
+
+
+
+class SettingsIngestSettingsQRView(View):
+    def __init__(self, data: str):
+        super().__init__()
+
+        # May raise an Exception which will bubble up to the Controller to display to the
+        # user.
+        self.config_name, settings_update_dict = Settings.parse_settingsqr(data)
+            
+        self.settings.update(settings_update_dict)
+
+        if MicroSD.get_instance().is_inserted and self.settings.get_value(SettingsConstants.SETTING__PERSISTENT_SETTINGS) == SettingsConstants.OPTION__ENABLED:
+            self.status_message = "Persistent Settings enabled. Settings saved to SD card."
+        else:
+            self.status_message = "Settings updated in temporary memory"
+
+
+    def run(self):
+        from seedsigner.gui.screens.settings_screens import SettingsQRConfirmationScreen
+        self.run_screen(
+            SettingsQRConfirmationScreen,
+            config_name=self.config_name,
+            status_message=self.status_message,
+        )
+
+        # Only one exit point
+        return Destination(MainMenuView)
 
 
 
@@ -187,7 +229,7 @@ class SettingsEntryUpdateSelectionView(View):
 ****************************************************************************"""
 class IOTestView(View):
     def run(self):
-        settings_screens.IOTestScreen().display()
+        self.run_screen(settings_screens.IOTestScreen)
 
         return Destination(SettingsMenuView)
 
@@ -195,6 +237,6 @@ class IOTestView(View):
 
 class DonateView(View):
     def run(self):
-        settings_screens.DonateScreen().display()
+        self.run_screen(settings_screens.DonateScreen)
 
         return Destination(SettingsMenuView)
