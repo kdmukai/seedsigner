@@ -314,8 +314,9 @@ class SettingsQRConfirmationScreen(ButtonListScreen):
     is_bottom_list: bool = True
 
     def __post_init__(self):
+        self.title = _("Settings QR")
         # Customize defaults
-        self.button_data = ["Home"]
+        self.button_data = [_("Home")]
         self.show_back_button = False
         super().__post_init__()
 

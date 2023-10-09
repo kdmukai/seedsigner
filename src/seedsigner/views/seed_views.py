@@ -595,7 +595,7 @@ class SeedBackupView(View):
 
         selected_menu_num = self.run_screen(
             ButtonListScreen,
-            title="Backup Seed",
+            title=_("Backup Seed"),
             button_data=button_data,
             is_bottom_list=True,
         )

@@ -188,10 +188,10 @@ class MainMenuView(View):
     SETTINGS = ("Settings", SeedSignerIconConstants.SETTINGS)
 
     def run(self):
-        self.SCAN = ("Scan", SeedSignerIconConstants.SCAN)
-        self.SEEDS = ("Seeds", SeedSignerIconConstants.SEEDS)
-        self.TOOLS = ("Tools", SeedSignerIconConstants.TOOLS)
-        self.SETTINGS = ("Settings", SeedSignerIconConstants.SETTINGS)
+        self.SCAN = (_("Scan"), SeedSignerIconConstants.SCAN)
+        self.SEEDS = (_("Seeds"), SeedSignerIconConstants.SEEDS)
+        self.TOOLS = (_("Tools"), SeedSignerIconConstants.TOOLS)
+        self.SETTINGS = (_("Settings"), SeedSignerIconConstants.SETTINGS)
         from seedsigner.gui.screens.screen import MainMenuScreen
         button_data = [self.SCAN, self.SEEDS, self.TOOLS, self.SETTINGS]
         selected_menu_num = self.run_screen(
@@ -226,8 +226,8 @@ class PowerOptionsView(View):
     POWER_OFF = ("Power Off", SeedSignerIconConstants.POWER)
 
     def run(self):
-        self.RESET = ("Restart", SeedSignerIconConstants.RESTART)
-        self.POWER_OFF = ("Power Off", SeedSignerIconConstants.POWER)
+        self.RESET = (_("Restart"), SeedSignerIconConstants.RESTART)
+        self.POWER_OFF = (_("Power Off"), SeedSignerIconConstants.POWER)
         button_data = [self.RESET, self.POWER_OFF]
         selected_menu_num = self.run_screen(
             LargeButtonScreen,

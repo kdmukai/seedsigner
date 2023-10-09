@@ -1553,12 +1553,12 @@ class SeedSignMessageConfirmMessageScreen(ButtonListScreen):
             raise Exception("Bug in paged_message calculation")
 
         if len(self.sign_message_data["paged_message"]) == 1:
-            self.title = "Review Message"
+            self.title = _("Review Message")
         else:
             self.title = f"""Message (pt {self.page_num + 1}/{len(self.sign_message_data["paged_message"])})"""
         self.is_bottom_list = True
         self.is_button_text_centered = True
-        self.button_data = ["Next"]
+        self.button_data = [_("Next")]
         super().__post_init__()
 
         message_display = TextArea(
@@ -1577,16 +1577,16 @@ class SeedSignMessageConfirmAddressScreen(ButtonListScreen):
     address: str = None
 
     def __post_init__(self):
-        self.title = "Confirm Address"
+        self.title = _("Confirm Address")
         self.is_bottom_list = True
         self.is_button_text_centered = True
-        self.button_data = ["Sign Message"]
+        self.button_data = [_("Sign Message")]
         super().__post_init__()
 
         derivation_path_display = IconTextLine(
             icon_name=SeedSignerIconConstants.DERIVATION,
             icon_color=GUIConstants.INFO_COLOR,
-            label_text="derivation path",
+            label_text=_("derivation path"),
             value_text=self.derivation_path,
             is_text_centered=True,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,

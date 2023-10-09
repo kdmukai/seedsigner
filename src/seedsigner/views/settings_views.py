@@ -206,16 +206,18 @@ class SettingsIngestSettingsQRView(View):
         self.settings.update(settings_update_dict)
 
         if MicroSD.get_instance().is_inserted and self.settings.get_value(SettingsConstants.SETTING__PERSISTENT_SETTINGS) == SettingsConstants.OPTION__ENABLED:
-            self.status_message = "Persistent Settings enabled. Settings saved to SD card."
+            self.status_message = _("Persistent Settings enabled. Settings saved to SD card.")
         else:
-            self.status_message = "Settings updated in temporary memory"
+            self.status_message = _("Settings updated in temporary memory")
 
 
     def run(self):
         from seedsigner.gui.screens.settings_screens import SettingsQRConfirmationScreen
         self.run_screen(
             SettingsQRConfirmationScreen,
+            title=_("Settings QR"),
             config_name=self.config_name,
+            button_data=[_("Home")],
             status_message=self.status_message,
         )
 
