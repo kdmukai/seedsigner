@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-22 10:08-0400\n"
+"POT-Creation-Date: 2023-10-09 11:36-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Plasmonic Resonance, 2022\n"
 "Language: cs\n"
@@ -33,12 +33,18 @@ msgstr ""
 msgid "space"
 msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "Yes "
+#: src/seedsigner/gui/toast.py
+msgid ""
+"You can remove\n"
+"the SD card now"
 msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "No "
+#: src/seedsigner/gui/toast.py
+msgid "SD card removed"
+msgstr ""
+
+#: src/seedsigner/gui/toast.py
+msgid "SD card inserted"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
@@ -168,33 +174,24 @@ msgid "Click to approve this transaction"
 msgstr "Klikněte pro potvrzení"
 
 #: src/seedsigner/gui/screens/scan_screens.py
-msgid "< back  |  Scan a QR code"
+msgid "< back  |  "
 msgstr ""
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings QR"
-msgstr "Nastavení QR"
-
-#: src/seedsigner/gui/screens/scan_screens.py src/seedsigner/views/view.py
-msgid "Home"
-msgstr "Nabídka"
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings imported successfully!"
-msgstr "Nastavení úspěšně načtena!"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
 msgid "Success!"
 msgstr "Povedlo se!"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/view.py
 msgid "OK"
 msgstr "OK"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/psbt_views.py
 msgid "Caution"
 msgstr "Pozor"
+
+#: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
+msgid "Privacy Leak!"
+msgstr "Únik soukromých informací!"
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "I Understand"
@@ -226,14 +223,6 @@ msgstr "Vypínám"
 msgid "Please wait about 30 seconds before disconnecting power."
 msgstr "Vyčkejte minimálně 30 vteřin než odpojíte napájení."
 
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD removed"
-msgstr ""
-
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD inserted"
-msgstr ""
-
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Finalize Seed"
 msgstr "Dokonči Seed"
@@ -261,6 +250,10 @@ msgid "Seed Words: {}/{}"
 msgstr "Slova seedu: {}/{}"
 
 #: src/seedsigner/gui/screens/seed_screens.py
+msgid "BIP-85 Index"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
 msgid "Verify Backup?"
 msgstr "Ověřit zálohu?"
 
@@ -281,6 +274,7 @@ msgstr "Exportuj Xpub"
 msgid "Xpub Details"
 msgstr "Podrobnosti Xpubu"
 
+#. Short for "BIP32 Master Fingerprint"
 #. a label for the shortened Key-id of a BIP-32 master HD wallet
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -294,6 +288,7 @@ msgstr "Otisk"
 msgid "Derivation"
 msgstr "Odvození"
 
+#. Short for "BIP32 Extended Public Key"
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Xpub"
 msgstr "Xpub"
@@ -310,8 +305,8 @@ msgstr "Ověřit frázi"
 #. Describes the effect of applying a BIP-39 passphrase; it changes the seed's
 #. fingerprint
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "changes seed:"
-msgstr "změní seed:"
+msgid "changes fingerprint"
+msgstr ""
 
 #. Refers to the SeedQR type: Standard or Compact
 #: src/seedsigner/gui/screens/seed_screens.py
@@ -382,7 +377,27 @@ msgid "Signing Keys"
 msgstr "Podpisové klíče"
 
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "BIP-85 Index"
+msgid "Review Message"
+msgstr ""
+
+#. Short for "Next step"
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
+msgid "Next"
+msgstr "Další"
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "Confirm Address"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/seed_views.py
+msgid "Sign Message"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "derivation path"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
@@ -429,10 +444,15 @@ msgstr ""
 "\n"
 "Podpořit jej lze on-chain či pomocí LN na:"
 
-#. Instructions when taking a picture; "back" should point left.
-#: src/seedsigner/gui/screens/tools_screens.py
-msgid "< back  |  click joystick"
-msgstr "< zpět | stiskni joystick"
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py
+msgid "Settings QR"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py src/seedsigner/views/view.py
+msgid "Home"
+msgstr "Nabídka"
 
 #. Instructions when reviewing an image; "reshoot" must point left, "accept"
 #. must point right
@@ -504,15 +524,6 @@ msgstr ""
 #. a label for a BIP-380-ish Output Descriptor
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Wallet descriptor"
-msgstr ""
-
-#: src/seedsigner/models/settings.py
-#: src/seedsigner/models/settings_definition.py
-msgid "Store Settings on SD card."
-msgstr "Uložit nastavení na SD kartu."
-
-#: src/seedsigner/models/settings.py
-msgid "MicroSD card is removed"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
@@ -613,6 +624,14 @@ msgid "Regtest"
 msgstr "Regtest"
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Store Settings on SD card"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
+msgid "Insert SD card to enable"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 #: src/seedsigner/views/seed_views.py
 msgid "Single Sig"
 msgstr "Single Sig"
@@ -694,6 +713,10 @@ msgid "BIP-85 child seeds"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Message signing"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 msgid "Show privacy warnings"
 msgstr "Zobrzovat bezpečnostní varování"
 
@@ -702,8 +725,8 @@ msgid "Show dire warnings"
 msgstr "Zobrazovat kritická varování"
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Show passphrase warning"
-msgstr "Ukázovat varování při použití bezpečnostní fráze"
+msgid "Show QR brightness tips"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
 msgid "Show partner logos"
@@ -714,17 +737,14 @@ msgid "QR background color"
 msgstr "barva pozadí QR"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Scan a seed"
 msgstr "Naskenovat seed"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 12-word seed"
 msgstr "Vložit seed o 12 slovech"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 24-word seed"
 msgstr "Vložit seed o 24 slovech"
 
@@ -744,7 +764,7 @@ msgstr "Nepodporovaný typ skriptu"
 msgid "PSBT has unsupported input script type, please verify your change addresses."
 msgstr "PSBT využívá nepodporovaný typ scriptu na vstupu, ověřte zpáteční adresu "
 
-#: src/seedsigner/views/psbt_views.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/view.py
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -768,12 +788,6 @@ msgstr "Bude odesláno"
 #: src/seedsigner/views/psbt_views.py
 msgid "Next Recipient"
 msgstr "Další příjemce"
-
-#. Short for "Next step"
-#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
-msgid "Next"
-msgstr "Další"
 
 #. The amount you're receiving back from the transaction
 #: src/seedsigner/views/psbt_views.py
@@ -827,6 +841,10 @@ msgid "Approve PSBT"
 msgstr "Schválit PSBT"
 
 #: src/seedsigner/views/psbt_views.py
+msgid "Select Diff Seed"
+msgstr "Vyberte jiný seed"
+
+#: src/seedsigner/views/psbt_views.py
 msgid "PSBT Error"
 msgstr "Chyba PSBT"
 
@@ -837,10 +855,6 @@ msgstr "Podepisování se nezdařilo"
 #: src/seedsigner/views/psbt_views.py
 msgid "Signing with this seed did not add a valid signature."
 msgstr "Podepisování s daným klíčem nepřidalo platný podpis."
-
-#: src/seedsigner/views/psbt_views.py
-msgid "Select Diff Seed"
-msgstr "Vyberte jiný seed"
 
 #. This is on the opening splash screen, displayed above the HRF logo
 #: src/seedsigner/views/screensaver.py
@@ -854,6 +868,22 @@ msgstr "Nahrát seed"
 #: src/seedsigner/views/seed_views.py
 msgid "In-Memory Seeds"
 msgstr "Uložené Seedy"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to verify"
+msgstr "Načtěte seed pro ověření"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to verify"
+msgstr "Vyberte seed pro ověření"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to sign with"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to sign with"
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Scan a SeedQR"
@@ -888,17 +918,9 @@ msgstr "Neplatná záloha!"
 msgid "Checksum failure; not a valid seed phrase."
 msgstr "Kontrolní součet selhal; neplatný seed"
 
-#: src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/seed_views.py src/seedsigner/views/view.py
 msgid "Done"
 msgstr "Dokončit"
-
-#: src/seedsigner/views/seed_views.py
-msgid ""
-"BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
-"Be sure you know what you're doing!"
-msgstr ""
-"BIP-39. bezpečnostní fráze změní seed, dojde ke změně veřejných klíčů, peněženek etc.\n"
-"Ujistěte se, že víte co děláte!"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Edit passphrase"
@@ -941,10 +963,6 @@ msgid "Export as SeedQR"
 msgstr "Exportovat jako SeedQR"
 
 #: src/seedsigner/views/seed_views.py
-msgid "Privacy Leak!"
-msgstr "Únik soukromých informací!"
-
-#: src/seedsigner/views/seed_views.py
 msgid "Xpub can be used to view all future transactions."
 msgstr "Xpub lze využít k prohlížení všech budoucích transakcí."
 
@@ -977,6 +995,22 @@ msgid "BIP-85 Num Words"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Index Error"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Invalid Child Index"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Child Index must be between 0 and 2^31-1."
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Try Again"
+msgstr "Zkusit znovu"
+
+#: src/seedsigner/views/seed_views.py
 msgid "Verify"
 msgstr "Oveřit"
 
@@ -991,10 +1025,6 @@ msgstr "Ověřit slovo #{}"
 #: src/seedsigner/views/seed_views.py
 msgid "Review Seed Words"
 msgstr "Zkontrolovat slova Seedu"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Try Again"
-msgstr "Zkusit znovu"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Verification Error"
@@ -1037,12 +1067,8 @@ msgid "SeedQR Format"
 msgstr "Formát SeedQR"
 
 #: src/seedsigner/views/seed_views.py
-msgid "SeedQR is your private key!"
-msgstr "SeedQR je Váš privátní klíč!"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Never photograph it or scan it into an online device."
-msgstr "Nikdy jej nefoťte či neskenujte do online zařízení."
+msgid "Never photograph or scan it into a device that connects to the internet."
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Confirm SeedQR"
@@ -1079,14 +1105,6 @@ msgstr "Váš přepsaný SeedQR nebyl načten!"
 #: src/seedsigner/views/seed_views.py
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr "Podpisový typ nebyl načten pomocí této adresy. Prosím upřesněte:"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Load the seed to verify"
-msgstr "Načtěte seed pro ověření"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Select seed to verify"
-msgstr "Vyberte seed pro ověření"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Can't validate a single sig addr without specifying a seed"
@@ -1133,9 +1151,13 @@ msgstr "Rozšířené"
 msgid "Dev Options"
 msgstr "Možnosti vývojáře"
 
-#: src/seedsigner/views/tools_views.py
-msgid " New seed"
-msgstr " Nový seed"
+#: src/seedsigner/views/settings_views.py
+msgid "Persistent Settings enabled. Settings saved to SD card."
+msgstr ""
+
+#: src/seedsigner/views/settings_views.py
+msgid "Settings updated in temporary memory"
+msgstr ""
 
 #: src/seedsigner/views/tools_views.py
 msgid "New seed"
@@ -1196,10 +1218,6 @@ msgstr ""
 #: src/seedsigner/views/tools_views.py
 msgid "Load seed"
 msgstr "Nahrát seed"
-
-#: src/seedsigner/views/tools_views.py
-msgid "Scan wallet descriptor"
-msgstr ""
 
 #. label for addresses where others send us incoming payments
 #: src/seedsigner/views/tools_views.py
@@ -1265,8 +1283,39 @@ msgid "Back to Main Menu"
 msgstr "Návrat do hlavního menu"
 
 #: src/seedsigner/views/view.py
+msgid "Error"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Network Mismatch"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Change Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
 msgid "System Error"
 msgstr "Systémová chyba"
+
+#: src/seedsigner/views/view.py
+msgid "Update Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Option Disabled"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Security Tip"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid ""
+"For maximum security,\n"
+"remove the MicroSD card\n"
+"before continuing."
+msgstr ""
 
 #~ msgid "{}..."
 #~ msgstr "{}..."
@@ -1305,16 +1354,16 @@ msgstr "Systémová chyba"
 #~ msgstr "Btc | Sats hybrid"
 
 #~ msgid "Scan"
-#~ msgstr "Naskenovat"
+#~ msgstr ""
 
 #~ msgid "Seeds"
-#~ msgstr "Seedy"
+#~ msgstr ""
 
 #~ msgid "Restart"
-#~ msgstr "Restartovat"
+#~ msgstr ""
 
 #~ msgid "Power Off"
-#~ msgstr "Vypnout"
+#~ msgstr ""
 
 #~ msgid "Reset / Power"
 #~ msgstr "Možnosti napájení"
@@ -1324,4 +1373,59 @@ msgstr "Systémová chyba"
 
 #~ msgid "Scan a QR code"
 #~ msgstr "Skenovat QR kód"
+
+#~ msgid "Yes "
+#~ msgstr ""
+
+#~ msgid "No "
+#~ msgstr ""
+
+#~ msgid "< back  |  Scan a QR code"
+#~ msgstr ""
+
+#~ msgid "Settings QR"
+#~ msgstr "Nastavení QR"
+
+#~ msgid "Settings imported successfully!"
+#~ msgstr "Nastavení úspěšně načtena!"
+
+#~ msgid "MicroSD removed"
+#~ msgstr ""
+
+#~ msgid "MicroSD inserted"
+#~ msgstr ""
+
+#~ msgid "changes seed:"
+#~ msgstr "změní seed:"
+
+#~ msgid "< back  |  click joystick"
+#~ msgstr "< zpět | stiskni joystick"
+
+#~ msgid "Store Settings on SD card."
+#~ msgstr "Uložit nastavení na SD kartu."
+
+#~ msgid "MicroSD card is removed"
+#~ msgstr ""
+
+#~ msgid "Show passphrase warning"
+#~ msgstr "Ukázovat varování při použití bezpečnostní fráze"
+
+#~ msgid ""
+#~ "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
+#~ "Be sure you know what you're doing!"
+#~ msgstr ""
+#~ "BIP-39. bezpečnostní fráze změní seed, dojde ke změně veřejných klíčů, peněženek etc.\n"
+#~ "Ujistěte se, že víte co děláte!"
+
+#~ msgid "SeedQR is your private key!"
+#~ msgstr "SeedQR je Váš privátní klíč!"
+
+#~ msgid "Never photograph it or scan it into an online device."
+#~ msgstr "Nikdy jej nefoťte či neskenujte do online zařízení."
+
+#~ msgid " New seed"
+#~ msgstr " Nový seed"
+
+#~ msgid "Scan wallet descriptor"
+#~ msgstr ""
 

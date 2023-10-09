@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-22 10:08-0400\n"
+"POT-Creation-Date: 2023-10-09 11:36-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Keith Mukai, 2022\n"
 "Language: ja\n"
@@ -34,12 +34,18 @@ msgstr ""
 msgid "space"
 msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "Yes "
+#: src/seedsigner/gui/toast.py
+msgid ""
+"You can remove\n"
+"the SD card now"
 msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "No "
+#: src/seedsigner/gui/toast.py
+msgid "SD card removed"
+msgstr ""
+
+#: src/seedsigner/gui/toast.py
+msgid "SD card inserted"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
@@ -163,33 +169,24 @@ msgid "Click to approve this transaction"
 msgstr ""
 
 #: src/seedsigner/gui/screens/scan_screens.py
-msgid "< back  |  Scan a QR code"
+msgid "< back  |  "
 msgstr ""
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings QR"
-msgstr "デフォルト設定を保存するためのQR"
-
-#: src/seedsigner/gui/screens/scan_screens.py src/seedsigner/views/view.py
-msgid "Home"
-msgstr "メニュー"
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings imported successfully!"
-msgstr "デフォルト設定を無事インポートできました。"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
 msgid "Success!"
 msgstr "成功しました。"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/view.py
 msgid "OK"
 msgstr "OK"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/psbt_views.py
 msgid "Caution"
 msgstr "注意"
+
+#: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
+msgid "Privacy Leak!"
+msgstr "個人情報漏洩注意！"
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "I Understand"
@@ -221,14 +218,6 @@ msgstr "シャットダウン中"
 msgid "Please wait about 30 seconds before disconnecting power."
 msgstr "電源を外す前に、約30秒待ってください。"
 
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD removed"
-msgstr ""
-
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD inserted"
-msgstr ""
-
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Finalize Seed"
 msgstr "シードを最終化する"
@@ -256,6 +245,10 @@ msgid "Seed Words: {}/{}"
 msgstr "{}/{}のシードワード"
 
 #: src/seedsigner/gui/screens/seed_screens.py
+msgid "BIP-85 Index"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
 msgid "Verify Backup?"
 msgstr "復元用控えを確認する？"
 
@@ -276,6 +269,7 @@ msgstr "xpubをエクスポートする"
 msgid "Xpub Details"
 msgstr "xpubの詳細"
 
+#. Short for "BIP32 Master Fingerprint"
 #. a label for the shortened Key-id of a BIP-32 master HD wallet
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -289,6 +283,7 @@ msgstr "フィンガープリント値"
 msgid "Derivation"
 msgstr "導出パス"
 
+#. Short for "BIP32 Extended Public Key"
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Xpub"
 msgstr "xpub"
@@ -305,7 +300,7 @@ msgstr "パスフレーズを確認する"
 #. Describes the effect of applying a BIP-39 passphrase; it changes the seed's
 #. fingerprint
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "changes seed:"
+msgid "changes fingerprint"
 msgstr ""
 
 #. Refers to the SeedQR type: Standard or Compact
@@ -377,7 +372,27 @@ msgid "Signing Keys"
 msgstr "署名用鍵"
 
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "BIP-85 Index"
+msgid "Review Message"
+msgstr ""
+
+#. Short for "Next step"
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
+msgid "Next"
+msgstr "次"
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "Confirm Address"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/seed_views.py
+msgid "Sign Message"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "derivation path"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
@@ -424,10 +439,15 @@ msgstr ""
 "\n"
 "BTC若しくはライトニングによる寄付をするには、下記リンクを使ってください。"
 
-#. Instructions when taking a picture; "back" should point left.
-#: src/seedsigner/gui/screens/tools_screens.py
-msgid "< back  |  click joystick"
-msgstr "< 戻る  |  ジョイスティックをクリック"
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py
+msgid "Settings QR"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py src/seedsigner/views/view.py
+msgid "Home"
+msgstr "メニュー"
 
 #. Instructions when reviewing an image; "reshoot" must point left, "accept"
 #. must point right
@@ -499,15 +519,6 @@ msgstr ""
 #. a label for a BIP-380-ish Output Descriptor
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Wallet descriptor"
-msgstr ""
-
-#: src/seedsigner/models/settings.py
-#: src/seedsigner/models/settings_definition.py
-msgid "Store Settings on SD card."
-msgstr ""
-
-#: src/seedsigner/models/settings.py
-msgid "MicroSD card is removed"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
@@ -608,6 +619,14 @@ msgid "Regtest"
 msgstr "リグレッションテスト"
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Store Settings on SD card"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
+msgid "Insert SD card to enable"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 #: src/seedsigner/views/seed_views.py
 msgid "Single Sig"
 msgstr "シングルシグ"
@@ -689,6 +708,10 @@ msgid "BIP-85 child seeds"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Message signing"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 msgid "Show privacy warnings"
 msgstr "個人情報漏洩注意の表示"
 
@@ -697,7 +720,7 @@ msgid "Show dire warnings"
 msgstr "深刻危険注意の表示"
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Show passphrase warning"
+msgid "Show QR brightness tips"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
@@ -709,17 +732,14 @@ msgid "QR background color"
 msgstr "QR背景色"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Scan a seed"
 msgstr "シードを読み取る"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 12-word seed"
 msgstr ""
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 24-word seed"
 msgstr ""
 
@@ -739,7 +759,7 @@ msgstr "未対応のスクリプトの種類！"
 msgid "PSBT has unsupported input script type, please verify your change addresses."
 msgstr "PSBTに未対応のスクリプトの種類があります。お釣り用アドレスをご確認ください。"
 
-#: src/seedsigner/views/psbt_views.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/view.py
 msgid "Continue"
 msgstr "続く"
 
@@ -763,12 +783,6 @@ msgstr "送付する予定"
 #: src/seedsigner/views/psbt_views.py
 msgid "Next Recipient"
 msgstr "次の宛先"
-
-#. Short for "Next step"
-#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
-msgid "Next"
-msgstr "次"
 
 #. The amount you're receiving back from the transaction
 #: src/seedsigner/views/psbt_views.py
@@ -822,6 +836,10 @@ msgid "Approve PSBT"
 msgstr "PSBTを認可する"
 
 #: src/seedsigner/views/psbt_views.py
+msgid "Select Diff Seed"
+msgstr "違うシードを選択"
+
+#: src/seedsigner/views/psbt_views.py
 msgid "PSBT Error"
 msgstr "PSBTのエラーが発生した！"
 
@@ -832,10 +850,6 @@ msgstr "署名できなかった！"
 #: src/seedsigner/views/psbt_views.py
 msgid "Signing with this seed did not add a valid signature."
 msgstr "このシードで署名しても、有効な署名を付加できなかった！"
-
-#: src/seedsigner/views/psbt_views.py
-msgid "Select Diff Seed"
-msgstr "違うシードを選択"
 
 #. This is on the opening splash screen, displayed above the HRF logo
 #: src/seedsigner/views/screensaver.py
@@ -849,6 +863,22 @@ msgstr "シードを入力"
 #: src/seedsigner/views/seed_views.py
 msgid "In-Memory Seeds"
 msgstr "揮発性メモリー内のシード"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to verify"
+msgstr "シードを入力して確認する"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to verify"
+msgstr "シードを選択して確認する"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to sign with"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to sign with"
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Scan a SeedQR"
@@ -883,15 +913,9 @@ msgstr "シードが無効です！"
 msgid "Checksum failure; not a valid seed phrase."
 msgstr "チェックサム整合性無し、シードが無効です！"
 
-#: src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/seed_views.py src/seedsigner/views/view.py
 msgid "Done"
 msgstr "終了"
-
-#: src/seedsigner/views/seed_views.py
-msgid ""
-"BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
-"Be sure you know what you're doing!"
-msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Edit passphrase"
@@ -934,10 +958,6 @@ msgid "Export as SeedQR"
 msgstr "シードQRとしてエクスポート"
 
 #: src/seedsigner/views/seed_views.py
-msgid "Privacy Leak!"
-msgstr "個人情報漏洩注意！"
-
-#: src/seedsigner/views/seed_views.py
 msgid "Xpub can be used to view all future transactions."
 msgstr "xpubを知ってれば、今後の全ての取り引きを監視できる！"
 
@@ -970,6 +990,22 @@ msgid "BIP-85 Num Words"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Index Error"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Invalid Child Index"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Child Index must be between 0 and 2^31-1."
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Try Again"
+msgstr "もう一度やってみてください。"
+
+#: src/seedsigner/views/seed_views.py
 msgid "Verify"
 msgstr "確認する"
 
@@ -984,10 +1020,6 @@ msgstr "{}番目のワードを確認"
 #: src/seedsigner/views/seed_views.py
 msgid "Review Seed Words"
 msgstr "シードワードを確認"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Try Again"
-msgstr "もう一度やってみてください。"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Verification Error"
@@ -1030,12 +1062,8 @@ msgid "SeedQR Format"
 msgstr "シードQRの形式"
 
 #: src/seedsigner/views/seed_views.py
-msgid "SeedQR is your private key!"
-msgstr "シードQRとは、秘密鍵のことです！"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Never photograph it or scan it into an online device."
-msgstr "写真を撮ったり、インタネットに接続可能な機器等で読み取ったりしないよう、ご注意ください！"
+msgid "Never photograph or scan it into a device that connects to the internet."
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Confirm SeedQR"
@@ -1072,14 +1100,6 @@ msgstr "書き写されたシードQRの控えを読み取れなかった！"
 #: src/seedsigner/views/seed_views.py
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr "このアドレスから署名の種類を自動検出できなかったため、署名の種類を指定してください。"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Load the seed to verify"
-msgstr "シードを入力して確認する"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Select seed to verify"
-msgstr "シードを選択して確認する"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Can't validate a single sig addr without specifying a seed"
@@ -1126,9 +1146,13 @@ msgstr "詳細設定"
 msgid "Dev Options"
 msgstr "開発者向け設定"
 
-#: src/seedsigner/views/tools_views.py
-msgid " New seed"
-msgstr "新しいシード"
+#: src/seedsigner/views/settings_views.py
+msgid "Persistent Settings enabled. Settings saved to SD card."
+msgstr ""
+
+#: src/seedsigner/views/settings_views.py
+msgid "Settings updated in temporary memory"
+msgstr ""
 
 #: src/seedsigner/views/tools_views.py
 msgid "New seed"
@@ -1189,10 +1213,6 @@ msgstr ""
 #: src/seedsigner/views/tools_views.py
 msgid "Load seed"
 msgstr "シードを入力"
-
-#: src/seedsigner/views/tools_views.py
-msgid "Scan wallet descriptor"
-msgstr ""
 
 #. label for addresses where others send us incoming payments
 #: src/seedsigner/views/tools_views.py
@@ -1258,8 +1278,39 @@ msgid "Back to Main Menu"
 msgstr "メニューへ戻る"
 
 #: src/seedsigner/views/view.py
+msgid "Error"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Network Mismatch"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Change Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
 msgid "System Error"
 msgstr "システムエラー"
+
+#: src/seedsigner/views/view.py
+msgid "Update Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Option Disabled"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Security Tip"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid ""
+"For maximum security,\n"
+"remove the MicroSD card\n"
+"before continuing."
+msgstr ""
 
 #~ msgid "{}..."
 #~ msgstr "{}..."
@@ -1304,16 +1355,16 @@ msgstr "システムエラー"
 #~ msgstr "btc | sat の切り替え表示"
 
 #~ msgid "Scan"
-#~ msgstr "読み取る"
+#~ msgstr ""
 
 #~ msgid "Seeds"
-#~ msgstr "シードを作る"
+#~ msgstr ""
 
 #~ msgid "Restart"
-#~ msgstr "再起動"
+#~ msgstr ""
 
 #~ msgid "Power Off"
-#~ msgstr "シャットダウン"
+#~ msgstr ""
 
 #~ msgid "Reset / Power"
 #~ msgstr "再起動・シャットダウン"
@@ -1323,4 +1374,57 @@ msgstr "システムエラー"
 
 #~ msgid "Scan a QR code"
 #~ msgstr "QRコードを読み取る"
+
+#~ msgid "Yes "
+#~ msgstr ""
+
+#~ msgid "No "
+#~ msgstr ""
+
+#~ msgid "< back  |  Scan a QR code"
+#~ msgstr ""
+
+#~ msgid "Settings QR"
+#~ msgstr "デフォルト設定を保存するためのQR"
+
+#~ msgid "Settings imported successfully!"
+#~ msgstr "デフォルト設定を無事インポートできました。"
+
+#~ msgid "MicroSD removed"
+#~ msgstr ""
+
+#~ msgid "MicroSD inserted"
+#~ msgstr ""
+
+#~ msgid "changes seed:"
+#~ msgstr ""
+
+#~ msgid "< back  |  click joystick"
+#~ msgstr "< 戻る  |  ジョイスティックをクリック"
+
+#~ msgid "Store Settings on SD card."
+#~ msgstr ""
+
+#~ msgid "MicroSD card is removed"
+#~ msgstr ""
+
+#~ msgid "Show passphrase warning"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
+#~ "Be sure you know what you're doing!"
+#~ msgstr ""
+
+#~ msgid "SeedQR is your private key!"
+#~ msgstr "シードQRとは、秘密鍵のことです！"
+
+#~ msgid "Never photograph it or scan it into an online device."
+#~ msgstr "写真を撮ったり、インタネットに接続可能な機器等で読み取ったりしないよう、ご注意ください！"
+
+#~ msgid " New seed"
+#~ msgstr "新しいシード"
+
+#~ msgid "Scan wallet descriptor"
+#~ msgstr ""
 

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-22 10:08-0400\n"
+"POT-Creation-Date: 2023-10-09 11:36-0400\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Bitcoin Hornet, 2022\n"
 "Language: es\n"
@@ -34,13 +34,19 @@ msgstr "supr"
 msgid "space"
 msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "Yes "
-msgstr "Si"
+#: src/seedsigner/gui/toast.py
+msgid ""
+"You can remove\n"
+"the SD card now"
+msgstr ""
 
-#: src/seedsigner/gui/renderer.py
-msgid "No "
-msgstr "No"
+#: src/seedsigner/gui/toast.py
+msgid "SD card removed"
+msgstr ""
+
+#: src/seedsigner/gui/toast.py
+msgid "SD card inserted"
+msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
 msgid "Review PSBT"
@@ -167,33 +173,24 @@ msgid "Click to approve this transaction"
 msgstr "Clic para aprobar esta transacción"
 
 #: src/seedsigner/gui/screens/scan_screens.py
-msgid "< back  |  Scan a QR code"
+msgid "< back  |  "
 msgstr ""
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings QR"
-msgstr "Ajustes QR"
-
-#: src/seedsigner/gui/screens/scan_screens.py src/seedsigner/views/view.py
-msgid "Home"
-msgstr "Principal"
-
-#: src/seedsigner/gui/screens/scan_screens.py
-msgid "Settings imported successfully!"
-msgstr "¡Ajustes importados exitosamente!"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
 msgid "Success!"
 msgstr "¡Éxito!"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/view.py
 msgid "OK"
 msgstr "OK"
 
 #: src/seedsigner/gui/screens/screen.py src/seedsigner/views/psbt_views.py
 msgid "Caution"
 msgstr "Precaución"
+
+#: src/seedsigner/gui/screens/screen.py src/seedsigner/views/seed_views.py
+msgid "Privacy Leak!"
+msgstr "¡Privacidad comprometida!"
 
 #: src/seedsigner/gui/screens/screen.py
 msgid "I Understand"
@@ -225,14 +222,6 @@ msgstr "Apagándose"
 msgid "Please wait about 30 seconds before disconnecting power."
 msgstr "Por favor espere aproximadamente 30 segundos antes de desconectar la fuente de alimentación."
 
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD removed"
-msgstr "MicroSD sacada"
-
-#: src/seedsigner/gui/screens/screen.py
-msgid "MicroSD inserted"
-msgstr "MicroSD insertada"
-
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Finalize Seed"
 msgstr "Completar Semilla"
@@ -260,6 +249,10 @@ msgid "Seed Words: {}/{}"
 msgstr "Palabras Claves: {}/{}"
 
 #: src/seedsigner/gui/screens/seed_screens.py
+msgid "BIP-85 Index"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
 msgid "Verify Backup?"
 msgstr "¿Verificar Copia de Seguridad?"
 
@@ -280,6 +273,7 @@ msgstr "Exportar Xpub"
 msgid "Xpub Details"
 msgstr "Detalles de la Xpub"
 
+#. Short for "BIP32 Master Fingerprint"
 #. a label for the shortened Key-id of a BIP-32 master HD wallet
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/gui/screens/tools_screens.py
@@ -293,6 +287,7 @@ msgstr "Huella digital"
 msgid "Derivation"
 msgstr "Derivación"
 
+#. Short for "BIP32 Extended Public Key"
 #: src/seedsigner/gui/screens/seed_screens.py
 msgid "Xpub"
 msgstr "Xpub"
@@ -309,8 +304,8 @@ msgstr "Verificar Frase de Contraseña"
 #. Describes the effect of applying a BIP-39 passphrase; it changes the seed's
 #. fingerprint
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "changes seed:"
-msgstr "cambia la semilla:"
+msgid "changes fingerprint"
+msgstr ""
 
 #. Refers to the SeedQR type: Standard or Compact
 #: src/seedsigner/gui/screens/seed_screens.py
@@ -381,7 +376,27 @@ msgid "Signing Keys"
 msgstr "Llaves de firmado"
 
 #: src/seedsigner/gui/screens/seed_screens.py
-msgid "BIP-85 Index"
+msgid "Review Message"
+msgstr ""
+
+#. Short for "Next step"
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
+msgid "Next"
+msgstr "Próximo"
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "Confirm Address"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+#: src/seedsigner/views/seed_views.py
+msgid "Sign Message"
+msgstr ""
+
+#: src/seedsigner/gui/screens/seed_screens.py
+msgid "derivation path"
 msgstr ""
 
 #: src/seedsigner/gui/screens/settings_screens.py
@@ -428,10 +443,15 @@ msgstr ""
 "\n"
 "Donar en cadena o por billetera Lightning:"
 
-#. Instructions when taking a picture; "back" should point left.
-#: src/seedsigner/gui/screens/tools_screens.py
-msgid "< back  |  click joystick"
-msgstr "retroceder | clic joystick"
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py
+msgid "Settings QR"
+msgstr ""
+
+#: src/seedsigner/gui/screens/settings_screens.py
+#: src/seedsigner/views/settings_views.py src/seedsigner/views/view.py
+msgid "Home"
+msgstr "Principal"
 
 #. Instructions when reviewing an image; "reshoot" must point left, "accept"
 #. must point right
@@ -503,15 +523,6 @@ msgstr ""
 #. a label for a BIP-380-ish Output Descriptor
 #: src/seedsigner/gui/screens/tools_screens.py
 msgid "Wallet descriptor"
-msgstr ""
-
-#: src/seedsigner/models/settings.py
-#: src/seedsigner/models/settings_definition.py
-msgid "Store Settings on SD card."
-msgstr "Guardar configuraciones en la tarjeta SD."
-
-#: src/seedsigner/models/settings.py
-msgid "MicroSD card is removed"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
@@ -612,6 +623,14 @@ msgid "Regtest"
 msgstr "Regtest"
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Store Settings on SD card"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
+msgid "Insert SD card to enable"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 #: src/seedsigner/views/seed_views.py
 msgid "Single Sig"
 msgstr "Firma simple"
@@ -693,6 +712,10 @@ msgid "BIP-85 child seeds"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
+msgid "Message signing"
+msgstr ""
+
+#: src/seedsigner/models/settings_definition.py
 msgid "Show privacy warnings"
 msgstr "Mostrar alertas de privacidad"
 
@@ -701,8 +724,8 @@ msgid "Show dire warnings"
 msgstr "Mostrar advertencias graves"
 
 #: src/seedsigner/models/settings_definition.py
-msgid "Show passphrase warning"
-msgstr "Mostrar advertencia de frase de contraseña"
+msgid "Show QR brightness tips"
+msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
 msgid "Show partner logos"
@@ -713,17 +736,14 @@ msgid "QR background color"
 msgstr "Color de fondo del QR"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Scan a seed"
 msgstr "Escanear una semilla"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 12-word seed"
 msgstr "Entrar semilla de 12 palabras"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
 msgid "Enter 24-word seed"
 msgstr "Entrar semilla de 24 palabras"
 
@@ -745,7 +765,7 @@ msgstr ""
 "Tipo de script PSBT no soportado.\n"
 "Por favor verificar su dirección de cambio."
 
-#: src/seedsigner/views/psbt_views.py
+#: src/seedsigner/views/psbt_views.py src/seedsigner/views/view.py
 msgid "Continue"
 msgstr "Continuar"
 
@@ -769,12 +789,6 @@ msgstr "Se Enviará"
 #: src/seedsigner/views/psbt_views.py
 msgid "Next Recipient"
 msgstr "Próximo Destinatario"
-
-#. Short for "Next step"
-#: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
-#: src/seedsigner/views/tools_views.py
-msgid "Next"
-msgstr "Próximo"
 
 #. The amount you're receiving back from the transaction
 #: src/seedsigner/views/psbt_views.py
@@ -828,6 +842,10 @@ msgid "Approve PSBT"
 msgstr "Aprobar PSBT"
 
 #: src/seedsigner/views/psbt_views.py
+msgid "Select Diff Seed"
+msgstr "Seleccionar Diferente Semilla"
+
+#: src/seedsigner/views/psbt_views.py
 msgid "PSBT Error"
 msgstr "Error en el PSBT"
 
@@ -838,10 +856,6 @@ msgstr "Fracaso Firmando"
 #: src/seedsigner/views/psbt_views.py
 msgid "Signing with this seed did not add a valid signature."
 msgstr "Firmando con esta semilla no produjo una firma válida."
-
-#: src/seedsigner/views/psbt_views.py
-msgid "Select Diff Seed"
-msgstr "Seleccionar Diferente Semilla"
 
 #. This is on the opening splash screen, displayed above the HRF logo
 #: src/seedsigner/views/screensaver.py
@@ -855,6 +869,22 @@ msgstr "Carga una semilla"
 #: src/seedsigner/views/seed_views.py
 msgid "In-Memory Seeds"
 msgstr "Semillas en Memoria"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to verify"
+msgstr "Cargar la semilla para verificar"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to verify"
+msgstr "Seleccione semilla para verificar"
+
+#: src/seedsigner/views/seed_views.py
+msgid "Load the seed to sign with"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Select seed to sign with"
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Scan a SeedQR"
@@ -889,17 +919,9 @@ msgstr "¡Frase Mnemónica inválida!"
 msgid "Checksum failure; not a valid seed phrase."
 msgstr "Fallo de suma de comprobación; la semilla no es válida."
 
-#: src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/seed_views.py src/seedsigner/views/view.py
 msgid "Done"
 msgstr "Finalizado"
-
-#: src/seedsigner/views/seed_views.py
-msgid ""
-"BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
-"Be sure you know what you're doing!"
-msgstr ""
-"Frases de contraseña BIP-39 cambian la semilla, resultando en nuevos xpubs, billeteras, etc.\n"
-"¡Asegúrate de saber lo que estás haciendo!"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Edit passphrase"
@@ -942,10 +964,6 @@ msgid "Export as SeedQR"
 msgstr "Exportar como SeedQR"
 
 #: src/seedsigner/views/seed_views.py
-msgid "Privacy Leak!"
-msgstr "¡Privacidad comprometida!"
-
-#: src/seedsigner/views/seed_views.py
 msgid "Xpub can be used to view all future transactions."
 msgstr "El Xpub puede ser usado para ver todas las transacciones futuras."
 
@@ -978,6 +996,22 @@ msgid "BIP-85 Num Words"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Index Error"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Invalid Child Index"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "BIP-85 Child Index must be between 0 and 2^31-1."
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
+msgid "Try Again"
+msgstr "Volver a Intentarlo"
+
+#: src/seedsigner/views/seed_views.py
 msgid "Verify"
 msgstr "Verificar"
 
@@ -992,10 +1026,6 @@ msgstr "Verificar Palabra #{}"
 #: src/seedsigner/views/seed_views.py
 msgid "Review Seed Words"
 msgstr "Revisar Palabras Clave"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Try Again"
-msgstr "Volver a Intentarlo"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Verification Error"
@@ -1038,12 +1068,8 @@ msgid "SeedQR Format"
 msgstr "Formato SeedQR"
 
 #: src/seedsigner/views/seed_views.py
-msgid "SeedQR is your private key!"
-msgstr "¡SeedQR es tu clave privada/semilla!"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Never photograph it or scan it into an online device."
-msgstr "Nunca fotografíar o escanear en un dispositivo en línea."
+msgid "Never photograph or scan it into a device that connects to the internet."
+msgstr ""
 
 #: src/seedsigner/views/seed_views.py
 msgid "Confirm SeedQR"
@@ -1080,14 +1106,6 @@ msgstr "¡El transcrito del SeedQR no pudo ser leído!"
 #: src/seedsigner/views/seed_views.py
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr "El tipo de firma no puede ser autodetectado para esta dirección. Por favor especificar:"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Load the seed to verify"
-msgstr "Cargar la semilla para verificar"
-
-#: src/seedsigner/views/seed_views.py
-msgid "Select seed to verify"
-msgstr "Seleccione semilla para verificar"
 
 #: src/seedsigner/views/seed_views.py
 msgid "Can't validate a single sig addr without specifying a seed"
@@ -1134,9 +1152,13 @@ msgstr "Avanzado"
 msgid "Dev Options"
 msgstr "Opciones Desarrollador"
 
-#: src/seedsigner/views/tools_views.py
-msgid " New seed"
-msgstr "Nueva semilla"
+#: src/seedsigner/views/settings_views.py
+msgid "Persistent Settings enabled. Settings saved to SD card."
+msgstr ""
+
+#: src/seedsigner/views/settings_views.py
+msgid "Settings updated in temporary memory"
+msgstr ""
 
 #: src/seedsigner/views/tools_views.py
 msgid "New seed"
@@ -1197,10 +1219,6 @@ msgstr ""
 #: src/seedsigner/views/tools_views.py
 msgid "Load seed"
 msgstr "Cargar semilla"
-
-#: src/seedsigner/views/tools_views.py
-msgid "Scan wallet descriptor"
-msgstr ""
 
 #. label for addresses where others send us incoming payments
 #: src/seedsigner/views/tools_views.py
@@ -1266,8 +1284,39 @@ msgid "Back to Main Menu"
 msgstr "Volver al menú principal"
 
 #: src/seedsigner/views/view.py
+msgid "Error"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Network Mismatch"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Change Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
 msgid "System Error"
 msgstr "Error del Sistema"
+
+#: src/seedsigner/views/view.py
+msgid "Update Setting"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Option Disabled"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid "Security Tip"
+msgstr ""
+
+#: src/seedsigner/views/view.py
+msgid ""
+"For maximum security,\n"
+"remove the MicroSD card\n"
+"before continuing."
+msgstr ""
 
 #~ msgid "{}..."
 #~ msgstr "{}..."
@@ -1312,16 +1361,16 @@ msgstr "Error del Sistema"
 #~ msgstr "Btc | Sats Híbrido"
 
 #~ msgid "Scan"
-#~ msgstr "Escanear"
+#~ msgstr ""
 
 #~ msgid "Seeds"
-#~ msgstr "Semillas"
+#~ msgstr ""
 
 #~ msgid "Restart"
-#~ msgstr "Reiniciar"
+#~ msgstr ""
 
 #~ msgid "Power Off"
-#~ msgstr "Apagar"
+#~ msgstr ""
 
 #~ msgid "Reset / Power"
 #~ msgstr "Reiniciar / Encender"
@@ -1331,4 +1380,59 @@ msgstr "Error del Sistema"
 
 #~ msgid "Scan a QR code"
 #~ msgstr "Escanear un código QR"
+
+#~ msgid "Yes "
+#~ msgstr "Si"
+
+#~ msgid "No "
+#~ msgstr "No"
+
+#~ msgid "< back  |  Scan a QR code"
+#~ msgstr ""
+
+#~ msgid "Settings QR"
+#~ msgstr "Ajustes QR"
+
+#~ msgid "Settings imported successfully!"
+#~ msgstr "¡Ajustes importados exitosamente!"
+
+#~ msgid "MicroSD removed"
+#~ msgstr "MicroSD sacada"
+
+#~ msgid "MicroSD inserted"
+#~ msgstr "MicroSD insertada"
+
+#~ msgid "changes seed:"
+#~ msgstr "cambia la semilla:"
+
+#~ msgid "< back  |  click joystick"
+#~ msgstr "retroceder | clic joystick"
+
+#~ msgid "Store Settings on SD card."
+#~ msgstr "Guardar configuraciones en la tarjeta SD."
+
+#~ msgid "MicroSD card is removed"
+#~ msgstr ""
+
+#~ msgid "Show passphrase warning"
+#~ msgstr "Mostrar advertencia de frase de contraseña"
+
+#~ msgid ""
+#~ "BIP-39 passphrase changes your seed, resulting in new xpubs, wallets, etc.\n"
+#~ "Be sure you know what you're doing!"
+#~ msgstr ""
+#~ "Frases de contraseña BIP-39 cambian la semilla, resultando en nuevos xpubs, billeteras, etc.\n"
+#~ "¡Asegúrate de saber lo que estás haciendo!"
+
+#~ msgid "SeedQR is your private key!"
+#~ msgstr "¡SeedQR es tu clave privada/semilla!"
+
+#~ msgid "Never photograph it or scan it into an online device."
+#~ msgstr "Nunca fotografíar o escanear en un dispositivo en línea."
+
+#~ msgid " New seed"
+#~ msgstr "Nueva semilla"
+
+#~ msgid "Scan wallet descriptor"
+#~ msgstr ""
 
