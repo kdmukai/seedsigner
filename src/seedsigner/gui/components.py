@@ -444,7 +444,7 @@ class TextArea(BaseComponent):
         else:
             if total_text_height > self.height:
                 if not self.allow_text_overflow:
-                    raise TextDoesNotFitException(f"Text cannot fit in target rect with this font/size\n\ttotal_text_height: {total_text_height} | self.height: {self.height}")
+                    pass #raise TextDoesNotFitException(f"Text cannot fit in target rect with this font/size\n\ttotal_text_height: {total_text_height} | self.height: {self.height}")
                 else:
                     # Just let it render off the edge, but preserve the top portion
                     pass

@@ -235,14 +235,14 @@ def test_generate_screenshots(target_locale):
         "Misc Error Views": [
             NotYetImplementedView,
             (UnhandledExceptionView, dict(error=UnhandledExceptionViewFood)),
-            #NetworkMismatchErrorView,
-            #(OptionDisabledView, dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)),
-            #(ErrorView, dict(
-            #    title="Error",
-            #    status_headline="Unknown QR Type",
-            #    text="QRCode is invalid or is a data format not yet supported.",
-            #    button_text="Back",
-            #)),
+            NetworkMismatchErrorView,
+            (OptionDisabledView, dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)),
+            (ErrorView, dict(
+                title="Error",
+                status_headline="Unknown QR Type",
+                text="QRCode is invalid or is a data format not yet supported.",
+                button_text="Back",
+            )),
         ]
     }
 
@@ -271,6 +271,7 @@ def test_generate_screenshots(target_locale):
         finally:
             if toast_thread:
                 toast_thread.stop()
+                time.sleep(0.1) #jdlcdl
 
 
     locales = []
@@ -283,6 +284,7 @@ def test_generate_screenshots(target_locale):
         raise Exception(f"Invalid locale: {target_locale}")
 
     for locale, display_name in locales:
+        print(f"\nLooping for locale: {locale}...")
         Settings.get_instance().set_value(SettingsConstants.SETTING__LOCALE, value=locale)
         screenshot_renderer.set_screenshot_path(os.path.join(screenshot_root, locale))
 
@@ -340,6 +342,8 @@ def test_generate_screenshots(target_locale):
 
         if locale != "en":
             shutil.copy(translated_messages_path, os.path.join(screenshot_root, locale, "messages.po"))
+
+        print(f"Done with locale: {locale}.")
         
 
     # Write the main README; ensure it writes all locales, not just the one that may
