@@ -462,7 +462,7 @@ class SeedOptionsView(View):
             return Destination(SeedSignMessageConfirmMessageView, skip_current_view=True)
 
         if self.controller.psbt:
-            if PSBTParser.has_matching_input_fingerprint(self.controller.psbt, self.seed, network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)):
+            if PSBTParser.has_matching_input_fingerprint(self.controller.psbt, self.seed):
                 if self.controller.resume_main_flow and self.controller.resume_main_flow == Controller.FLOW__PSBT:
                     # Re-route us directly back to the start of the PSBT flow
                     self.controller.resume_main_flow = None
