@@ -2,10 +2,8 @@ import embit
 import os
 import sys
 import time
-from mock import Mock, patch, MagicMock
+from mock import Mock, MagicMock
 from seedsigner.helpers import embit_utils
-
-from seedsigner.models.settings import Settings
 
 
 # Prevent importing modules w/Raspi hardware dependencies.
@@ -22,8 +20,6 @@ sys.modules['seedsigner.hardware.microsd'] = MagicMock()
 from seedsigner.controller import Controller
 from seedsigner.gui.renderer import Renderer
 from seedsigner.gui.toast import BaseToastOverlayManagerThread, RemoveSDCardToastManagerThread, SDCardStateChangeToastManagerThread
-from seedsigner.hardware.buttons import HardwareButtons
-from seedsigner.hardware.camera import Camera
 from seedsigner.hardware.microsd import MicroSD
 from seedsigner.models.decode_qr import DecodeQR
 from seedsigner.models.qr_type import QRType
@@ -33,7 +29,7 @@ from seedsigner.views import (MainMenuView, PowerOptionsView, RestartView, NotYe
     psbt_views, seed_views, settings_views, tools_views)
 from seedsigner.views.view import ErrorView, NetworkMismatchErrorView, OptionDisabledView, PowerOffView, View
 
-from .utils import ScreenshotComplete, ScreenshotRenderer
+from utils import ScreenshotComplete, ScreenshotRenderer
 
 
 
@@ -261,7 +257,6 @@ def test_generate_screenshots(target_locale):
         finally:
             if toast_thread:
                 toast_thread.stop()
-
 
     for section_name, screenshot_list in screenshot_sections.items():
         subdir = section_name.lower().replace(" ", "_")

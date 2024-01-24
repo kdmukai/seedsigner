@@ -142,6 +142,7 @@ class DecodeQR:
             data = self.get_data_psbt()
             if data != None:
                 try:
+                    print(data)
                     return psbt.PSBT.parse(data)
                 except:
                     return None

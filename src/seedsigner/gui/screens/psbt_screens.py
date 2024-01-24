@@ -18,6 +18,8 @@ class PSBTOverviewScreen(ButtonListScreen):
     change_amount: int = 0
     fee_amount: int = 0
     num_inputs: int = 0
+    num_external_inputs: int = 0
+    collab_input_label: str = "payjoin"
     num_self_transfer_outputs: int = 0
     num_change_outputs: int = 0
     destination_addresses: List[str] = None
@@ -94,6 +96,22 @@ class PSBTOverviewScreen(ButtonListScreen):
         else:
             for i in range(0, self.num_inputs):
                 inputs_column.append(f"input {i+1}")
+
+        # TODO: Handle logic for:
+        # * Lots of inputs + cooperative input
+        # * Lots of inputs + lots of cooperative inputs
+        # * < 5 inputs + lots of cooperative inputs
+        if self.num_external_inputs == 1:
+            inputs_column.append(f"1 {self.collab_input_label}")
+        elif self.num_external_inputs > 5:
+            inputs_column.append(f"{self.collab_input_label} 1")
+            inputs_column.append(f"{self.collab_input_label} 2")
+            inputs_column.append("[ ... ]")
+            inputs_column.append(f"{self.collab_input_label} {self.num_external_inputs-1}")
+            inputs_column.append(f"{self.collab_input_label} {self.num_external_inputs}")
+        else:
+            for i in range(0, self.num_external_inputs):
+                inputs_column.append(f"{self.collab_input_label} {i+1}")
 
         max_inputs_text_width = 0
         for input in inputs_column:
@@ -175,7 +193,7 @@ class PSBTOverviewScreen(ButtonListScreen):
 
         # Position each input row
         num_rendered_inputs = len(inputs_column)
-        if self.num_inputs == 1:
+        if num_rendered_inputs == 1:
             inputs_y = vertical_center - int(chart_text_height/2)
             inputs_y_spacing = 0  # Not used
         else:
@@ -191,7 +209,7 @@ class PSBTOverviewScreen(ButtonListScreen):
         inputs_conjunction_x = center_bar_x
         inputs_x = GUIConstants.EDGE_PADDING*ssf
 
-        input_curves = []
+        input_curves: list[tuple[list, bool]] = []
         for input in inputs_column:
             # Calculate right-justified input display
             tw, th = font.getsize(input)
@@ -242,7 +260,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                     curve_steps
                 )
 
-            input_curves.append(bezier_points)
+            input_curves.append((bezier_points, self.collab_input_label in input))
 
             prev_pt = bezier_points[0]
             for pt in bezier_points[1:]:
@@ -358,25 +376,26 @@ class PSBTOverviewScreen(ButtonListScreen):
 
 
     class TxExplorerAnimationThread(BaseThread):
-        def __init__(self, inputs, outputs, supersampling_factor, offset_y, renderer: Renderer):
+        def __init__(self, inputs: list[tuple[list, bool]], outputs, supersampling_factor, offset_y, renderer: Renderer):
             super().__init__()
 
             # Translate the point coords into renderer space
             ssf = supersampling_factor
-            self.inputs = [[(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve] for curve in inputs]
+            self.inputs = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_collab_input) for curve, is_collab_input in inputs]
             self.outputs = [[(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve] for curve in outputs]
             self.renderer = renderer
 
 
         def run(self):
             pulse_color = GUIConstants.ACCENT_COLOR
+            collab_input_pulse_color = "yellow"
             reset_color = "#666"
             line_width = 3
 
             pulses = []
 
             # The center bar needs to be segmented to support animation across it
-            start_pt = self.inputs[0][-1]
+            start_pt = self.inputs[0][0][-1]
             end_pt = self.outputs[0][0]
             if start_pt == end_pt:
                 # In single input the center bar width can be zeroed out.
@@ -392,13 +411,18 @@ class PSBTOverviewScreen(ButtonListScreen):
                 ]
 
             def draw_line_segment(curves, i, j, color):
-                # print(f"draw: {curves[0][i]} to {curves[0][j]}")
                 for points in curves:
+                    cur_color = color
+                    if type(points) == tuple:
+                        is_collab_input = points[1]
+                        if is_collab_input and color == pulse_color:
+                            cur_color = collab_input_pulse_color
+                        points = points[0]
                     pt1 = points[i]
                     pt2 = points[j]
                     self.renderer.draw.line(
                         (pt1[0], pt1[1], pt2[0], pt2[1]),
-                        fill=color,
+                        fill=cur_color,
                         width=line_width
                     )
 
@@ -419,16 +443,19 @@ class PSBTOverviewScreen(ButtonListScreen):
                     for pulse_num, pulse in enumerate(pulses):
                         i = pulse[0]
                         color = pulse[1]
-                        if i < len(self.inputs[0]) - 1:
+                        if i < len(self.inputs[0][0]) - 1:
                             # We're in the input curves
                             draw_line_segment(self.inputs, i, i+1, color)
-                        elif i < len(self.inputs[0]) + len(center_bar_pts) - 2:
+
+                        elif i < len(self.inputs[0][0]) + len(center_bar_pts) - 2:
                             # We're in the center bar
-                            index = i - len(self.inputs[0]) + 1
+                            index = i - len(self.inputs[0][0]) + 1
                             draw_line_segment([center_bar_pts], index, index+1, color)
-                        elif i < len(self.inputs[0]) + len(center_bar_pts) - 2 + len(self.outputs[0]) - 1:
-                            index = i - (len(self.inputs[0]) + len(center_bar_pts) - 2)
+
+                        elif i < len(self.inputs[0][0]) + len(center_bar_pts) - 2 + len(self.outputs[0]) - 1:
+                            index = i - (len(self.inputs[0][0]) + len(center_bar_pts) - 2)
                             draw_line_segment(self.outputs, index, index+1, color)
+
                         else:
                             # This pulse is done
                             del pulses[pulse_num]

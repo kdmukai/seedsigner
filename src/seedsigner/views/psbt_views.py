@@ -103,7 +103,7 @@ class PSBTOverviewView(View):
 
 
     def run(self):
-        psbt_parser = self.controller.psbt_parser
+        psbt_parser: PSBTParser = self.controller.psbt_parser
 
         change_data = psbt_parser.change_data
         """
@@ -119,7 +119,6 @@ class PSBTOverviewView(View):
         num_change_outputs = 0
         num_self_transfer_outputs = 0
         for change_output in change_data:
-            # print(f"""{change_output["derivation_path"][0]}""")
             if change_output["derivation_path"][0].split("/")[-2] == "1":
                 num_change_outputs += 1
             else:
@@ -136,6 +135,7 @@ class PSBTOverviewView(View):
             change_amount=psbt_parser.change_amount,
             fee_amount=psbt_parser.fee_amount,
             num_inputs=psbt_parser.num_inputs,
+            num_external_inputs=psbt_parser.num_external_inputs,
             num_self_transfer_outputs=num_self_transfer_outputs,
             num_change_outputs=num_change_outputs,
             destination_addresses=psbt_parser.destination_addresses
