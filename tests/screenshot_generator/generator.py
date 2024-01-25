@@ -1,10 +1,14 @@
+from binascii import a2b_base64
 import embit
 import os
 import sys
 import time
-from mock import Mock, MagicMock
-from seedsigner.helpers import embit_utils
 
+from embit.psbt import PSBT
+from mock import Mock, MagicMock
+from PIL import Image, ImageDraw
+
+from seedsigner.models.psbt_parser import PSBTParser
 
 # Prevent importing modules w/Raspi hardware dependencies.
 # These must precede any SeedSigner imports.
@@ -21,6 +25,7 @@ from seedsigner.controller import Controller
 from seedsigner.gui.renderer import Renderer
 from seedsigner.gui.toast import BaseToastOverlayManagerThread, RemoveSDCardToastManagerThread, SDCardStateChangeToastManagerThread
 from seedsigner.hardware.microsd import MicroSD
+from seedsigner.helpers import embit_utils
 from seedsigner.models.decode_qr import DecodeQR
 from seedsigner.models.qr_type import QRType
 from seedsigner.models.seed import Seed
@@ -29,7 +34,7 @@ from seedsigner.views import (MainMenuView, PowerOptionsView, RestartView, NotYe
     psbt_views, seed_views, settings_views, tools_views)
 from seedsigner.views.view import ErrorView, NetworkMismatchErrorView, OptionDisabledView, PowerOffView, View
 
-from utils import ScreenshotComplete, ScreenshotRenderer
+from .utils import ScreenshotComplete, ScreenshotRenderer
 
 
 
@@ -178,10 +183,13 @@ def test_generate_screenshots(target_locale):
         "PSBT Views": [
             psbt_views.PSBTSelectSeedView, # this will fail, be rerun below
             psbt_views.PSBTOverviewView,
+            (psbt_views.PSBTOverviewView, {}, "PSBTOverviewView_payjoin"),
             psbt_views.PSBTUnsupportedScriptTypeWarningView,
             psbt_views.PSBTNoChangeWarningView,
             psbt_views.PSBTMathView,
             (psbt_views.PSBTAddressDetailsView, dict(address_num=0)),
+            (psbt_views.PSBTAddressDetailsView, dict(address_num=0), "PSBTAddressDetailsView_testnet"),
+            (psbt_views.PSBTAddressDetailsView, dict(address_num=0), "PSBTAddressDetailsView_regtest"),
 
             # TODO: Render Multisig change w/ and w/out the multisig wallet descriptor onboard
             (psbt_views.PSBTChangeDetailsView, dict(change_address_num=0)),
@@ -291,6 +299,39 @@ def test_generate_screenshots(target_locale):
     controller.psbt_seed = None
     screenshot_renderer.set_screenshot_path(os.path.join(screenshot_root, "psbt_views"))
     screencap_view(psbt_views.PSBTSelectSeedView, 'PSBTSelectSeedView', {})
+
+    controller.settings.set_value(
+        attr_name=SettingsConstants.SETTING__NETWORK,
+        value=SettingsConstants.TESTNET
+    )
+    controller.psbt_parser = PSBTParser(
+        PSBT.parse(a2b_base64(BASE64_PSBT_1)),
+        seed=seed_12b,
+        network=SettingsConstants.TESTNET
+    )
+    screencap_view(psbt_views.PSBTAddressDetailsView, 'PSBTAddressDetailsView_testnet', dict(address_num=0))
+
+    controller.settings.set_value(
+        attr_name=SettingsConstants.SETTING__NETWORK,
+        value=SettingsConstants.REGTEST
+    )
+    controller.psbt_parser = PSBTParser(
+        PSBT.parse(a2b_base64(BASE64_PSBT_1)),
+        seed=seed_12b,
+        network=SettingsConstants.REGTEST
+    )
+    screencap_view(psbt_views.PSBTAddressDetailsView, 'PSBTAddressDetailsView_regtest', dict(address_num=0))
+
+
+    # Render payjoin screens for real; use tx from test_psbt_parser.py payjoin test
+    zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
+    payjoin_base64 = "cHNidP8BAJoCAAAAAnAmz5cHZ6Z8NQtliuNnFqEV0GgegEaGOLkgnSEl334OAQAAAAD9////Zic5EXtbFu9ca8uy6xT6lzpNdlrxUQw12nu9oFBVhUICAAAAAP3///8CGC2GAAAAAAAWABQMliMIrvkCAuGZTmxhw5b2Z+nMHVzeswAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUVuAAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAABAR+K9W0BAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAAAA=="
+    controller.psbt_seed = zoe_seed
+    decoder = DecodeQR()
+    decoder.add_data(payjoin_base64)
+    controller.psbt = decoder.get_psbt()
+    controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed)
+    screencap_view(psbt_views.PSBTOverviewView, view_name='PSBTOverviewView_payjoin')
 
     with open(os.path.join(screenshot_root, "README.md"), 'w') as readme_file:
        readme_file.write(readme)

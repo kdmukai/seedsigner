@@ -1,9 +1,12 @@
+import pytest
+import random
+
 from binascii import a2b_base64
 from collections import OrderedDict
 from copy import deepcopy
-from dataclasses import dataclass
 
 from embit import bip32
+from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
 from embit.psbt import PSBT
 
@@ -16,288 +19,179 @@ from psbt_testing_util import PSBTTestData, create_output
 
 
 class TestPSBTParser:
-    seed = Seed("model ensure search plunge galaxy firm exclude brain satoshi meadow cable roast".split())
+    seed = PSBTTestData.seed
 
-    def test_manually_construct_test_psbts(self):
-        psbt = PSBT.parse(a2b_base64(PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_1_INPUT))
-        psbt.outputs.append(create_output(PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_RECEIVE, 250_000))
-        psbt.outputs.append(create_output(PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_CHANGE, 100_000_000 - 250_000 - 5_000))
+    def run_basic_test(self, psbt_base64: str, change_data: str):
+        """
+        Constructs a series of test psbts that use the specified psbt_base64 for the input(s).
 
-        assert len(psbt.outputs) == 2
+        * 1 external recipient + change for each recipient type
+        * 1 external recipient full spend (no change) for each recipient type
+        * 1 mega psbt with all external recipient types in one tx + change
+        """
+        psbt = PSBT.parse(a2b_base64(psbt_base64))
+        input_amount = sum([inp.utxo.value for inp in psbt.inputs])
+        recipient_amount = random.randint(200_000, 90_000_000)
+        change_output = create_output(change_data, input_amount - recipient_amount - 5_000)
+
+        for output in PSBTTestData.ALL_EXTERNAL_OUTPUTS:
+            psbt.outputs.clear()
+            psbt.outputs.append(create_output(output, recipient_amount))
+            psbt.outputs.append(change_output)
+
+            assert len(psbt.outputs) == 2
+            psbt_parser = PSBTParser(p=psbt, seed=self.seed, network=SettingsConstants.REGTEST)
+            assert psbt_parser.num_inputs == len(psbt.inputs)
+            assert psbt_parser.num_external_inputs == 0
+            assert psbt_parser.input_amount == input_amount
+            assert psbt_parser.num_destinations == 1
+            assert psbt_parser.num_change_outputs == 1
+            assert psbt_parser.spend_amount == recipient_amount
+            assert psbt_parser.change_amount == input_amount - recipient_amount - 5_000
+            assert psbt_parser.fee_amount == 5_000
+            assert psbt_parser.input_amount + psbt_parser.external_input_amount == psbt_parser.spend_amount + psbt_parser.change_amount + psbt_parser.fee_amount
+        
+        # Now do full spends with no change
+        fee_amount = random.randint(5_000, 100_000)
+        recipient_amount = input_amount - fee_amount
+
+        for output in PSBTTestData.ALL_EXTERNAL_OUTPUTS:
+            psbt.outputs.clear()
+            psbt.outputs.append(create_output(output, recipient_amount))
+
+            assert len(psbt.outputs) == 1
+            psbt_parser = PSBTParser(p=psbt, seed=self.seed, network=SettingsConstants.REGTEST)
+            assert psbt_parser.num_inputs == len(psbt.inputs)
+            assert psbt_parser.num_external_inputs == 0
+            assert psbt_parser.input_amount == input_amount
+            assert psbt_parser.num_destinations == 1
+            assert psbt_parser.num_change_outputs == 0
+            assert psbt_parser.spend_amount == recipient_amount
+            assert psbt_parser.change_amount == 0
+            assert psbt_parser.fee_amount == fee_amount
+            assert psbt_parser.input_amount + psbt_parser.external_input_amount == psbt_parser.spend_amount + psbt_parser.change_amount + psbt_parser.fee_amount
+
+        # Now try a single mega psbt with ALL the outputs at once
+        psbt.outputs.clear()
+        change_amount = input_amount - fee_amount
+        for output in PSBTTestData.ALL_EXTERNAL_OUTPUTS:
+            output_amount = random.randint(200_000, int(change_amount / 2))
+            psbt.outputs.append(create_output(output, output_amount))
+            change_amount -= output_amount
+
+        # Don't forget the change!        
+        psbt.outputs.append(create_output(change_data, change_amount))
+
+        assert len(psbt.outputs) == len(PSBTTestData.ALL_EXTERNAL_OUTPUTS) + 1
         psbt_parser = PSBTParser(p=psbt, seed=self.seed, network=SettingsConstants.REGTEST)
-        assert psbt_parser.num_inputs == 1
+        assert psbt_parser.num_inputs == len(psbt.inputs)
         assert psbt_parser.num_external_inputs == 0
-        assert psbt_parser.input_amount == 100_000_000
-        assert psbt_parser.num_destinations == 1
+        assert psbt_parser.input_amount == input_amount
+        assert psbt_parser.num_destinations == len(PSBTTestData.ALL_EXTERNAL_OUTPUTS)
         assert psbt_parser.num_change_outputs == 1
-        assert psbt_parser.spend_amount == 250_000
-        assert psbt_parser.change_amount == 100_000_000 - 250_000 - 5_000
-        assert psbt_parser.fee_amount == 5_000
+        assert psbt_parser.spend_amount == input_amount - change_amount - fee_amount
+        assert psbt_parser.change_amount == change_amount
+        assert psbt_parser.fee_amount == fee_amount
         assert psbt_parser.input_amount + psbt_parser.external_input_amount == psbt_parser.spend_amount + psbt_parser.change_amount + psbt_parser.fee_amount
 
 
-
-
-    @dataclass
-    class SamplePSBT:
-        description: str
-        psbt_base64: str
-
-        num_inputs: int
-        num_external_inputs: int
-        input_amount: int
-        external_input_amount: int
-
-        num_destinations: int
-        num_change_outputs: int
-        spend_amount: int
-        change_amount: int
-        fee_amount: int
-
-
-        def run_test(self, seed: Seed):
-            raw = a2b_base64(self.psbt_base64)
-            tx = PSBT.parse(raw)
-            psbt_parser = PSBTParser(p=tx, seed=seed, network=SettingsConstants.REGTEST)
-            try:
-                assert psbt_parser.num_inputs == self.num_inputs
-                assert psbt_parser.num_external_inputs == self.num_external_inputs
-                assert psbt_parser.input_amount == self.input_amount
-                assert psbt_parser.num_destinations == self.num_destinations
-                assert psbt_parser.num_change_outputs == self.num_change_outputs
-                assert psbt_parser.spend_amount == self.spend_amount
-                assert psbt_parser.change_amount == self.change_amount
-                assert psbt_parser.fee_amount == self.fee_amount
-                assert psbt_parser.input_amount + psbt_parser.external_input_amount == psbt_parser.spend_amount + psbt_parser.change_amount + psbt_parser.fee_amount
-            except AssertionError as e:
-                print(f"Failed: {self.description}")
-                raise e
-
-
     def test_singlesig_native_segwit(self):
-        samples = [
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to native segwit (P2WPKH), 1 recipient + change",
-                psbt_base64="cHNidP8BAHECAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////ApDQAwAAAAAAFgAUZzx7c8fgIzjkDdnWHtwHQARoCZPo/PEFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYbwAAAE8BBDWHzwNXmUmVgAAAANRFa7R5gYD84Wbha3d1QnjgfYPOBw87on6cXS32WoyqAsPFtPxB7PRTdbujUnBPUVDh9YUBtwrl4nc0OcRNGvIyEA+4gv9UAACAAQAAgAAAAIAAAQCIAgAAAAHVNy3baqUJbmJM5kN9epW7oIqXB1O2s+Fs8julxND8ZQEAAAAXFgAUI+kCxhZQ0mdMSs6OSgKGdDKUanr9////As0uGh4BAAAAFgAUjiVTkQBkiXD8ylfqveCHXOprMQ4A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMObgAAAAEBHwDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw4BAwQBAAAAIgYC9duqeSZYNc80SQfOc/SXZUUWqXZamBfjbIPdn18lj/cYD7iC/1QAAIABAACAAAAAgAAAAAADAAAAAAAiAgIsFe/QjIIqYofxtCtsMOzO1H8cVITD59cudoCjBYk9JxgPuIL/VAAAgAEAAIAAAACAAQAAAAAAAAAA",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=250_000,
-                change_amount=99_745_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to nested segwit (P2SH-P2WPKH), 1 recipient + change",
-                psbt_base64="cHNidP8BAHICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////Auj88QUAAAAAFgAUrME0Bwnpt7q+/5IYBvBXDGUr0FiQ0AMAAAAAABepFKibZqx9neTX1dpNrnEGUUc1VkMUh3AAAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAiAgIsFe/QjIIqYofxtCtsMOzO1H8cVITD59cudoCjBYk9JxgPuIL/VAAAgAEAAIAAAACAAQAAAAAAAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=250_000,
-                change_amount=99_745_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to native segwit multisig (P2WSH), 1 recipient + change",
-                psbt_base64="cHNidP8BAH0CAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////ApDQAwAAAAAAIgAgdO97VShcxP5DMHTth+VP/DotLR6J5BERK4hp4o1IDq/o/PEFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYcAAAAE8BBDWHzwNXmUmVgAAAANRFa7R5gYD84Wbha3d1QnjgfYPOBw87on6cXS32WoyqAsPFtPxB7PRTdbujUnBPUVDh9YUBtwrl4nc0OcRNGvIyEA+4gv9UAACAAQAAgAAAAIAAAQCIAgAAAAHVNy3baqUJbmJM5kN9epW7oIqXB1O2s+Fs8julxND8ZQEAAAAXFgAUI+kCxhZQ0mdMSs6OSgKGdDKUanr9////As0uGh4BAAAAFgAUjiVTkQBkiXD8ylfqveCHXOprMQ4A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMObgAAAAEBHwDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw4BAwQBAAAAIgYC9duqeSZYNc80SQfOc/SXZUUWqXZamBfjbIPdn18lj/cYD7iC/1QAAIABAACAAAAAgAAAAAADAAAAAAAiAgIsFe/QjIIqYofxtCtsMOzO1H8cVITD59cudoCjBYk9JxgPuIL/VAAAgAEAAIAAAACAAQAAAAAAAAAA",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=250_000,
-                change_amount=99_745_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to nested segwit multisig (P2SH-P2WSH), 1 recipient + change",
-                psbt_base64="cHNidP8BAHICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////ApDQAwAAAAAAF6kUqJtmrH2d5NfV2k2ucQZRRzVWQxSH6PzxBQAAAAAWABSswTQHCem3ur7/khgG8FcMZSvQWHAAAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=250_000,
-                change_amount=99_745_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to P2WPKH, 2 recipients + change",
-                psbt_base64="cHNidP8BAJACAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AzBXBQAAAAAAFgAUXNvtaeJYavxHqwlZRVNNJAqQcZ24pewFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYkNADAAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk28AAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAAA=",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=2,  # 2 outputs
-                num_change_outputs=1,
-                spend_amount=250_000 + 350_000,
-                change_amount=99_395_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to P2WPKH, full spend to one recipient",
-                psbt_base64="cHNidP8BAFICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AXjN9QUAAAAAFgAUZzx7c8fgIzjkDdnWHtwHQARoCZNvAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAIgCAAAAAdU3LdtqpQluYkzmQ316lbugipcHU7az4WzyO6XE0PxlAQAAABcWABQj6QLGFlDSZ0xKzo5KAoZ0MpRqev3///8CzS4aHgEAAAAWABSOJVORAGSJcPzKV+q94Idc6msxDgDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw5uAAAAAQEfAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDgEDBAEAAAAiBgL126p5Jlg1zzRJB85z9JdlRRapdlqYF+Nsg92fXyWP9xgPuIL/VAAAgAEAAIAAAACAAAAAAAMAAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=0,
-                spend_amount=99_995_000,
-                change_amount=0,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to P2WPKH, internal cycle back to own wallet",
-                psbt_base64="cHNidP8BAFICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AXjN9QUAAAAAFgAU8cfhU9/rh73NVOJO2Na0fFhKSARvAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAIgCAAAAAdU3LdtqpQluYkzmQ316lbugipcHU7az4WzyO6XE0PxlAQAAABcWABQj6QLGFlDSZ0xKzo5KAoZ0MpRqev3///8CzS4aHgEAAAAWABSOJVORAGSJcPzKV+q94Idc6msxDgDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw5uAAAAAQEfAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDgEDBAEAAAAiBgL126p5Jlg1zzRJB85z9JdlRRapdlqYF+Nsg92fXyWP9xgPuIL/VAAAgAEAAIAAAACAAAAAAAMAAAAAIgIC6lfZrb26+ddGMbyOUAS8K5f8BqdwOMR+/jo3fwtCy9AYD7iC/1QAAIABAACAAAAAgAAAAAAEAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=0,
-                num_change_outputs=1,
-                spend_amount=0,
-                change_amount=99_995_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to P2WPKH, 1 recipient + internal cycle back to own wallet + change",
-                psbt_base64="cHNidP8BAJACAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////A0BLTAAAAAAAFgAU8cfhU9/rh73NVOJO2Na0fFhKSASosaUFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYkNADAAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk28AAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAiAgLqV9mtvbr510YxvI5QBLwrl/wGp3A4xH7+Ojd/C0LL0BgPuIL/VAAAgAEAAIAAAACAAAAAAAQAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAAA=",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=2,
-                spend_amount=250_000,
-                change_amount=5_000_000 + 94_745_000,
-                fee_amount=5_000,
-            ),
-
-            TestPSBTParser.SamplePSBT(
-                description="Single sig native segwit (P2WPKH) to P2WPKH, 2 inputs, 1 recipient + change",
-                psbt_base64="cHNidP8BAJoCAAAAAsJ89R3J4RM3F/2mTME/ag5R+BIhKutmLi6PRugo3Y95AAAAAAD9////ThP/Rpf2aY1kfIqH7QAdhj4S10nGd0xGtrSCfhA8Jl0BAAAAAP3///8CgNHwCAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk/jc+gIAAAAAFgAUrME0Bwnpt7q+/5IYBvBXDGUr0FhwAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAHECAAAAAfFB2o8nAMMw9ZFG4EHYvsMle9RkAw0xCXoVr12ZRrRqAQAAAAD9////AgDh9QUAAAAAFgAUkafX/Pco8lEPjPg2Vyd2MC0Cv8w/ijgMAQAAABYAFLHv1XF6upFAIyRP61rF77j3NegLbwAAAAEBHwDh9QUAAAAAFgAUkafX/Pco8lEPjPg2Vyd2MC0Cv8wBAwQBAAAAIgYCKALMbvmaFrAPq1M4ikZhDSVahyZhdJAi3ScfXi9k/JsYD7iC/1QAAIABAACAAAAAgAAAAAAFAAAAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAA==",
-                num_inputs=2,
-                num_external_inputs=0,
-                input_amount=200_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=150_000_000,
-                change_amount=49_995_000,
-                fee_amount=5_000,
-            ),
-        ]
-
-        seed = Seed(self.mnemonic)
-        for sample in samples:
-            sample.run_test(seed)
-
+        self.run_basic_test(PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_1_INPUT, PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_CHANGE)
 
     def test_singlesig_nested_segwit(self):
-        samples = [
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, 1 recipient + change",
-                psbt_base64="cHNidP8BAHECAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////ApDQAwAAAAAAFgAUZzx7c8fgIzjkDdnWHtwHQARoCZPo/PEFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYbwAAAE8BBDWHzwNXmUmVgAAAANRFa7R5gYD84Wbha3d1QnjgfYPOBw87on6cXS32WoyqAsPFtPxB7PRTdbujUnBPUVDh9YUBtwrl4nc0OcRNGvIyEA+4gv9UAACAAQAAgAAAAIAAAQCIAgAAAAHVNy3baqUJbmJM5kN9epW7oIqXB1O2s+Fs8julxND8ZQEAAAAXFgAUI+kCxhZQ0mdMSs6OSgKGdDKUanr9////As0uGh4BAAAAFgAUjiVTkQBkiXD8ylfqveCHXOprMQ4A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMObgAAAAEBHwDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw4BAwQBAAAAIgYC9duqeSZYNc80SQfOc/SXZUUWqXZamBfjbIPdn18lj/cYD7iC/1QAAIABAACAAAAAgAAAAAADAAAAAAAiAgIsFe/QjIIqYofxtCtsMOzO1H8cVITD59cudoCjBYk9JxgPuIL/VAAAgAEAAIAAAACAAQAAAAAAAAAA",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=250_000,
-                change_amount=99_745_000,
-                fee_amount=5_000,
-            ),
+        self.run_basic_test(PSBTTestData.SINGLE_SIG_NESTED_SEGWIT_1_INPUT, PSBTTestData.SINGLE_SIG_NESTED_SEGWIT_CHANGE)
 
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, 2 recipients + change",
-                psbt_base64="cHNidP8BAJACAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AzBXBQAAAAAAFgAUXNvtaeJYavxHqwlZRVNNJAqQcZ24pewFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYkNADAAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk28AAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAAA=",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=2,  # 2 outputs
-                num_change_outputs=1,
-                spend_amount=250_000 + 350_000,
-                change_amount=99_395_000,
-                fee_amount=5_000,
-            ),
+    def test_singlesig_taproot(self):
+        self.run_basic_test(PSBTTestData.SINGLE_SIG_TAPROOT_1_INPUT, PSBTTestData.SINGLE_SIG_TAPROOT_CHANGE)
 
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, full spend to one recipient",
-                psbt_base64="cHNidP8BAFICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AXjN9QUAAAAAFgAUZzx7c8fgIzjkDdnWHtwHQARoCZNvAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAIgCAAAAAdU3LdtqpQluYkzmQ316lbugipcHU7az4WzyO6XE0PxlAQAAABcWABQj6QLGFlDSZ0xKzo5KAoZ0MpRqev3///8CzS4aHgEAAAAWABSOJVORAGSJcPzKV+q94Idc6msxDgDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw5uAAAAAQEfAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDgEDBAEAAAAiBgL126p5Jlg1zzRJB85z9JdlRRapdlqYF+Nsg92fXyWP9xgPuIL/VAAAgAEAAIAAAACAAAAAAAMAAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=0,
-                spend_amount=99_995_000,
-                change_amount=0,
-                fee_amount=5_000,
-            ),
+    # TODO: enable test once legacy p2pkh support is merged
+    @pytest.mark.skip("Single sig legacy p2pkh support not yet implemented")
+    def test_singlesig_legacy_p2pkh(self):
+        self.run_basic_test(PSBTTestData.SINGLE_SIG_LEGACY_P2PKH_1_INPUT, PSBTTestData.SINGLE_SIG_LEGACY_P2PKH_CHANGE)
 
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, internal cycle back to own wallet",
-                psbt_base64="cHNidP8BAFICAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////AXjN9QUAAAAAFgAU8cfhU9/rh73NVOJO2Na0fFhKSARvAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAIgCAAAAAdU3LdtqpQluYkzmQ316lbugipcHU7az4WzyO6XE0PxlAQAAABcWABQj6QLGFlDSZ0xKzo5KAoZ0MpRqev3///8CzS4aHgEAAAAWABSOJVORAGSJcPzKV+q94Idc6msxDgDh9QUAAAAAFgAUWIy6PsONzU/ua84Dwjbsu/ZWYw5uAAAAAQEfAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDgEDBAEAAAAiBgL126p5Jlg1zzRJB85z9JdlRRapdlqYF+Nsg92fXyWP9xgPuIL/VAAAgAEAAIAAAACAAAAAAAMAAAAAIgIC6lfZrb26+ddGMbyOUAS8K5f8BqdwOMR+/jo3fwtCy9AYD7iC/1QAAIABAACAAAAAgAAAAAAEAAAAAA==",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=0,
-                num_change_outputs=1,
-                spend_amount=0,
-                change_amount=99_995_000,
-                fee_amount=5_000,
-            ),
+    def test_multisig_native_segwit(self):
+        self.run_basic_test(PSBTTestData.MULTISIG_NATIVE_SEGWIT_1_INPUT, PSBTTestData.MULTISIG_NATIVE_SEGWIT_CHANGE)
 
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, 1 recipient + internal cycle back to own wallet + change",
-                psbt_base64="cHNidP8BAJACAAAAAU4T/0aX9mmNZHyKh+0AHYY+EtdJxndMRra0gn4QPCZdAQAAAAD9////A0BLTAAAAAAAFgAU8cfhU9/rh73NVOJO2Na0fFhKSASosaUFAAAAABYAFKzBNAcJ6be6vv+SGAbwVwxlK9BYkNADAAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk28AAABPAQQ1h88DV5lJlYAAAADURWu0eYGA/OFm4Wt3dUJ44H2DzgcPO6J+nF0t9lqMqgLDxbT8Qez0U3W7o1JwT1FQ4fWFAbcK5eJ3NDnETRryMhAPuIL/VAAAgAEAAIAAAACAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAiAgLqV9mtvbr510YxvI5QBLwrl/wGp3A4xH7+Ojd/C0LL0BgPuIL/VAAAgAEAAIAAAACAAAAAAAQAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAAA=",
-                num_inputs=1,
-                num_external_inputs=0,
-                input_amount=100_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=2,
-                spend_amount=250_000,
-                change_amount=5_000_000 + 94_745_000,
-                fee_amount=5_000,
-            ),
+    def test_multisig_nested_segwit(self):
+        self.run_basic_test(PSBTTestData.MULTISIG_NESTED_SEGWIT_1_INPUT, PSBTTestData.MULTISIG_NESTED_SEGWIT_CHANGE)
 
-            TestPSBTParser.SamplePSBT(
-                description="Single sig P2SH-P2WPKH to P2WPKH, 2 inputs, 1 recipient + change",
-                psbt_base64="cHNidP8BAJoCAAAAAsJ89R3J4RM3F/2mTME/ag5R+BIhKutmLi6PRugo3Y95AAAAAAD9////ThP/Rpf2aY1kfIqH7QAdhj4S10nGd0xGtrSCfhA8Jl0BAAAAAP3///8CgNHwCAAAAAAWABRnPHtzx+AjOOQN2dYe3AdABGgJk/jc+gIAAAAAFgAUrME0Bwnpt7q+/5IYBvBXDGUr0FhwAAAATwEENYfPA1eZSZWAAAAA1EVrtHmBgPzhZuFrd3VCeOB9g84HDzuifpxdLfZajKoCw8W0/EHs9FN1u6NScE9RUOH1hQG3CuXidzQ5xE0a8jIQD7iC/1QAAIABAACAAAAAgAABAHECAAAAAfFB2o8nAMMw9ZFG4EHYvsMle9RkAw0xCXoVr12ZRrRqAQAAAAD9////AgDh9QUAAAAAFgAUkafX/Pco8lEPjPg2Vyd2MC0Cv8w/ijgMAQAAABYAFLHv1XF6upFAIyRP61rF77j3NegLbwAAAAEBHwDh9QUAAAAAFgAUkafX/Pco8lEPjPg2Vyd2MC0Cv8wBAwQBAAAAIgYCKALMbvmaFrAPq1M4ikZhDSVahyZhdJAi3ScfXi9k/JsYD7iC/1QAAIABAACAAAAAgAAAAAAFAAAAAAEAiAIAAAAB1Tct22qlCW5iTOZDfXqVu6CKlwdTtrPhbPI7pcTQ/GUBAAAAFxYAFCPpAsYWUNJnTErOjkoChnQylGp6/f///wLNLhoeAQAAABYAFI4lU5EAZIlw/MpX6r3gh1zqazEOAOH1BQAAAAAWABRYjLo+w43NT+5rzgPCNuy79lZjDm4AAAABAR8A4fUFAAAAABYAFFiMuj7Djc1P7mvOA8I27Lv2VmMOAQMEAQAAACIGAvXbqnkmWDXPNEkHznP0l2VFFql2WpgX42yD3Z9fJY/3GA+4gv9UAACAAQAAgAAAAIAAAAAAAwAAAAAAIgICLBXv0IyCKmKH8bQrbDDsztR/HFSEw+fXLnaAowWJPScYD7iC/1QAAIABAACAAAAAgAEAAAAAAAAAAA==",
-                num_inputs=2,
-                num_external_inputs=0,
-                input_amount=200_000_000,
-                external_input_amount=0,
-                num_destinations=1,
-                num_change_outputs=1,
-                spend_amount=150_000_000,
-                change_amount=49_995_000,
-                fee_amount=5_000,
-            ),
+    # TODO: enable test once legacy p2sh support is merged
+    @pytest.mark.skip("Multisig legacy p2sh support not yet implemented")
+    def test_multisig_legacy_p2sh(self):
+        self.run_basic_test(PSBTTestData.MULTISIG_LEGACY_P2SH_1_INPUT, PSBTTestData.MULTISIG_LEGACY_P2SH_CHANGE)
+
+
+    def test_has_matching_input_fingerprint(self):
+        """
+        PSBTParser should correctly identify when a psbt contains an input that matches a
+        given Seed's fingerprint.
+        """
+        wrong_seed = Seed(["bacon"] * 24)
+        for input in PSBTTestData.ALL_INPUTS:
+            psbt = PSBT.parse(a2b_base64(input))
+            assert PSBTParser.has_matching_input_fingerprint(psbt, PSBTTestData.seed)
+            assert PSBTParser.has_matching_input_fingerprint(psbt, wrong_seed) == False
+
+        # The other keys in the multisig inputs should also match        
+        for input in PSBTTestData.MULTISIG_INPUTS:
+            psbt = PSBT.parse(a2b_base64(input))
+            assert PSBTParser.has_matching_input_fingerprint(psbt, PSBTTestData.multisig_key_2)
+            assert PSBTParser.has_matching_input_fingerprint(psbt, PSBTTestData.multisig_key_3)
+
+
+    def test_trim_and_sig_count(self):
+        """
+        PSBTParser should correctly trim a psbt of all unnecessary data and count the number of
+        signatures in the psbt.
+        """
+        output = create_output(PSBTTestData.SINGLE_SIG_NATIVE_SEGWIT_RECEIVE, 100_000)
+        for input in PSBTTestData.ALL_INPUTS:
+            psbt = PSBT.parse(a2b_base64(input))
+            psbt.outputs.append(output)
+            psbt.sign_with(bip32.HDKey.from_seed(self.seed.seed_bytes))
+            assert PSBTParser.sig_count(psbt) == 1
+
+            # TODO: What can we test for before/after trimming?
+            PSBTParser.trim(psbt)
+
+            if input in PSBTTestData.MULTISIG_INPUTS:
+                psbt.sign_with(bip32.HDKey.from_seed(PSBTTestData.multisig_key_2.seed_bytes))
+                assert PSBTParser.sig_count(psbt) == 2
+
+                psbt.sign_with(bip32.HDKey.from_seed(PSBTTestData.multisig_key_3.seed_bytes))
+                assert PSBTParser.sig_count(psbt) == 3
+
+
+    def test_verify_multisig_output(self):
+        multisig_inputs = [
+            PSBTTestData.MULTISIG_NATIVE_SEGWIT_1_INPUT,
+            PSBTTestData.MULTISIG_NESTED_SEGWIT_1_INPUT,
+            # PSBTTestData.MULTISIG_LEGACY_P2SH_1_INPUT  # TODO: Enable once legacy p2sh support is merged
+        ]
+        change_outputs =  [
+            PSBTTestData.MULTISIG_NATIVE_SEGWIT_CHANGE,
+            PSBTTestData.MULTISIG_NESTED_SEGWIT_CHANGE,
+            PSBTTestData.MULTISIG_LEGACY_P2SH_CHANGE
+        ]
+        descriptors = [
+            PSBTTestData.MULTISIG_NATIVE_SEGWIT_DESCRIPTOR,
+            PSBTTestData.MULTISIG_NESTED_SEGWIT_DESCRIPTOR,
+            PSBTTestData.MULTISIG_LEGACY_P2SH_DESCRIPTOR
         ]
 
-        seed = Seed(self.mnemonic)
-        for sample in samples:
-            sample.run_test(seed)
+        for i, psbt_base64 in enumerate(multisig_inputs):
+            # Construct a psbt with a change output of the same type as the input
+            psbt = PSBT.parse(a2b_base64(psbt_base64))
+            psbt.outputs.append(create_output(change_outputs[i], 100_000))
+            psbt_parser = PSBTParser(p=psbt, seed=self.seed, network=SettingsConstants.REGTEST)
+
+            # Attempt to verify the change using the right and wrong descriptors
+            for j, descriptor_str in enumerate(descriptors):
+                descriptor = Descriptor.from_string(descriptor_str.replace("<0;1>", "{0,1}"))
+                if i == j:
+                    assert psbt_parser.verify_multisig_output(descriptor, change_num=0) == True
+                else:
+                    assert psbt_parser.verify_multisig_output(descriptor, change_num=0) == False
 
 
     def test_p2tr_change_detection(self):
@@ -332,14 +226,14 @@ class TestPSBTParser:
             {
                 'output_index': 0,
                 'address': 'bcrt1prz4g6saush37epdwhvwpu78td3q7yfz3xxz37axlx7udck6wracq3rwq30',
-                'amount': 2871443918,
+                'amount': 2_871_443_918,
                 'fingerprint': ['394aed14'],
                 'derivation_path': ['m/86h/1h/0h/1/1']}
             ]
-        assert pp.spend_amount == 319049328
-        assert pp.change_amount == 2871443918
+        assert pp.spend_amount == 319_049_328
+        assert pp.change_amount == 2_871_443_918
         assert pp.destination_addresses == ['bcrt1p6p00wazu4nnqac29fvky6vhjnnhku5u2g9njss62rvy7e0yuperq86f5ek']
-        assert pp.destination_amounts == [319049328]
+        assert pp.destination_amounts == [319_049_328]
 
 
 
