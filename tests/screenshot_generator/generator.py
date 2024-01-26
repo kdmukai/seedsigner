@@ -6,7 +6,6 @@ import time
 
 from embit.psbt import PSBT
 from mock import Mock, MagicMock
-from PIL import Image, ImageDraw
 
 from seedsigner.models.psbt_parser import PSBTParser
 

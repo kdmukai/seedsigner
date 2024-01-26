@@ -14,44 +14,37 @@ from ..components import (BtcAmount, Button, Icon, FontAwesomeIconConstants, Ico
 
 @dataclass
 class PSBTOverviewScreen(ButtonListScreen):
-    spend_amount: int = 0
-    change_amount: int = 0
-    fee_amount: int = 0
+    is_cooperative_spend: bool = False
+    is_payjoin_receive: bool = False
+
+    display_amount: int = 0
+
     num_inputs: int = 0
     num_external_inputs: int = 0
-    collab_input_label: str = "payjoin"
+
     num_self_transfer_outputs: int = 0
     num_change_outputs: int = 0
     destination_addresses: List[str] = None
-    
+
 
     def __post_init__(self):
         # Customize defaults
-        self.title = "Review PSBT"
         self.is_bottom_list = True
         self.button_data = ["Review Details"]
-
-        # This screen can take a while to load while parsing the PSBT
-        self.show_loading_screen = True
 
         super().__post_init__()
 
         # Prep the headline amount being spent in large callout
-        # icon_text_lines_y = self.components[-1].screen_y + self.components[-1].height
         icon_text_lines_y = self.top_nav.height + GUIConstants.COMPONENT_PADDING
-
-        if not self.destination_addresses:
-            # This is a self-transfer
-            spend_amount = self.change_amount
-        else:
-            spend_amount = self.spend_amount
-
         self.components.append(BtcAmount(
-            total_sats=spend_amount,
+            total_sats=self.display_amount,
             screen_y=icon_text_lines_y,
         ))
 
         # Prep the transaction flow chart
+        collab_input_label = "theirs"
+        payjoin_receive_label = "PJ receive"
+
         self.chart_x = 0
         self.chart_y = self.components[-1].screen_y + self.components[-1].height + int(GUIConstants.COMPONENT_PADDING/2)
         chart_height = self.buttons[0].screen_y - self.chart_y - GUIConstants.COMPONENT_PADDING
@@ -71,9 +64,10 @@ class PSBTOverviewScreen(ButtonListScreen):
         font_size = GUIConstants.BODY_FONT_MIN_SIZE * ssf
         font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, font_size)
 
-        (left, top, right, bottom) = font.getbbox(text="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890[]", anchor="lt")
+        (left, top, right, bottom) = font.getbbox(text="abcdefghijklmnopqrstuvwxyz1234567890[]", anchor="ls")
         chart_text_height = bottom
         vertical_center = int(image.height/2)
+
         # Supersampling renders thin elements poorly if they land on an even line before scaling down
         if vertical_center % 2 == 1:
             vertical_center += 1
@@ -86,7 +80,10 @@ class PSBTOverviewScreen(ButtonListScreen):
         # First calculate how wide the inputs col will be
         inputs_column = []
         if self.num_inputs == 1:
-            inputs_column.append("1 input")
+            if self.is_cooperative_spend:
+                inputs_column.append("yours")
+            else:
+                inputs_column.append("1 input")
         elif self.num_inputs > 5:
             inputs_column.append("input 1")
             inputs_column.append("input 2")
@@ -101,17 +98,8 @@ class PSBTOverviewScreen(ButtonListScreen):
         # * Lots of inputs + cooperative input
         # * Lots of inputs + lots of cooperative inputs
         # * < 5 inputs + lots of cooperative inputs
-        if self.num_external_inputs == 1:
-            inputs_column.append(f"1 {self.collab_input_label}")
-        elif self.num_external_inputs > 5:
-            inputs_column.append(f"{self.collab_input_label} 1")
-            inputs_column.append(f"{self.collab_input_label} 2")
-            inputs_column.append("[ ... ]")
-            inputs_column.append(f"{self.collab_input_label} {self.num_external_inputs-1}")
-            inputs_column.append(f"{self.collab_input_label} {self.num_external_inputs}")
-        else:
-            for i in range(0, self.num_external_inputs):
-                inputs_column.append(f"{self.collab_input_label} {i+1}")
+        for i in range(0, self.num_external_inputs):
+            inputs_column.append(f"{collab_input_label}")
 
         max_inputs_text_width = 0
         for input in inputs_column:
@@ -148,12 +136,17 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             if len(self.destination_addresses) + self.num_self_transfer_outputs <= 3:
                 for addr in self.destination_addresses:
-                    destination_column.append(truncate_destination_addr(addr))
+                    if self.is_cooperative_spend:
+                        destination_column.append(truncate_destination_addr("theirs"))
+                    else:
+                        destination_column.append(truncate_destination_addr(addr))
 
                 for i in range(0, self.num_self_transfer_outputs):
-                    destination_column.append(truncate_destination_addr("self-transfer"))
+                    if self.is_payjoin_receive:
+                        destination_column.append(truncate_destination_addr(payjoin_receive_label))
+                    else:
+                        destination_column.append(truncate_destination_addr("self-transfer"))
             else:
-                # destination_column.append(f"{len(self.destination_addresses)} recipients")
                 destination_column.append(f"recipient 1")
                 destination_column.append(f"[ ... ]")
                 destination_column.append(f"recipient {len(self.destination_addresses) + self.num_self_transfer_outputs}")
@@ -212,14 +205,13 @@ class PSBTOverviewScreen(ButtonListScreen):
         input_curves: list[tuple[list, bool]] = []
         for input in inputs_column:
             # Calculate right-justified input display
-            tw, th = font.getsize(input)
-            cur_x = inputs_x + max_inputs_text_width - tw
+            cur_x = inputs_x + max_inputs_text_width
             draw.text(
                 (cur_x, inputs_y),
                 text=input,
                 font=font,
                 fill=chart_font_color,
-                anchor="lt",
+                anchor="rm",  # right-justified, anchored at midline
             )
 
             # Render the association line to the conjunction point
@@ -260,7 +252,8 @@ class PSBTOverviewScreen(ButtonListScreen):
                     curve_steps
                 )
 
-            input_curves.append((bezier_points, self.collab_input_label in input))
+            # External inputs are rendered as inert (`True` here)
+            input_curves.append((bezier_points, collab_input_label in input))
 
             prev_pt = bezier_points[0]
             for pt in bezier_points[1:]:
@@ -304,14 +297,14 @@ class PSBTOverviewScreen(ButtonListScreen):
         destination_conjunction_x = center_bar_x + center_bar_width
         recipients_text_x = destination_col_x
 
-        output_curves = []
+        output_curves: list[tuple[list, bool]] = []
         for destination in destination_column:
             draw.text(
                 (recipients_text_x, destination_y),
                 text=destination,
                 font=font,
                 fill=chart_font_color,
-                anchor="lt"
+                anchor="lm"
             )
 
             # Render the association line from the conjunction point
@@ -344,7 +337,17 @@ class PSBTOverviewScreen(ButtonListScreen):
                 curve_steps
             )
 
-            output_curves.append(bezier_points)
+            if self.is_payjoin_receive:
+                if destination == payjoin_receive_label:
+                    print("Rendering PJ receive as active")
+                    output_curves.append((bezier_points, False))
+                else:
+                    # For Payjoin receive, render all other outputs as inert
+                    print(f"Rendering {destination} as inactive")
+                    output_curves.append((bezier_points, True))
+            else:
+                print(f"Rendering {destination} as active")
+                output_curves.append((bezier_points, False))
 
             prev_pt = bezier_points[0]
             for pt in bezier_points[1:]:
@@ -381,14 +384,21 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             # Translate the point coords into renderer space
             ssf = supersampling_factor
-            self.inputs = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_collab_input) for curve, is_collab_input in inputs]
-            self.outputs = [[(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve] for curve in outputs]
+            self.inputs  = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_inactive) for curve, is_inactive in inputs]
+            self.outputs = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_inactive) for curve, is_inactive in outputs]
             self.renderer = renderer
+
+            print("INPUTS:")
+            for points, is_inactive in self.inputs:
+                print(is_inactive, points)
+
+            print("\nOUTPUTS:")
+            for points, is_inactive in self.outputs:
+                print(is_inactive, points)
 
 
         def run(self):
             pulse_color = GUIConstants.ACCENT_COLOR
-            collab_input_pulse_color = "yellow"
             reset_color = "#666"
             line_width = 3
 
@@ -396,11 +406,11 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             # The center bar needs to be segmented to support animation across it
             start_pt = self.inputs[0][0][-1]
-            end_pt = self.outputs[0][0]
+            end_pt = self.outputs[0][0][0]
             if start_pt == end_pt:
                 # In single input the center bar width can be zeroed out.
                 # Ugly hack: Insert this line segment that will be skipped otherwise.
-                center_bar_pts = [end_pt, self.outputs[0][1]]
+                center_bar_pts = [(end_pt, self.outputs[0][1], False)]
             else:
                 center_bar_pts = [
                     start_pt,
@@ -412,12 +422,15 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             def draw_line_segment(curves, i, j, color):
                 for points in curves:
-                    cur_color = color
-                    if type(points) == tuple:
-                        is_collab_input = points[1]
-                        if is_collab_input and color == pulse_color:
-                            cur_color = collab_input_pulse_color
+                    is_inactive = False
+                    if isinstance(points, tuple):
+                        is_inactive = points[1]
                         points = points[0]
+                    cur_color = color
+                    if is_inactive and color == pulse_color:
+                        # We just never render any pulse animation for inputs from
+                        # the other signer.
+                        continue
                     pt1 = points[i]
                     pt2 = points[j]
                     self.renderer.draw.line(
@@ -452,7 +465,8 @@ class PSBTOverviewScreen(ButtonListScreen):
                             index = i - len(self.inputs[0][0]) + 1
                             draw_line_segment([center_bar_pts], index, index+1, color)
 
-                        elif i < len(self.inputs[0][0]) + len(center_bar_pts) - 2 + len(self.outputs[0]) - 1:
+                        elif i < len(self.inputs[0][0]) + len(center_bar_pts) - 2 + len(self.outputs[0][0]) - 1:
+                            # We're in the output curves
                             index = i - (len(self.inputs[0][0]) + len(center_bar_pts) - 2)
                             draw_line_segment(self.outputs, index, index+1, color)
 

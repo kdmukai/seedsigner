@@ -79,6 +79,11 @@ class PSBTSelectSeedView(View):
 
 
 class PSBTOverviewView(View):
+    psbt_parser: PSBTParser = None
+    title: str = "Review PSBT"
+    display_amount: int = 0
+
+
     def __init__(self):
         super().__init__()
 
@@ -92,20 +97,40 @@ class PSBTOverviewView(View):
             self.loading_screen.start()
                 
             try:
-                self.controller.psbt_parser = PSBTParser(
+                self.psbt_parser = PSBTParser(
                     self.controller.psbt,
                     seed=self.controller.psbt_seed,
                     network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)
                 )
+                self.controller.psbt_parser = self.psbt_parser
             except Exception as e:
                 self.loading_screen.stop()
                 raise e
 
+        if self.psbt_parser.is_cooperative_spend:
+            if self.psbt_parser.is_payjoin_receive:
+                self.title = "Payjoin Receive"
+            else:
+                self.title = "Cooperative Spend"
+
+        if self.psbt_parser.is_cooperative_spend:
+            if self.psbt_parser.is_payjoin_receive:
+                # Display how much we'll actually net receive from the payjoin
+                self.display_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+            else:
+                self.display_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount - self.psbt_parser.fee_amount
+
+        elif not self.psbt_parser.destination_addresses:
+            # This is a self-transfer
+            self.display_amount = self.psbt_parser.change_amount
+
+        else:
+            # This is a normal spend
+            self.display_amount = self.psbt_parser.spend_amount
+
 
     def run(self):
-        psbt_parser: PSBTParser = self.controller.psbt_parser
-
-        change_data = psbt_parser.change_data
+        change_data = self.psbt_parser.change_data
         """
             change_data = [
                 {
@@ -131,14 +156,18 @@ class PSBTOverviewView(View):
         # Run the overview screen
         selected_menu_num = self.run_screen(
             PSBTOverviewScreen,
-            spend_amount=psbt_parser.spend_amount,
-            change_amount=psbt_parser.change_amount,
-            fee_amount=psbt_parser.fee_amount,
-            num_inputs=psbt_parser.num_inputs,
-            num_external_inputs=psbt_parser.num_external_inputs,
+            title=self.title,
+            is_cooperative_spend=self.psbt_parser.is_cooperative_spend,
+            is_payjoin_receive=self.psbt_parser.is_payjoin_receive,
+
+            display_amount=self.display_amount,
+
+            num_inputs=self.psbt_parser.num_inputs,
+            num_external_inputs=self.psbt_parser.num_external_inputs,
+
             num_self_transfer_outputs=num_self_transfer_outputs,
             num_change_outputs=num_change_outputs,
-            destination_addresses=psbt_parser.destination_addresses
+            destination_addresses=self.psbt_parser.destination_addresses
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -147,10 +176,10 @@ class PSBTOverviewView(View):
 
         # expecting p2sh (legacy multisig) and p2pkh to have no policy set
         # skip change warning and psbt math view
-        if psbt_parser.policy == None:
+        if self.psbt_parser.policy == None:
             return Destination(PSBTUnsupportedScriptTypeWarningView)
         
-        elif psbt_parser.change_amount == 0:
+        elif self.psbt_parser.change_amount == 0:
             return Destination(PSBTNoChangeWarningView)
 
         else:
@@ -197,6 +226,36 @@ class PSBTNoChangeWarningView(View):
 
 
 
+class PSBTCooperativeSpendNetView(View):
+    def __init__(self):
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
+        if not self.psbt_parser:
+            # Should not be able to get here
+            self.set_redirect(Destination(MainMenuView))
+            return
+
+    def run(self):
+        if self.psbt_parser.change_amount > self.psbt_parser.input_amount:
+            # User is the payjoin recipient getting more net sats than they put in.
+            pass
+        else:
+            # User is the payjoin sender.
+            pass
+
+        selected_menu_num = self.run_screen(
+            PSBTCooperativeSpendNetScreen,
+            input_amount=self.psbt_parser.input_amount,
+            num_inputs=self.psbt_parser.num_inputs,
+            spend_amount=self.psbt_parser.spend_amount,
+            num_recipients=self.psbt_parser.num_destinations,
+            fee_amount=self.psbt_parser.fee_amount,
+            change_amount=self.psbt_parser.change_amount,
+        )
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+
 class PSBTMathView(View):
     """
         Follows the Overview pictogram. Shows:
@@ -206,26 +265,34 @@ class PSBTMathView(View):
         -------------------
         + change value
     """
-    def run(self):
-        psbt_parser: PSBTParser = self.controller.psbt_parser
-        if not psbt_parser:
+    def __init__(self):
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
+        if not self.psbt_parser:
             # Should not be able to get here
-            return Destination(MainMenuView)
-        
+            self.set_redirect(Destination(MainMenuView))
+            return
+
+        if self.psbt_parser.num_external_inputs > 0:
+            # This is a cooperative spend / payjoin. Divert to the payjoin flow.
+            self.set_redirect(Destination(PSBTCooperativeSpendNetView))
+            return
+
+
+    def run(self):        
         selected_menu_num = self.run_screen(
             PSBTMathScreen,
-            input_amount=psbt_parser.input_amount,
-            num_inputs=psbt_parser.num_inputs,
-            spend_amount=psbt_parser.spend_amount,
-            num_recipients=psbt_parser.num_destinations,
-            fee_amount=psbt_parser.fee_amount,
-            change_amount=psbt_parser.change_amount,
+            input_amount=self.psbt_parser.input_amount,
+            num_inputs=self.psbt_parser.num_inputs,
+            spend_amount=self.psbt_parser.spend_amount,
+            num_recipients=self.psbt_parser.num_destinations,
+            fee_amount=self.psbt_parser.fee_amount,
+            change_amount=self.psbt_parser.change_amount,
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
 
-        if len(psbt_parser.destination_addresses) > 0:
+        if len(self.psbt_parser.destination_addresses) > 0:
             return Destination(PSBTAddressDetailsView, view_args={"address_num": 0})
         else:
             # This is a self-transfer

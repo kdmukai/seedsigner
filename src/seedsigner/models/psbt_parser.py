@@ -56,6 +56,23 @@ class PSBTParser():
 
 
     @property
+    def is_cooperative_spend(self):
+        """
+        Does the tx include inputs that the seed does not control?
+        """
+        return self.num_external_inputs > 0
+
+
+    @property
+    def is_payjoin_receive(self):
+        """
+        Payjoins are a specific type of cooperative spend where the recipient contributes
+        an input to the tx, but receives an output that is larger than their input.
+        """
+        return self.is_cooperative_spend and self.input_amount < self.change_amount
+
+
+    @property
     def num_destinations(self):
         return len(self.destination_addresses)
 

@@ -257,11 +257,18 @@ class TestPSBTParser:
         malcolm_psbt_base64 = "cHNidP8BAHECAAAAAWYnORF7WxbvXGvLsusU+pc6TXZa8VEMNdp7vaBQVYVCAgAAAAD9////AtawLQAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUXKLkABAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwdbgAAAE8BBDWHzwNXHdv+gAAAAG5A8fYC1UaCqTjVNmzP41+yrhVJEa02NktU+hU1gqpdAzp4rbh4dNpY+9lqJ8cE1mJQozBDm1mvmg6+s0+/TDUuEAPNCitUAACAAAAAgAAAAIAAAQEfivVtAQAAAAAWABTjYDCb4Xjt9crkkGTmkTUq62y3VAEDBAEAAAAiBgMHW935AUdSTj7f5cqUZaoXQMzFEd79QZJ5ynA9iF7V8xgDzQorVAAAgAAAAIAAAACAAAAAAAMAAAAAIgICz3sTM/0BgYjqZmMLL+67hILVA7diXpeQxlrZXreSc7sYA80KK1QAAIAAAACAAAAAgAEAAAABAAAAAAA="
         malcolm_psbt = PSBT.parse(a2b_base64(malcolm_psbt_base64))
         malcolm_utxo_value = malcolm_psbt.inputs[0].utxo.value
+        malcolm_payment = malcolm_psbt.outputs[1].value
+
+        assert malcolm_utxo_value == 23_983_498
+        assert malcolm_payment == 20_983_498
 
         # The receiver's initial psbt is an internal cycle spending her own utxo back to the same receive address as above
+        # Additional 8,793,478 sats in the receiver's input.
         zoe_psbt_base64 = "cHNidP8BAFICAAAAAXAmz5cHZ6Z8NQtliuNnFqEV0GgegEaGOLkgnSEl334OAQAAAAD9////ARgthgAAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB1uAAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAA"
         zoe_psbt = PSBT.parse(a2b_base64(zoe_psbt_base64))
         zoe_utxo_value = zoe_psbt.inputs[0].utxo.value
+
+        assert zoe_utxo_value == 8_793_478
 
         # Initially the respective psbts are not cooperative
         malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
@@ -269,21 +276,21 @@ class TestPSBTParser:
         assert malcolm_psbt_parser.num_external_inputs == 0
         assert zoe_psbt_parser.num_external_inputs == 0
 
+        zoe_input_bip32_derivations = zoe_psbt.inputs[0].bip32_derivations
+        zoe_output_bip32_derivations = zoe_psbt.outputs[0].bip32_derivations
+
         # Add the receiver's input to the sender's version of the payjoin tx
         malcolm_psbt.inputs.append(deepcopy(zoe_psbt.inputs[0]))
-        # malcolm_psbt.inputs[1].bip32_derivations = OrderedDict()  # sender typically won't know these details about the receiver's input
-
-        # Add the sender's input to recipient's version of the payjoin tx
-        zoe_psbt.inputs.append(deepcopy(malcolm_psbt.inputs[0]))
-        # zoe_psbt.inputs[1].bip32_derivations = OrderedDict()  # recipient typically won't know these details about the sender's input
-
-        # Add the sender's change to recipient's verstion of the payjoin tx
-        zoe_psbt.outputs.append(deepcopy(malcolm_psbt.outputs[0]))
-        zoe_psbt.outputs[1].bip32_derivations = OrderedDict()  # recipient typically won't know these details about the sender's output
+        malcolm_psbt.inputs[1].bip32_derivations = OrderedDict()  # sender typically won't know these details about the receiver's input
 
         # Credit the receiver's total amount to be received
-        malcolm_psbt.outputs[1].value += zoe_utxo_value
-        zoe_psbt.outputs[1].value += zoe_utxo_value
+        malcolm_psbt.outputs[1].value = malcolm_payment + zoe_utxo_value
+
+        # Malcolm's psbt is now the expected structure for this tx
+        zoe_psbt = deepcopy(malcolm_psbt)
+        zoe_psbt.inputs[0].bip32_derivations = OrderedDict()  # recipient typically won't know these details about the sender's input
+        zoe_psbt.inputs[1].bip32_derivations = zoe_input_bip32_derivations
+        zoe_psbt.outputs[1].bip32_derivations = zoe_output_bip32_derivations
 
         print("Malcolm's PSBT:", malcolm_psbt)
         print("Zoe's PSBT:", zoe_psbt)

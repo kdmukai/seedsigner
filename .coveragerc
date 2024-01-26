@@ -3,7 +3,7 @@ branch = True
 
 [report]
 skip_empty = True
-skip_covered = True
+skip_covered = False
 
 # Omit; need a different approach to test modules with hardware dependencies 
 omit =
@@ -11,6 +11,7 @@ omit =
     */tests/*
     */pyzbar/*
     */gui/*
+    */hardware/*
 
 # Regexes for lines to exclude from consideration
 exclude_lines =
