@@ -1,8 +1,8 @@
 from base import FlowTest, FlowStep
 
-from seedsigner.controller import Controller
 from seedsigner.views.view import MainMenuView
 from seedsigner.views import scan_views, seed_views, psbt_views
+
 
 class TestPSBTFlows(FlowTest):
 
@@ -54,7 +54,8 @@ class TestPSBTFlows(FlowTest):
 			FlowStep(psbt_views.PSBTSignedQRDisplayView),
 			FlowStep(MainMenuView)
 		])
-		
+
+
 	def test_scan_multisig_psbt_seed_already_signed_flow(self):
 		
 		def load_psbt_into_decoder(view: scan_views.ScanView):
@@ -90,4 +91,60 @@ class TestPSBTFlows(FlowTest):
 			FlowStep(psbt_views.PSBTSignedQRDisplayView),
 			FlowStep(MainMenuView),
 		])
+
+
+	def test_payjoin_receive_flow(self):
+		def load_psbt_into_decoder(view: scan_views.ScanView):
+			# Load the test PSBT for the payjoin receiver from the payjoin test in test_psbt_parser.py
+			view.decoder.add_data("cHNidP8BAFICAAAAAXAmz5cHZ6Z8NQtliuNnFqEV0GgegEaGOLkgnSEl334OAQAAAAD9////ARgthgAAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB1uAAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAA")
 		
+		def load_seed_into_decoder(view: scan_views.ScanView):
+			# Load Zoe's test seed
+			view.decoder.add_data("160217621035045812230936199010111598130117011562")
+			
+		self.run_sequence([
+			FlowStep(MainMenuView, button_data_selection=MainMenuView.SCAN),
+			FlowStep(scan_views.ScanView, before_run=load_psbt_into_decoder),  # simulate read PSBT; ret val is ignored
+			FlowStep(psbt_views.PSBTSelectSeedView, button_data_selection=psbt_views.PSBTSelectSeedView.SCAN_SEED),
+			FlowStep(scan_views.ScanSeedQRView, before_run=load_seed_into_decoder),
+			FlowStep(seed_views.SeedFinalizeView, button_data_selection=seed_views.SeedFinalizeView.FINALIZE),
+			FlowStep(seed_views.SeedOptionsView, is_redirect=True),
+			FlowStep(psbt_views.PSBTOverviewView),
+			FlowStep(psbt_views.PSBTMathView),
+
+			# Sender's output is ignored and we go straight to the receiver's output
+			FlowStep(psbt_views.PSBTChangeDetailsView, button_data_selection=psbt_views.PSBTChangeDetailsView.NEXT),
+			FlowStep(psbt_views.PSBTFinalizeView, button_data_selection=psbt_views.PSBTFinalizeView.APPROVE_PSBT),
+			FlowStep(psbt_views.PSBTSignedQRDisplayView),
+			FlowStep(MainMenuView),
+		])
+
+
+	def test_payjoin_send_flow(self):
+		def load_psbt_into_decoder(view: scan_views.ScanView):
+			# Load the test PSBT for the payjoin sender from the payjoin test in test_psbt_parser.py
+			view.decoder.add_data("cHNidP8BAHECAAAAAWvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////Ata1PAAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUUALTEBAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwddwAAAE8BBDWHzwNXHdv+gAAAAG5A8fYC1UaCqTjVNmzP41+yrhVJEa02NktU+hU1gqpdAzp4rbh4dNpY+9lqJ8cE1mJQozBDm1mvmg6+s0+/TDUuEAPNCitUAACAAAAAgAAAAIAAAQEfivVtAQAAAAAWABTDpWRRgBdkOHw+xyCMOJAlYXOnDAEDBAEAAAAiBgLyWP5xUwnTMbj+HMUP62woAPFiEHvMJRZfp94fcnpRpxgDzQorVAAAgAAAAIAAAACAAAAAAAEAAAAAIgICz3sTM/0BgYjqZmMLL+67hILVA7diXpeQxlrZXreSc7sYA80KK1QAAIAAAACAAAAAgAEAAAABAAAAAAA=")
+		
+		def load_seed_into_decoder(view: scan_views.ScanView):
+			# Load Malcolm's test seed
+			view.decoder.add_data("017208090808167016691937063409501892122516620286")
+			
+		self.run_sequence([
+			FlowStep(MainMenuView, button_data_selection=MainMenuView.SCAN),
+			FlowStep(scan_views.ScanView, before_run=load_psbt_into_decoder),  # simulate read PSBT; ret val is ignored
+			FlowStep(psbt_views.PSBTSelectSeedView, button_data_selection=psbt_views.PSBTSelectSeedView.SCAN_SEED),
+			FlowStep(scan_views.ScanSeedQRView, before_run=load_seed_into_decoder),
+			FlowStep(seed_views.SeedFinalizeView, button_data_selection=seed_views.SeedFinalizeView.FINALIZE),
+			FlowStep(seed_views.SeedOptionsView, is_redirect=True),
+			FlowStep(psbt_views.PSBTOverviewView),
+			FlowStep(psbt_views.PSBTMathView),
+
+			# Sender reviews the recipient's output
+			FlowStep(psbt_views.PSBTAddressDetailsView, button_data_selection=psbt_views.PSBTAddressDetailsView.NEXT),
+
+			# And their own change output
+			FlowStep(psbt_views.PSBTChangeDetailsView, button_data_selection=psbt_views.PSBTChangeDetailsView.NEXT),
+			FlowStep(psbt_views.PSBTFinalizeView, button_data_selection=psbt_views.PSBTFinalizeView.APPROVE_PSBT),
+			FlowStep(psbt_views.PSBTSignedQRDisplayView),
+			FlowStep(MainMenuView),
+		])

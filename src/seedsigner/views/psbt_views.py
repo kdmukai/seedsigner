@@ -88,8 +88,9 @@ class PSBTOverviewView(View):
         super().__init__()
 
         self.loading_screen = None
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
 
-        if not self.controller.psbt_parser or self.controller.psbt_parser.seed != self.controller.psbt_seed:
+        if not self.psbt_parser or self.psbt_parser.seed != self.controller.psbt_seed:
             # The PSBTParser takes a while to read the PSBT. Run the loading screen while
             # we wait.
             from seedsigner.gui.screens.screen import LoadingScreenThread
@@ -226,36 +227,6 @@ class PSBTNoChangeWarningView(View):
 
 
 
-class PSBTCooperativeSpendNetView(View):
-    def __init__(self):
-        self.psbt_parser: PSBTParser = self.controller.psbt_parser
-        if not self.psbt_parser:
-            # Should not be able to get here
-            self.set_redirect(Destination(MainMenuView))
-            return
-
-    def run(self):
-        if self.psbt_parser.change_amount > self.psbt_parser.input_amount:
-            # User is the payjoin recipient getting more net sats than they put in.
-            pass
-        else:
-            # User is the payjoin sender.
-            pass
-
-        selected_menu_num = self.run_screen(
-            PSBTCooperativeSpendNetScreen,
-            input_amount=self.psbt_parser.input_amount,
-            num_inputs=self.psbt_parser.num_inputs,
-            spend_amount=self.psbt_parser.spend_amount,
-            num_recipients=self.psbt_parser.num_destinations,
-            fee_amount=self.psbt_parser.fee_amount,
-            change_amount=self.psbt_parser.change_amount,
-        )
-
-        if selected_menu_num == RET_CODE__BACK_BUTTON:
-            return Destination(BackStackView)
-
-
 class PSBTMathView(View):
     """
         Follows the Overview pictogram. Shows:
@@ -266,31 +237,41 @@ class PSBTMathView(View):
         + change value
     """
     def __init__(self):
+        super().__init__()
         self.psbt_parser: PSBTParser = self.controller.psbt_parser
         if not self.psbt_parser:
             # Should not be able to get here
             self.set_redirect(Destination(MainMenuView))
             return
 
-        if self.psbt_parser.num_external_inputs > 0:
-            # This is a cooperative spend / payjoin. Divert to the payjoin flow.
-            self.set_redirect(Destination(PSBTCooperativeSpendNetView))
-            return
 
+    def run(self):
+        spend_amount = self.psbt_parser.spend_amount
+        if self.psbt_parser.is_payjoin_receive:
+            spend_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+        elif self.psbt_parser.is_cooperative_spend:
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount
 
-    def run(self):        
         selected_menu_num = self.run_screen(
             PSBTMathScreen,
-            input_amount=self.psbt_parser.input_amount,
+            is_cooperative_spend=self.psbt_parser.is_cooperative_spend,
+            is_payjoin_receive=self.psbt_parser.is_payjoin_receive,
+
             num_inputs=self.psbt_parser.num_inputs,
-            spend_amount=self.psbt_parser.spend_amount,
             num_recipients=self.psbt_parser.num_destinations,
-            fee_amount=self.psbt_parser.fee_amount,
+
+            input_amount=self.psbt_parser.input_amount,
+            spend_amount=spend_amount,
+            fee_amount=self.psbt_parser.fee_amount if not self.psbt_parser.is_payjoin_receive else 0,
             change_amount=self.psbt_parser.change_amount,
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
+
+        if self.psbt_parser.is_payjoin_receive:
+            # Payjoin receives ignore any other outputs except their own receive addr
+            return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
 
         if len(self.psbt_parser.destination_addresses) > 0:
             return Destination(PSBTAddressDetailsView, view_args={"address_num": 0})
@@ -304,6 +285,9 @@ class PSBTAddressDetailsView(View):
     """
         Shows the recipient's address and amount they will receive
     """
+    NEXT = "Next"
+    NEXT_RECIPIENT = "Next Recipient"
+
     def __init__(self, address_num):
         super().__init__()
         self.address_num = address_num
@@ -317,20 +301,25 @@ class PSBTAddressDetailsView(View):
             raise Exception("Routing error")
 
         title = "Will Send"
+
         if psbt_parser.num_destinations > 1:
             title += f" (#{self.address_num + 1})"
 
         if self.address_num < psbt_parser.num_destinations - 1:
-            button_data = ["Next Recipient"]
+            button_data = [self.NEXT_RECIPIENT]
         else:
-            button_data = ["Next"]
+            button_data = [self.NEXT]
+
+        amount = psbt_parser.destination_amounts[self.address_num]
+        if psbt_parser.is_cooperative_spend:
+            amount = psbt_parser.spend_amount - psbt_parser.external_input_amount
 
         selected_menu_num = self.run_screen(
             PSBTAddressDetailsScreen,
             title=title,
             button_data=button_data,
             address=psbt_parser.destination_addresses[self.address_num],
-            amount=psbt_parser.destination_amounts[self.address_num],
+            amount=amount,
         )
         
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -400,6 +389,11 @@ class PSBTChangeDetailsView(View):
         else:
             title = "Self-Transfer"
             self.VERIFY_MULTISIG = "Verify Multisig Addr"
+
+        if psbt_parser.is_cooperative_spend:
+            if psbt_parser.is_payjoin_receive:
+                title = "Payjoin Receive"
+
         # if psbt_parser.num_change_outputs > 1:
         #     title += f" (#{self.change_address_num + 1})"
 
@@ -457,10 +451,14 @@ class PSBTChangeDetailsView(View):
                     is_change_addr_verified = True
                     button_data = [self.NEXT]
 
+            except Exception as e:
+                print(e)
+                raise e
+
             finally:
                 loading_screen.stop()
 
-        if is_change_addr_verified == False and (not psbt_parser.is_multisig or self.controller.multisig_wallet_descriptor is not None):
+        if is_change_addr_verified is False and (not psbt_parser.is_multisig or self.controller.multisig_wallet_descriptor is not None):
             return Destination(PSBTAddressVerificationFailedView, view_args=dict(is_change=is_change_derivation_path, is_multisig=psbt_parser.is_multisig), clear_history=True)
 
         selected_menu_num = self.run_screen(

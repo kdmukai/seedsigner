@@ -136,7 +136,7 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             if len(self.destination_addresses) + self.num_self_transfer_outputs <= 3:
                 for addr in self.destination_addresses:
-                    if self.is_cooperative_spend:
+                    if self.is_payjoin_receive:
                         destination_column.append(truncate_destination_addr("theirs"))
                     else:
                         destination_column.append(truncate_destination_addr(addr))
@@ -486,10 +486,14 @@ class PSBTOverviewScreen(ButtonListScreen):
 
 @dataclass
 class PSBTMathScreen(ButtonListScreen):
-    input_amount: int = 0
+    is_cooperative_spend: bool = False
+    is_payjoin_receive: bool = False
+
     num_inputs: int = 0
-    spend_amount: int = 0
     num_recipients: int = 0
+
+    input_amount: int = 0
+    spend_amount: int = 0
     fee_amount: int = 0
     change_amount: int = 0
 
@@ -498,6 +502,12 @@ class PSBTMathScreen(ButtonListScreen):
         # Customize defaults
         self.title = "PSBT Math"
         self.button_data = ["Review Recipients"]
+        if self.is_cooperative_spend:
+            if self.is_payjoin_receive:
+                self.title = "Payjoin Receive"
+                self.button_data = ["Review Receive Addr"]
+            else:
+                self.title = "Cooperative Spend"
         self.is_bottom_list = True
 
         super().__post_init__()
@@ -570,11 +580,22 @@ class PSBTMathScreen(ButtonListScreen):
                 draw.text((0, cur_y), text=amount_str, font=fixed_width_font, fill=GUIConstants.BODY_FONT_COLOR)
             draw.text((digits_width + 2*digit_group_spacing, cur_y), text=info_text, font=body_font, fill=info_text_color)
 
+        input_label = f""" input{"s" if self.num_inputs > 1 else ""}"""
+        recipient_amount_display = f"-{self.spend_amount}"
+        recipient_label = f""" recipient{"s" if self.num_recipients > 1 else ""}"""
+        fee_label = f" fee"
+        total_label = f" {denomination} change"
+        if self.is_cooperative_spend:
+            input_label = " your utxo"
+            if self.is_payjoin_receive:
+                recipient_amount_display = f"+{self.spend_amount}"
+                recipient_label = " receive"
+                fee_label = " fee (n/a)"
+                total_label = " PJ total"
         render_amount(
             cur_y,
             f" {self.input_amount}",
-            # info_text=f""" {self.num_inputs} input{"s" if self.num_inputs > 1 else ""}""",
-            info_text=f""" input{"s" if self.num_inputs > 1 else ""}""",
+            info_text=input_label,
         )
 
         # spend_amount will be zero on self-transfers; only display when there's an
@@ -583,16 +604,15 @@ class PSBTMathScreen(ButtonListScreen):
             cur_y += int(digits_height * 1.2)
             render_amount(
                 cur_y,
-                f"-{self.spend_amount}",
-                # info_text=f""" {self.num_recipients} recipient{"s" if self.num_recipients > 1 else ""}""",
-                info_text=f""" recipient{"s" if self.num_recipients > 1 else ""}""",
+                recipient_amount_display,
+                info_text=recipient_label,
             )
 
         cur_y += int(digits_height * 1.2)
         render_amount(
             cur_y,
             f"-{self.fee_amount}",
-            info_text=f""" fee""",
+            info_text=fee_label,
         )
 
         cur_y += int(digits_height * 1.2) + 4 * ssf
@@ -602,7 +622,7 @@ class PSBTMathScreen(ButtonListScreen):
         render_amount(
             cur_y,
             f" {self.change_amount}",
-            info_text=f" {denomination} change",
+            info_text=total_label,
             info_text_color="darkorange"  # super-sampling alters the perceived color
         )
 

@@ -1,7 +1,6 @@
 from binascii import a2b_base64, unhexlify
 from io import BytesIO
 
-from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
 from embit.psbt import PSBT, OutputScope
 

@@ -254,13 +254,13 @@ class TestPSBTParser:
         zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
 
         # The sender's initial psbt is just a normal payment; 1 input, 2 outputs (0: change, 1: receiver)
-        malcolm_psbt_base64 = "cHNidP8BAHECAAAAAWYnORF7WxbvXGvLsusU+pc6TXZa8VEMNdp7vaBQVYVCAgAAAAD9////AtawLQAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUXKLkABAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwdbgAAAE8BBDWHzwNXHdv+gAAAAG5A8fYC1UaCqTjVNmzP41+yrhVJEa02NktU+hU1gqpdAzp4rbh4dNpY+9lqJ8cE1mJQozBDm1mvmg6+s0+/TDUuEAPNCitUAACAAAAAgAAAAIAAAQEfivVtAQAAAAAWABTjYDCb4Xjt9crkkGTmkTUq62y3VAEDBAEAAAAiBgMHW935AUdSTj7f5cqUZaoXQMzFEd79QZJ5ynA9iF7V8xgDzQorVAAAgAAAAIAAAACAAAAAAAMAAAAAIgICz3sTM/0BgYjqZmMLL+67hILVA7diXpeQxlrZXreSc7sYA80KK1QAAIAAAACAAAAAgAEAAAABAAAAAAA="
+        malcolm_psbt_base64 = "cHNidP8BAHECAAAAAWvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////Ata1PAAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUUALTEBAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwddwAAAE8BBDWHzwNXHdv+gAAAAG5A8fYC1UaCqTjVNmzP41+yrhVJEa02NktU+hU1gqpdAzp4rbh4dNpY+9lqJ8cE1mJQozBDm1mvmg6+s0+/TDUuEAPNCitUAACAAAAAgAAAAIAAAQEfivVtAQAAAAAWABTDpWRRgBdkOHw+xyCMOJAlYXOnDAEDBAEAAAAiBgLyWP5xUwnTMbj+HMUP62woAPFiEHvMJRZfp94fcnpRpxgDzQorVAAAgAAAAIAAAACAAAAAAAEAAAAAIgICz3sTM/0BgYjqZmMLL+67hILVA7diXpeQxlrZXreSc7sYA80KK1QAAIAAAACAAAAAgAEAAAABAAAAAAA="
         malcolm_psbt = PSBT.parse(a2b_base64(malcolm_psbt_base64))
         malcolm_utxo_value = malcolm_psbt.inputs[0].utxo.value
         malcolm_payment = malcolm_psbt.outputs[1].value
 
         assert malcolm_utxo_value == 23_983_498
-        assert malcolm_payment == 20_983_498
+        assert malcolm_payment == 20_000_000
 
         # The receiver's initial psbt is an internal cycle spending her own utxo back to the same receive address as above
         # Additional 8,793,478 sats in the receiver's input.
@@ -273,33 +273,44 @@ class TestPSBTParser:
         # Initially the respective psbts are not cooperative
         malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
         zoe_psbt_parser = PSBTParser(zoe_psbt, zoe_seed)
-        assert malcolm_psbt_parser.num_external_inputs == 0
-        assert zoe_psbt_parser.num_external_inputs == 0
+        assert malcolm_psbt_parser.is_cooperative_spend is False
+        assert zoe_psbt_parser.is_cooperative_spend is False
 
         zoe_input_bip32_derivations = zoe_psbt.inputs[0].bip32_derivations
         zoe_output_bip32_derivations = zoe_psbt.outputs[0].bip32_derivations
 
         # Add the receiver's input to the sender's version of the payjoin tx
-        malcolm_psbt.inputs.append(deepcopy(zoe_psbt.inputs[0]))
+        malcolm_psbt.inputs.append(zoe_psbt.inputs[0])
         malcolm_psbt.inputs[1].bip32_derivations = OrderedDict()  # sender typically won't know these details about the receiver's input
 
         # Credit the receiver's total amount to be received
         malcolm_psbt.outputs[1].value = malcolm_payment + zoe_utxo_value
 
         # Malcolm's psbt is now the expected structure for this tx
-        zoe_psbt = deepcopy(malcolm_psbt)
-        zoe_psbt.inputs[0].bip32_derivations = OrderedDict()  # recipient typically won't know these details about the sender's input
-        zoe_psbt.inputs[1].bip32_derivations = zoe_input_bip32_derivations
-        zoe_psbt.outputs[1].bip32_derivations = zoe_output_bip32_derivations
+        pj_zoe_psbt = deepcopy(malcolm_psbt)
+        pj_zoe_psbt.inputs[0].bip32_derivations = OrderedDict()  # recipient typically won't know these details about the sender's input
+        pj_zoe_psbt.inputs[1].bip32_derivations = zoe_input_bip32_derivations
+        pj_zoe_psbt.outputs[1].bip32_derivations = zoe_output_bip32_derivations
 
-        print("Malcolm's PSBT:", malcolm_psbt)
-        print("Zoe's PSBT:", zoe_psbt)
+        assert malcolm_psbt.tx.txid() == pj_zoe_psbt.tx.txid()
+
+        print(f"\nMalcolm's PSBT: {malcolm_psbt}\n")
+        print(f"Zoe's PSBT: {pj_zoe_psbt}\n")
+
+        malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
+        zoe_psbt_parser = PSBTParser(pj_zoe_psbt, zoe_seed)
 
         # Both parties should now view this as a cooperative spend
-        malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
-        zoe_psbt_parser = PSBTParser(zoe_psbt, zoe_seed)
+        assert malcolm_psbt_parser.is_cooperative_spend
+        assert zoe_psbt_parser.is_cooperative_spend
         assert malcolm_psbt_parser.num_external_inputs > 0
+        assert malcolm_psbt_parser.num_inputs == 1
         assert zoe_psbt_parser.num_external_inputs > 0
+        assert zoe_psbt_parser.num_inputs == 1
+
+        # But differ on their perspective of whether this is a payjoin receive
+        assert malcolm_psbt_parser.is_payjoin_receive is False
+        assert zoe_psbt_parser.is_payjoin_receive
 
         # Verify that the inputs are parsed correctly from Zoe's perspective
         assert zoe_psbt_parser.external_input_amount == malcolm_utxo_value
@@ -311,4 +322,4 @@ class TestPSBTParser:
 
         # sanity check that both parties can sign
         assert malcolm_psbt.sign_with(bip32.HDKey.from_seed(malcolm_seed.seed_bytes)) == 1
-        assert zoe_psbt.sign_with(bip32.HDKey.from_seed(zoe_seed.seed_bytes)) == 1
+        assert pj_zoe_psbt.sign_with(bip32.HDKey.from_seed(zoe_seed.seed_bytes)) == 1

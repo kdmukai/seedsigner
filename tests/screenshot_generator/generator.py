@@ -13,6 +13,7 @@ from seedsigner.models.psbt_parser import PSBTParser
 # These must precede any SeedSigner imports.
 sys.modules['seedsigner.hardware.ST7789'] = MagicMock()
 sys.modules['seedsigner.gui.screens.screensaver'] = MagicMock()
+sys.modules['seedsigner.gui.screens.LoadingScreenThread'] = MagicMock()
 sys.modules['seedsigner.views.screensaver'] = MagicMock()
 sys.modules['RPi'] = MagicMock()
 sys.modules['RPi.GPIO'] = MagicMock()
@@ -182,7 +183,6 @@ def test_generate_screenshots(target_locale):
         "PSBT Views": [
             psbt_views.PSBTSelectSeedView, # this will fail, be rerun below
             psbt_views.PSBTOverviewView,
-            (psbt_views.PSBTOverviewView, {}, "PSBTOverviewView_payjoin"),
             psbt_views.PSBTUnsupportedScriptTypeWarningView,
             psbt_views.PSBTNoChangeWarningView,
             psbt_views.PSBTMathView,
@@ -199,6 +199,17 @@ def test_generate_screenshots(target_locale):
             psbt_views.PSBTFinalizeView,
             #PSBTSignedQRDisplayView
             psbt_views.PSBTSigningErrorView,
+
+            # Payjoin from the receiver's perspective
+            (psbt_views.PSBTOverviewView, {}, "PSBTOverviewView_payjoin_receive"),
+            (psbt_views.PSBTMathView, {}, "PSBTMathView_payjoin_receive"),
+            (psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), "PSBTChangeDetailsView_payjoin_receive"),
+
+            # Payjoin from the sender's perspective
+            (psbt_views.PSBTOverviewView, {}, "PSBTOverviewView_payjoin_send"),
+            (psbt_views.PSBTMathView, {}, "PSBTMathView_payjoin_send"),
+            (psbt_views.PSBTAddressDetailsView, dict(address_num=0), "PSBTAddressDetailsView_payjoin_send"),
+            (psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), "PSBTChangeDetailsView_payjoin_send"),
         ],
         "Tools Views": [
             tools_views.ToolsMenuView,
@@ -324,13 +335,29 @@ def test_generate_screenshots(target_locale):
 
     # Render payjoin screens for real; use tx from test_psbt_parser.py payjoin test
     zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
-    payjoin_base64 = "cHNidP8BAJoCAAAAAnAmz5cHZ6Z8NQtliuNnFqEV0GgegEaGOLkgnSEl334OAQAAAAD9////Zic5EXtbFu9ca8uy6xT6lzpNdlrxUQw12nu9oFBVhUICAAAAAP3///8CGC2GAAAAAAAWABQMliMIrvkCAuGZTmxhw5b2Z+nMHVzeswAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUVuAAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAABAR+K9W0BAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAAAA=="
+    payjoin_base64 = "cHNidP8BAJoCAAAAAmvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////cCbPlwdnpnw1C2WK42cWoRXQaB6ARoY4uSCdISXffg4BAAAAAP3///8C1rU8AAAAAAAWABRy418s7hAxS+UrCmrk9CT6oWMBRYZatwEAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB13AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+K9W0BAAAAABYAFMOlZFGAF2Q4fD7HIIw4kCVhc6cMAQMEAQAAAAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgLPexMz/QGBiOpmYwsv7ruEgtUDt2Jel5DGWtlet5JzuxgDzQorVAAAgAAAAIAAAACAAQAAAAEAAAAAIgIDxpTFZnPjW8NV3oaa3bP9TPainGiPkc4pIjKn7rLA88EYD4iQRFQAAIAAAACAAAAAgAAAAAAFAAAAAA=="
     controller.psbt_seed = zoe_seed
     decoder = DecodeQR()
     decoder.add_data(payjoin_base64)
     controller.psbt = decoder.get_psbt()
-    controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed)
-    screencap_view(psbt_views.PSBTOverviewView, view_name='PSBTOverviewView_payjoin')
+    controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed, network=SettingsConstants.REGTEST)
+    controller.multisig_wallet_descriptor = None
+    screencap_view(psbt_views.PSBTOverviewView, view_name='PSBTOverviewView_payjoin_receive')
+    screencap_view(psbt_views.PSBTMathView, view_name='PSBTMathView_payjoin_receive')
+    screencap_view(psbt_views.PSBTChangeDetailsView, view_name='PSBTChangeDetailsView_payjoin_receive', view_args=dict(change_address_num=0))
+
+    # And then change to the payjoin sender's context
+    malcolm_seed = Seed("better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
+    payjoin_base64 = "cHNidP8BAJoCAAAAAmvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////cCbPlwdnpnw1C2WK42cWoRXQaB6ARoY4uSCdISXffg4BAAAAAP3///8C1rU8AAAAAAAWABRy418s7hAxS+UrCmrk9CT6oWMBRYZatwEAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB13AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+K9W0BAAAAABYAFMOlZFGAF2Q4fD7HIIw4kCVhc6cMAQMEAQAAACIGAvJY/nFTCdMxuP4cxQ/rbCgA8WIQe8wlFl+n3h9yelGnGAPNCitUAACAAAAAgAAAAIAAAAAAAQAAAAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAAAAiAgLPexMz/QGBiOpmYwsv7ruEgtUDt2Jel5DGWtlet5JzuxgDzQorVAAAgAAAAIAAAACAAQAAAAEAAAAAAA=="
+    controller.psbt_seed = malcolm_seed
+    decoder = DecodeQR()
+    decoder.add_data(payjoin_base64)
+    controller.psbt = decoder.get_psbt()
+    controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+    screencap_view(psbt_views.PSBTOverviewView, view_name='PSBTOverviewView_payjoin_send')
+    screencap_view(psbt_views.PSBTMathView, view_name='PSBTMathView_payjoin_send')
+    screencap_view(psbt_views.PSBTAddressDetailsView, view_name='PSBTAddressDetailsView_payjoin_send', view_args=dict(address_num=0))
+    screencap_view(psbt_views.PSBTChangeDetailsView, view_name='PSBTChangeDetailsView_payjoin_send', view_args=dict(change_address_num=0))
 
     with open(os.path.join(screenshot_root, "README.md"), 'w') as readme_file:
        readme_file.write(readme)
