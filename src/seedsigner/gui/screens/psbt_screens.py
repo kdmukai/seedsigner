@@ -42,7 +42,8 @@ class PSBTOverviewScreen(ButtonListScreen):
         ))
 
         # Prep the transaction flow chart
-        collab_input_label = "theirs"
+        external_input_output_label = "theirs"
+        owner_input_output_label = "yours"
         payjoin_receive_label = "PJ receive"
 
         self.chart_x = 0
@@ -79,27 +80,32 @@ class PSBTOverviewScreen(ButtonListScreen):
         
         # First calculate how wide the inputs col will be
         inputs_column = []
-        if self.num_inputs == 1:
-            if self.is_cooperative_spend:
-                inputs_column.append("yours")
-            else:
-                inputs_column.append("1 input")
-        elif self.num_inputs > 5:
-            inputs_column.append("input 1")
-            inputs_column.append("input 2")
-            inputs_column.append("[ ... ]")
-            inputs_column.append(f"input {self.num_inputs-1}")
-            inputs_column.append(f"input {self.num_inputs}")
-        else:
-            for i in range(0, self.num_inputs):
-                inputs_column.append(f"input {i+1}")
+        if self.num_inputs + self.num_external_inputs < 5:
+            for i in range(0, self.num_external_inputs):
+                inputs_column.append(f"{external_input_output_label}")
 
-        # TODO: Handle logic for:
-        # * Lots of inputs + cooperative input
-        # * Lots of inputs + lots of cooperative inputs
-        # * < 5 inputs + lots of cooperative inputs
-        for i in range(0, self.num_external_inputs):
-            inputs_column.append(f"{collab_input_label}")
+            if self.is_cooperative_spend:
+                for i in range(0, self.num_inputs):
+                    inputs_column.append(f"{owner_input_output_label}")
+            else:
+                if self.num_inputs > 1:
+                    for i in range(0, self.num_inputs):
+                        inputs_column.append(f"input {i+1}")
+                else:
+                    inputs_column.append("1 input")
+
+        else:
+            # Have to consolidate our display
+            if self.is_cooperative_spend:
+                inputs_column.append(f"{external_input_output_label} ({self.num_external_inputs})")
+                inputs_column.append(f"{owner_input_output_label} ({self.num_inputs})")
+
+            else:
+                inputs_column.append("input 1")
+                inputs_column.append("input 2")
+                inputs_column.append("[ ... ]")
+                inputs_column.append(f"input {self.num_inputs-1}")
+                inputs_column.append(f"input {self.num_inputs}")
 
         max_inputs_text_width = 0
         for input in inputs_column:
@@ -135,9 +141,10 @@ class PSBTOverviewScreen(ButtonListScreen):
             destination_column = []
 
             if len(self.destination_addresses) + self.num_self_transfer_outputs <= 3:
+                # we can render all the outputs
                 for addr in self.destination_addresses:
                     if self.is_payjoin_receive:
-                        destination_column.append(truncate_destination_addr("theirs"))
+                        destination_column.append(truncate_destination_addr(external_input_output_label))
                     else:
                         destination_column.append(truncate_destination_addr(addr))
 
@@ -147,9 +154,14 @@ class PSBTOverviewScreen(ButtonListScreen):
                     else:
                         destination_column.append(truncate_destination_addr("self-transfer"))
             else:
-                destination_column.append(f"recipient 1")
-                destination_column.append(f"[ ... ]")
-                destination_column.append(f"recipient {len(self.destination_addresses) + self.num_self_transfer_outputs}")
+                # Too many outputs to display, have to consolidate
+                if self.is_cooperative_spend:
+                    destination_column.append(f"{external_input_output_label} ({len(self.destination_addresses)})")
+                    destination_column.append(f"{owner_input_output_label} ({self.num_self_transfer_outputs})")
+                else:
+                    destination_column.append(f"recipient 1")
+                    destination_column.append(f"[ ... ]")
+                    destination_column.append(f"recipient {len(self.destination_addresses) + self.num_self_transfer_outputs}")
 
             destination_column.append(f"fee")
 
@@ -253,7 +265,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                 )
 
             # External inputs are rendered as inert (`True` here)
-            input_curves.append((bezier_points, collab_input_label in input))
+            input_curves.append((bezier_points, external_input_output_label in input))
 
             prev_pt = bezier_points[0]
             for pt in bezier_points[1:]:
@@ -339,14 +351,17 @@ class PSBTOverviewScreen(ButtonListScreen):
 
             if self.is_payjoin_receive:
                 if destination == payjoin_receive_label:
-                    print("Rendering PJ receive as active")
                     output_curves.append((bezier_points, False))
                 else:
                     # For Payjoin receive, render all other outputs as inert
-                    print(f"Rendering {destination} as inactive")
                     output_curves.append((bezier_points, True))
+            elif self.is_cooperative_spend:
+                if external_input_output_label in destination:
+                    # Render others' outputs as inactive
+                    output_curves.append((bezier_points, True))
+                else:
+                    output_curves.append((bezier_points, False))
             else:
-                print(f"Rendering {destination} as active")
                 output_curves.append((bezier_points, False))
 
             prev_pt = bezier_points[0]
@@ -488,6 +503,9 @@ class PSBTOverviewScreen(ButtonListScreen):
 class PSBTMathScreen(ButtonListScreen):
     is_cooperative_spend: bool = False
     is_payjoin_receive: bool = False
+    is_payjoin_send: bool = False
+    is_coinjoin: bool = False
+    is_unknowable_spend_vs_fee: bool = False
 
     num_inputs: int = 0
     num_recipients: int = 0
@@ -506,6 +524,12 @@ class PSBTMathScreen(ButtonListScreen):
             if self.is_payjoin_receive:
                 self.title = "Payjoin Receive"
                 self.button_data = ["Review Receive Addr"]
+            elif self.is_payjoin_send:
+                self.title = "Payjoin Send"
+                self.button_data = ["Review Recipient"]
+            elif self.is_coinjoin:
+                self.title = "Coinjoin"
+                self.button_data = ["Review Receive Addrs"]
             else:
                 self.title = "Cooperative Spend"
         self.is_bottom_list = True
@@ -523,7 +547,7 @@ class PSBTMathScreen(ButtonListScreen):
 
             # Note: We keep the fee denominated in sats; just left pad it so it still
             # lines up properly.
-            self.fee_amount = f"{self.fee_amount:10}"
+            self.fee_amount = f"{self.fee_amount:10}" if self.fee_amount else ""
         else:
             denomination = "sats"
             self.input_amount = f"{self.input_amount:,}"
@@ -586,12 +610,19 @@ class PSBTMathScreen(ButtonListScreen):
         fee_label = f" fee"
         total_label = f" {denomination} change"
         if self.is_cooperative_spend:
-            input_label = " your utxo"
+            input_label = " your utxo" + ("s" if self.num_inputs > 1 else "")
             if self.is_payjoin_receive:
                 recipient_amount_display = f"+{self.spend_amount}"
                 recipient_label = " receive"
                 fee_label = " fee (n/a)"
                 total_label = " PJ total"
+
+            elif self.is_payjoin_send:
+                pass
+
+            elif self.is_unknowable_spend_vs_fee:
+                fee_label = " and/or fee"
+
         render_amount(
             cur_y,
             f" {self.input_amount}",
@@ -609,9 +640,12 @@ class PSBTMathScreen(ButtonListScreen):
             )
 
         cur_y += int(digits_height * 1.2)
+
+        # Omit the minus sign if there's no fee line to display
+        fee_amount_display = f"-{self.fee_amount}" if not self.is_unknowable_spend_vs_fee else f" {self.fee_amount}"
         render_amount(
             cur_y,
-            f"-{self.fee_amount}",
+            fee_amount_display,
             info_text=fee_label,
         )
 

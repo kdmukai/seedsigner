@@ -111,6 +111,10 @@ class PSBTOverviewView(View):
         if self.psbt_parser.is_cooperative_spend:
             if self.psbt_parser.is_payjoin_receive:
                 self.title = "Payjoin Receive"
+            elif self.psbt_parser.is_payjoin_send:
+                self.title = "Payjoin Send"
+            elif self.psbt_parser.is_coinjoin:
+                self.title = "Review Coinjoin"
             else:
                 self.title = "Cooperative Spend"
 
@@ -118,6 +122,9 @@ class PSBTOverviewView(View):
             if self.psbt_parser.is_payjoin_receive:
                 # Display how much we'll actually net receive from the payjoin
                 self.display_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+            elif self.psbt_parser.is_coinjoin:
+                # Our only expense is what we're contributing towards the fee
+                self.display_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount
             else:
                 self.display_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount - self.psbt_parser.fee_amount
 
@@ -247,8 +254,26 @@ class PSBTMathView(View):
 
     def run(self):
         spend_amount = self.psbt_parser.spend_amount
+        fee_amount = self.psbt_parser.fee_amount
         if self.psbt_parser.is_payjoin_receive:
+            # Payjoin sender pays the fees; recipient doesn't contribute any sats to fees
             spend_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+            fee_amount = 0
+
+        elif self.psbt_parser.is_payjoin_send:
+            # Spend should just omit recipient's input contribution
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount
+
+        elif self.psbt_parser.is_coinjoin:
+            # Coinjoin sends none of your own sats to anyone else, you just contribute to
+            # the fee.
+            spend_amount = 0
+            fee_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount
+        
+        elif self.psbt_parser.is_unknowable_spend_or_fee:
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount + self.psbt_parser.fee_amount
+            fee_amount = None
+
         elif self.psbt_parser.is_cooperative_spend:
             spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount
 
@@ -256,25 +281,30 @@ class PSBTMathView(View):
             PSBTMathScreen,
             is_cooperative_spend=self.psbt_parser.is_cooperative_spend,
             is_payjoin_receive=self.psbt_parser.is_payjoin_receive,
+            is_payjoin_send=self.psbt_parser.is_payjoin_send,
+            is_coinjoin=self.psbt_parser.is_coinjoin,
+            is_unknowable_spend_vs_fee=self.psbt_parser.is_unknowable_spend_or_fee,
 
             num_inputs=self.psbt_parser.num_inputs,
             num_recipients=self.psbt_parser.num_destinations,
 
             input_amount=self.psbt_parser.input_amount,
             spend_amount=spend_amount,
-            fee_amount=self.psbt_parser.fee_amount if not self.psbt_parser.is_payjoin_receive else 0,
+            fee_amount=fee_amount,
             change_amount=self.psbt_parser.change_amount,
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
 
-        if self.psbt_parser.is_payjoin_receive:
-            # Payjoin receives ignore any other outputs except their own receive addr
+        if self.psbt_parser.is_payjoin_receive or self.psbt_parser.is_coinjoin:
+            # Payjoin receives and coinjoins ignore any other outputs except their own
+            # receive addrs
             return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
 
         if len(self.psbt_parser.destination_addresses) > 0:
             return Destination(PSBTAddressDetailsView, view_args={"address_num": 0})
+
         else:
             # This is a self-transfer
             return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})

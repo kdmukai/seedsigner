@@ -210,6 +210,10 @@ def test_generate_screenshots(target_locale):
             (psbt_views.PSBTMathView, {}, "PSBTMathView_payjoin_send"),
             (psbt_views.PSBTAddressDetailsView, dict(address_num=0), "PSBTAddressDetailsView_payjoin_send"),
             (psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), "PSBTChangeDetailsView_payjoin_send"),
+
+            # Coinjoin
+            (psbt_views.PSBTOverviewView, {}, "PSBTOverviewView_coinjoin"),
+            (psbt_views.PSBTMathView, {}, "PSBTMathView_coinjoin"),
         ],
         "Tools Views": [
             tools_views.ToolsMenuView,
@@ -358,6 +362,16 @@ def test_generate_screenshots(target_locale):
     screencap_view(psbt_views.PSBTMathView, view_name='PSBTMathView_payjoin_send')
     screencap_view(psbt_views.PSBTAddressDetailsView, view_name='PSBTAddressDetailsView_payjoin_send', view_args=dict(address_num=0))
     screencap_view(psbt_views.PSBTChangeDetailsView, view_name='PSBTChangeDetailsView_payjoin_send', view_args=dict(change_address_num=0))
+
+    # Render the coinjoin screens for real
+    malcolm_coinjoin_psbt_base64 = "cHNidP8BAP3uAQIAAAAFUsuOhcX/DvTI/BZgYs2yeiYVP7E7N9tDoG9SdYnfSEMCAAAAAP3///9Sy46Fxf8O9Mj8FmBizbJ6JhU/sTs320Ogb1J1id9IQwMAAAAA/f///1LLjoXF/w70yPwWYGLNsnomFT+xOzfbQ6BvUnWJ30hDAQAAAAD9////mT05iCk32P6+TGMEMGKw6mH6fTafsNiCaqnbPbBgd14DAAAAAP3///+ZPTmIKTfY/r5MYwQwYrDqYfp9Np+w2IJqqds9sGB3XgEAAAAA/f///wk5bD0AAAAAABYAFC9NKd1nKSURCfVJ0o6jWWeWlmjhgJaYAAAAAAAWABRX/KTAYaj0b7PKz5gyctryXOfEsoCWmAAAAAAAFgAU/TrhKNM2cRT6q+DIUguvy+qU4/eQ0AMAAAAAABYAFPi2CaO4LYCR+yyZ9PAwK7uDjkjtQv0FAAAAAAAWABSRrp8CppZ5NN7QHVu1NHo2xDTJB4CWmAAAAAAAFgAUZzErX2kA+Nl0IANrpZ9W08BrBiqAlpgAAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwdgJaYAAAAAAAWABRR4vxAHWefj/vT6SRg4QuJGLOEwZDQAwAAAAAAFgAURsVsVzfCll3oga2Z1CByV626Q955AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+mDV0AAAAAABYAFB+v75HNdP9+BwA5PwHAAwouJdHyAQMEAQAAACIGAgr+mKm0GojP1MHLvlMUOEF7JHomGlLx1e1CbQsJdpNhGAPNCitUAACAAAAAgAAAAIAAAAAAAgAAAAABAR/TPGwAAAAAABYAFFHsyt85+w/2e7hF0EPwiCY/TflkAQMEAQAAACIGA+f4JzG7qkZI4HSOq4FYksLwMmk3sksU1v7O0rMzVsrzGAPNCitUAACAAAAAgAAAAIAAAAAABAAAAAABAR9ISakAAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAABAR9Y7VcAAAAAABYAFECoFhF19GpZPD+U34VOInM2mHmZAQMEAQAAAAABAR8NznsBAAAAABYAFC/fIiBm/J4dpWT5LUL4UnElwVsQAQMEAQAAAAAiAgOY2SYAfhS5fpzPQjMbNMEFbu+0q4EXkrYrhO4ksgJUGxgDzQorVAAAgAAAAIAAAACAAQAAAAIAAAAAIgID+67J/K4WQEgB5upEyOHKgHz+gjBNpa8pKEYoHIyQgUAYA80KK1QAAIAAAACAAAAAgAAAAAAGAAAAACICArA+YcBFJsnK5Tv5TkMdRC00Dw0+Rkf2S85oIr+PtG8RGAPNCitUAACAAAAAgAAAAIAAAAAABQAAAAAAAAAAAAA="
+    decoder = DecodeQR()
+    decoder.add_data(malcolm_coinjoin_psbt_base64)
+    controller.psbt = decoder.get_psbt()
+    controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+    screencap_view(psbt_views.PSBTOverviewView, view_name='PSBTOverviewView_coinjoin')
+    screencap_view(psbt_views.PSBTMathView, view_name='PSBTMathView_coinjoin')
+
 
     with open(os.path.join(screenshot_root, "README.md"), 'w') as readme_file:
        readme_file.write(readme)

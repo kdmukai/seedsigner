@@ -319,7 +319,7 @@ class SeedFinalizeView(View):
 class SeedAddPassphraseView(View):
     def __init__(self):
         super().__init__()
-        self.seed = self.controller.storage.get_pending_seed()
+        self.seed: Seed = self.controller.storage.get_pending_seed()
 
 
     def run(self):

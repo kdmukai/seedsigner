@@ -237,7 +237,11 @@ class TestPSBTParser:
 
 
 
-    def test_has_external_inputs(self):
+class TestPSBTParserCooperativeSpend:
+    malcolm_seed = Seed("better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
+    zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
+
+    def test_payjoin(self):
         """
         has_external_inputs should return True when there is at least one input in the
         psbt that the signing key does not control.
@@ -250,12 +254,9 @@ class TestPSBTParser:
         * The recipient adds the sender's input and the sender's change output to their psbt
             and updates their receive amount accordingly.
         """
-        malcolm_seed = Seed("better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
-        zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
-
         # The sender's initial psbt is just a normal payment; 1 input, 2 outputs (0: change, 1: receiver)
         malcolm_psbt_base64 = "cHNidP8BAHECAAAAAWvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////Ata1PAAAAAAAFgAUcuNfLO4QMUvlKwpq5PQk+qFjAUUALTEBAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwddwAAAE8BBDWHzwNXHdv+gAAAAG5A8fYC1UaCqTjVNmzP41+yrhVJEa02NktU+hU1gqpdAzp4rbh4dNpY+9lqJ8cE1mJQozBDm1mvmg6+s0+/TDUuEAPNCitUAACAAAAAgAAAAIAAAQEfivVtAQAAAAAWABTDpWRRgBdkOHw+xyCMOJAlYXOnDAEDBAEAAAAiBgLyWP5xUwnTMbj+HMUP62woAPFiEHvMJRZfp94fcnpRpxgDzQorVAAAgAAAAIAAAACAAAAAAAEAAAAAIgICz3sTM/0BgYjqZmMLL+67hILVA7diXpeQxlrZXreSc7sYA80KK1QAAIAAAACAAAAAgAEAAAABAAAAAAA="
-        malcolm_psbt = PSBT.parse(a2b_base64(malcolm_psbt_base64))
+        malcolm_psbt: PSBT = PSBT.parse(a2b_base64(malcolm_psbt_base64))
         malcolm_utxo_value = malcolm_psbt.inputs[0].utxo.value
         malcolm_payment = malcolm_psbt.outputs[1].value
 
@@ -265,14 +266,14 @@ class TestPSBTParser:
         # The receiver's initial psbt is an internal cycle spending her own utxo back to the same receive address as above
         # Additional 8,793,478 sats in the receiver's input.
         zoe_psbt_base64 = "cHNidP8BAFICAAAAAXAmz5cHZ6Z8NQtliuNnFqEV0GgegEaGOLkgnSEl334OAQAAAAD9////ARgthgAAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB1uAAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAA"
-        zoe_psbt = PSBT.parse(a2b_base64(zoe_psbt_base64))
+        zoe_psbt: PSBT = PSBT.parse(a2b_base64(zoe_psbt_base64))
         zoe_utxo_value = zoe_psbt.inputs[0].utxo.value
 
         assert zoe_utxo_value == 8_793_478
 
         # Initially the respective psbts are not cooperative
-        malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
-        zoe_psbt_parser = PSBTParser(zoe_psbt, zoe_seed)
+        malcolm_psbt_parser = PSBTParser(malcolm_psbt, self.malcolm_seed)
+        zoe_psbt_parser = PSBTParser(zoe_psbt, self.zoe_seed)
         assert malcolm_psbt_parser.is_cooperative_spend is False
         assert zoe_psbt_parser.is_cooperative_spend is False
 
@@ -297,8 +298,8 @@ class TestPSBTParser:
         print(f"\nMalcolm's PSBT: {malcolm_psbt}\n")
         print(f"Zoe's PSBT: {pj_zoe_psbt}\n")
 
-        malcolm_psbt_parser = PSBTParser(malcolm_psbt, malcolm_seed)
-        zoe_psbt_parser = PSBTParser(pj_zoe_psbt, zoe_seed)
+        malcolm_psbt_parser = PSBTParser(malcolm_psbt, self.malcolm_seed)
+        zoe_psbt_parser = PSBTParser(pj_zoe_psbt, self.zoe_seed)
 
         # Both parties should now view this as a cooperative spend
         assert malcolm_psbt_parser.is_cooperative_spend
@@ -321,5 +322,166 @@ class TestPSBTParser:
         assert malcolm_psbt_parser.input_amount == malcolm_utxo_value
 
         # sanity check that both parties can sign
-        assert malcolm_psbt.sign_with(bip32.HDKey.from_seed(malcolm_seed.seed_bytes)) == 1
-        assert pj_zoe_psbt.sign_with(bip32.HDKey.from_seed(zoe_seed.seed_bytes)) == 1
+        assert malcolm_psbt.sign_with(bip32.HDKey.from_seed(self.malcolm_seed.seed_bytes)) == 1
+        assert pj_zoe_psbt.sign_with(bip32.HDKey.from_seed(self.zoe_seed.seed_bytes)) == 1
+
+
+    def test_coinjoin(self):
+        # 3 of Malcolm's inputs; change + 2 equal-size coinjoin outputs
+        malcolm_psbt_base64 = "cHNidP8BAOICAAAAA1LLjoXF/w70yPwWYGLNsnomFT+xOzfbQ6BvUnWJ30hDAQAAAAD9////UsuOhcX/DvTI/BZgYs2yeiYVP7E7N9tDoG9SdYnfSEMDAAAAAP3///9Sy46Fxf8O9Mj8FmBizbJ6JhU/sTs320Ogb1J1id9IQwIAAAAA/f///wOjQEEAAAAAABYAFC9NKd1nKSURCfVJ0o6jWWeWlmjhgJaYAAAAAAAWABRX/KTAYaj0b7PKz5gyctryXOfEsoCWmAAAAAAAFgAU/TrhKNM2cRT6q+DIUguvy+qU4/d5AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR9ISakAAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAABAR/TPGwAAAAAABYAFFHsyt85+w/2e7hF0EPwiCY/TflkAQMEAQAAACIGA+f4JzG7qkZI4HSOq4FYksLwMmk3sksU1v7O0rMzVsrzGAPNCitUAACAAAAAgAAAAIAAAAAABAAAAAABAR+mDV0AAAAAABYAFB+v75HNdP9+BwA5PwHAAwouJdHyAQMEAQAAACIGAgr+mKm0GojP1MHLvlMUOEF7JHomGlLx1e1CbQsJdpNhGAPNCitUAACAAAAAgAAAAIAAAAAAAgAAAAAiAgOY2SYAfhS5fpzPQjMbNMEFbu+0q4EXkrYrhO4ksgJUGxgDzQorVAAAgAAAAIAAAACAAQAAAAIAAAAAIgID+67J/K4WQEgB5upEyOHKgHz+gjBNpa8pKEYoHIyQgUAYA80KK1QAAIAAAACAAAAAgAAAAAAGAAAAACICArA+YcBFJsnK5Tv5TkMdRC00Dw0+Rkf2S85oIr+PtG8RGAPNCitUAACAAAAAgAAAAIAAAAAABQAAAAA="
+
+        # 2 of Zoe's inputs; 4 outputs: change + 3 equal-size coinjoin outputs
+        zoe_psbt_base64 = "cHNidP8BANgCAAAAApk9OYgpN9j+vkxjBDBisOph+n02n7DYgmqp2z2wYHdeAQAAAAD9////mT05iCk32P6+TGMEMGKw6mH6fTafsNiCaqnbPbBgd14DAAAAAP3///8EKNIJAAAAAAAWABSRrp8CppZ5NN7QHVu1NHo2xDTJB4CWmAAAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB2AlpgAAAAAABYAFFHi/EAdZ5+P+9PpJGDhC4kYs4TBgJaYAAAAAAAWABRnMStfaQD42XQgA2uln1bTwGsGKnkAAABPAQQ1h88Doiqd+4AAAAC4HGJ/cqhRNg461tE21MzrqdiCAEXWL/3A47WgKa4+HQI/3IH255numKnoLMMomFRQMFReiH/cqWqNauaX2tfLcBAPiJBEVAAAgAAAAIAAAACAAAEBHw3OewEAAAAAFgAUL98iIGb8nh2lZPktQvhScSXBWxABAwQBAAAAIgYCxPptltDpFMOMtI1sONzpkTfBFGYy1+oDti7jpXMCsxYYD4iQRFQAAIAAAACAAAAAgAAAAAADAAAAAAEBH1jtVwAAAAAAFgAUQKgWEXX0alk8P5TfhU4iczaYeZkBAwQBAAAAIgYDg0wW7W9vxlrfF/Ws48iBKc7Ra9TXxnarVQ0c9yhoT/QYD4iQRFQAAIAAAACAAAAAgAAAAAABAAAAACICA8GKzu4dfk0sHhD3wNSFxNPpvbsU17XHT5oUaBC72U0QGA+IkERUAACAAAAAgAAAAIABAAAAAQAAAAAiAgPGlMVmc+Nbw1Xehprds/1M9qKcaI+RzikiMqfussDzwRgPiJBEVAAAgAAAAIAAAACAAAAAAAUAAAAAIgICvwd7ouMhVz/1SQqiIZoTkg4IYdh97/qbLZbybz1z7W8YD4iQRFQAAIAAAACAAAAAgAAAAAAGAAAAACICA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAA="
+
+        malcolm_psbt: PSBT = PSBT.parse(a2b_base64(malcolm_psbt_base64))
+        assert len(malcolm_psbt.inputs) == 3
+        assert len(malcolm_psbt.outputs) == 3
+        assert malcolm_psbt.outputs[1].value == 10_000_000
+        assert malcolm_psbt.outputs[2].value == 10_000_000
+        malcolm_input_value = sum([inp.utxo.value for inp in malcolm_psbt.inputs])
+        malcolm_change_value = malcolm_psbt.outputs[0].value
+        assert malcolm_input_value == 2*10_000_000 + malcolm_psbt.fee() + malcolm_change_value
+
+        zoe_psbt: PSBT = PSBT.parse(a2b_base64(zoe_psbt_base64))
+        assert len(zoe_psbt.inputs) == 2
+        assert len(zoe_psbt.outputs) == 4
+        assert zoe_psbt.outputs[1].value == 10_000_000
+        assert zoe_psbt.outputs[2].value == 10_000_000
+        assert zoe_psbt.outputs[3].value == 10_000_000
+        zoe_input_value = sum([inp.utxo.value for inp in zoe_psbt.inputs])
+        zoe_change_value = zoe_psbt.outputs[0].value
+        assert zoe_input_value == 3*10_000_000 + zoe_psbt.fee() + zoe_change_value
+
+        # Now merge the two txs into an initial coinjoin tx
+        initial_coinjoin_psbt = deepcopy(malcolm_psbt)
+        initial_coinjoin_psbt.inputs.extend(zoe_psbt.inputs)
+        initial_coinjoin_psbt.outputs.extend(zoe_psbt.outputs)
+
+        assert len(initial_coinjoin_psbt.inputs) == 5
+        assert len(initial_coinjoin_psbt.outputs) == 7
+
+        # Malcolm's version won't know any of Zoe's bip32 derivation details
+        malcolm_coinjoin_psbt = deepcopy(initial_coinjoin_psbt)
+        for inp in malcolm_coinjoin_psbt.inputs[3:]:
+            # Wipe Zoe's inputs
+            inp.bip32_derivations = OrderedDict()
+        for out in malcolm_coinjoin_psbt.outputs[3:]:
+            # Wipe Zoe's outputs
+            out.bip32_derivations = OrderedDict()
+        
+        zoe_coinjoin_psbt = deepcopy(initial_coinjoin_psbt)
+        for inp in zoe_coinjoin_psbt.inputs[:3]:
+            # Wipe Malcolm's inputs
+            inp.bip32_derivations = OrderedDict()
+        for out in zoe_coinjoin_psbt.outputs[:3]:
+            # Wipe Malcolm's outputs
+            out.bip32_derivations = OrderedDict()
+        
+        assert malcolm_coinjoin_psbt.tx.txid() == zoe_coinjoin_psbt.tx.txid()
+
+        print(f"\nMalcolm's coinjoin PSBT: {malcolm_coinjoin_psbt}\n")
+        print(f"Zoe's coinjoin PSBT: {zoe_coinjoin_psbt}\n")
+
+        # Verify Malcolm's perspective of his inputs vs external inputs
+        malcolm_psbt_parser = PSBTParser(malcolm_coinjoin_psbt, self.malcolm_seed)
+        assert malcolm_psbt_parser.num_inputs == len(malcolm_psbt.inputs)
+        assert malcolm_psbt_parser.num_external_inputs == len(zoe_psbt.inputs)
+        assert malcolm_psbt_parser.num_inputs + malcolm_psbt_parser.num_external_inputs == len(initial_coinjoin_psbt.inputs)
+
+        # Verify Malcolm's perspective of his outputs (his change and receive addrs are
+        # both called "change" in current PSBTParser attr) vs external recipients.
+        assert malcolm_psbt_parser.num_change_outputs == len(malcolm_psbt.outputs)
+        assert malcolm_psbt_parser.change_amount == 2*10_000_000 + malcolm_change_value
+        assert malcolm_psbt_parser.num_destinations == len(zoe_psbt.outputs)
+        assert malcolm_psbt_parser.spend_amount == 3*10_000_000 + zoe_change_value
+
+        # Verify Zoe's perspective of his inputs vs external inputs
+        zoe_psbt_parser = PSBTParser(zoe_coinjoin_psbt, self.zoe_seed)
+        assert zoe_psbt_parser.num_inputs == len(zoe_psbt.inputs)
+        assert zoe_psbt_parser.num_external_inputs == len(malcolm_psbt.inputs)
+        assert zoe_psbt_parser.num_inputs + zoe_psbt_parser.num_external_inputs == len(initial_coinjoin_psbt.inputs)
+
+        # Verify Zoe's perspective of his outputs (his change and receive addrs are
+        # both called "change" in current PSBTParser attr) vs external recipients.
+        assert zoe_psbt_parser.num_change_outputs == len(zoe_psbt.outputs)
+        assert zoe_psbt_parser.change_amount == 3*10_000_000 + zoe_change_value
+        assert zoe_psbt_parser.num_destinations == len(malcolm_psbt.outputs)
+        assert zoe_psbt_parser.spend_amount == 2*10_000_000 + malcolm_change_value
+
+        # Verify that each party can sign
+        assert malcolm_coinjoin_psbt.sign_with(bip32.HDKey.from_seed(self.malcolm_seed.seed_bytes)) == 3
+        assert zoe_coinjoin_psbt.sign_with(bip32.HDKey.from_seed(self.zoe_seed.seed_bytes)) == 2
+
+
+    def test_coinjoin_with_extra_output(self):
+        """
+            Two-party coinjoin yielding equal-size outputs, but with each party including
+            an output to pay a third party coordinator.
+        """
+        # 3 of Malcolm's inputs; change + 2 equal-size coinjoin outputs + payment to 3rd party coordinator
+        malcolm_psbt_base64 = "cHNidP8BAP0BAQIAAAADUsuOhcX/DvTI/BZgYs2yeiYVP7E7N9tDoG9SdYnfSEMCAAAAAP3///9Sy46Fxf8O9Mj8FmBizbJ6JhU/sTs320Ogb1J1id9IQwMAAAAA/f///1LLjoXF/w70yPwWYGLNsnomFT+xOzfbQ6BvUnWJ30hDAQAAAAD9////BDlsPQAAAAAAFgAUL00p3WcpJREJ9UnSjqNZZ5aWaOGAlpgAAAAAABYAFFf8pMBhqPRvs8rPmDJy2vJc58SygJaYAAAAAAAWABT9OuEo0zZxFPqr4MhSC6/L6pTj95DQAwAAAAAAFgAU+LYJo7gtgJH7LJn08DAru4OOSO15AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+mDV0AAAAAABYAFB+v75HNdP9+BwA5PwHAAwouJdHyAQMEAQAAACIGAgr+mKm0GojP1MHLvlMUOEF7JHomGlLx1e1CbQsJdpNhGAPNCitUAACAAAAAgAAAAIAAAAAAAgAAAAABAR/TPGwAAAAAABYAFFHsyt85+w/2e7hF0EPwiCY/TflkAQMEAQAAACIGA+f4JzG7qkZI4HSOq4FYksLwMmk3sksU1v7O0rMzVsrzGAPNCitUAACAAAAAgAAAAIAAAAAABAAAAAABAR9ISakAAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAAiAgOY2SYAfhS5fpzPQjMbNMEFbu+0q4EXkrYrhO4ksgJUGxgDzQorVAAAgAAAAIAAAACAAQAAAAIAAAAAIgID+67J/K4WQEgB5upEyOHKgHz+gjBNpa8pKEYoHIyQgUAYA80KK1QAAIAAAACAAAAAgAAAAAAGAAAAACICArA+YcBFJsnK5Tv5TkMdRC00Dw0+Rkf2S85oIr+PtG8RGAPNCitUAACAAAAAgAAAAIAAAAAABQAAAAAA"
+
+        # 2 of Zoe's inputs; 4 outputs: change + 3 equal-size coinjoin outputs + payment to 3rd party coordinator
+        zoe_psbt_base64 = "cHNidP8BAPcCAAAAApk9OYgpN9j+vkxjBDBisOph+n02n7DYgmqp2z2wYHdeAwAAAAD9////mT05iCk32P6+TGMEMGKw6mH6fTafsNiCaqnbPbBgd14BAAAAAP3///8FQv0FAAAAAAAWABSRrp8CppZ5NN7QHVu1NHo2xDTJB4CWmAAAAAAAFgAUZzErX2kA+Nl0IANrpZ9W08BrBiqAlpgAAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwdgJaYAAAAAAAWABRR4vxAHWefj/vT6SRg4QuJGLOEwZDQAwAAAAAAFgAURsVsVzfCll3oga2Z1CByV626Q955AAAATwEENYfPA6IqnfuAAAAAuBxif3KoUTYOOtbRNtTM66nYggBF1i/9wOO1oCmuPh0CP9yB9ueZ7pip6CzDKJhUUDBUXoh/3KlqjWrml9rXy3AQD4iQRFQAAIAAAACAAAAAgAABAR9Y7VcAAAAAABYAFECoFhF19GpZPD+U34VOInM2mHmZAQMEAQAAACIGA4NMFu1vb8Za3xf1rOPIgSnO0WvU18Z2q1UNHPcoaE/0GA+IkERUAACAAAAAgAAAAIAAAAAAAQAAAAABAR8NznsBAAAAABYAFC/fIiBm/J4dpWT5LUL4UnElwVsQAQMEAQAAACIGAsT6bZbQ6RTDjLSNbDjc6ZE3wRRmMtfqA7Yu46VzArMWGA+IkERUAACAAAAAgAAAAIAAAAAAAwAAAAAiAgPBis7uHX5NLB4Q98DUhcTT6b27FNe1x0+aFGgQu9lNEBgPiJBEVAAAgAAAAIAAAACAAQAAAAEAAAAAIgID9ePHGg0wW6dTjE3BT4EQgVJ7WKW37niK7k4Lbg7ryqEYD4iQRFQAAIAAAACAAAAAgAAAAAAEAAAAACICA8aUxWZz41vDVd6Gmt2z/Uz2opxoj5HOKSIyp+6ywPPBGA+IkERUAACAAAAAgAAAAIAAAAAABQAAAAAiAgK/B3ui4yFXP/VJCqIhmhOSDghh2H3v+pstlvJvPXPtbxgPiJBEVAAAgAAAAIAAAACAAAAAAAYAAAAAAA=="
+
+        malcolm_psbt: PSBT = PSBT.parse(a2b_base64(malcolm_psbt_base64))
+        zoe_psbt: PSBT = PSBT.parse(a2b_base64(zoe_psbt_base64))
+
+        assert len(malcolm_psbt.outputs) == 4
+        assert len(zoe_psbt.outputs) == 5
+
+        # Now merge the two txs into an initial coinjoin tx
+        initial_coinjoin_psbt = deepcopy(malcolm_psbt)
+        initial_coinjoin_psbt.inputs.extend(zoe_psbt.inputs)
+        initial_coinjoin_psbt.outputs.extend(zoe_psbt.outputs)
+
+        assert len(initial_coinjoin_psbt.inputs) == 5
+        assert len(initial_coinjoin_psbt.outputs) == 9
+
+        # Malcolm's version won't know any of Zoe's bip32 derivation details
+        malcolm_coinjoin_psbt = deepcopy(initial_coinjoin_psbt)
+        for inp in malcolm_coinjoin_psbt.inputs[3:]:
+            # Wipe Zoe's inputs
+            inp.bip32_derivations = OrderedDict()
+        for out in malcolm_coinjoin_psbt.outputs[4:]:
+            # Wipe Zoe's outputs
+            out.bip32_derivations = OrderedDict()
+        
+        zoe_coinjoin_psbt = deepcopy(initial_coinjoin_psbt)
+        for inp in zoe_coinjoin_psbt.inputs[:3]:
+            # Wipe Malcolm's inputs
+            inp.bip32_derivations = OrderedDict()
+        for out in zoe_coinjoin_psbt.outputs[:4]:
+            # Wipe Malcolm's outputs
+            out.bip32_derivations = OrderedDict()
+        
+        assert malcolm_coinjoin_psbt.tx.txid() == zoe_coinjoin_psbt.tx.txid()
+
+        print(f"\nMalcolm's coinjoin + payment PSBT: {malcolm_coinjoin_psbt}\n")
+        print(f"Zoe's coinjoin + payment PSBT: {zoe_coinjoin_psbt}\n")
+
+        # Verify Malcolm's perspective of his inputs vs external inputs
+        malcolm_psbt_parser = PSBTParser(malcolm_coinjoin_psbt, self.malcolm_seed)
+        assert malcolm_psbt_parser.num_inputs == len(malcolm_psbt.inputs)
+        assert malcolm_psbt_parser.num_external_inputs == len(zoe_psbt.inputs)
+        assert malcolm_psbt_parser.num_inputs + malcolm_psbt_parser.num_external_inputs == len(initial_coinjoin_psbt.inputs)
+
+        # Verify Malcolm's perspective of his outputs (his change and receive addrs are
+        # both called "change" in current PSBTParser attr) vs external recipients.
+        assert malcolm_psbt_parser.num_change_outputs == len(malcolm_psbt.outputs) - 1  # Subtract Malcolm's payment to coordinator
+        assert malcolm_psbt_parser.num_destinations == len(zoe_psbt.outputs) + 1        # All of Zoe's outputs plus Malcolm's payment to coordinator
+
+        # Verify Zoe's perspective of his inputs vs external inputs
+        zoe_psbt_parser = PSBTParser(zoe_coinjoin_psbt, self.zoe_seed)
+        assert zoe_psbt_parser.num_inputs == len(zoe_psbt.inputs)
+        assert zoe_psbt_parser.num_external_inputs == len(malcolm_psbt.inputs)
+        assert zoe_psbt_parser.num_inputs + zoe_psbt_parser.num_external_inputs == len(initial_coinjoin_psbt.inputs)
+
+        # Verify Zoe's perspective of his outputs (his change and receive addrs are
+        # both called "change" in current PSBTParser attr) vs external recipients.
+        assert zoe_psbt_parser.num_change_outputs == len(zoe_psbt.outputs) - 1
+        assert zoe_psbt_parser.num_destinations == len(malcolm_psbt.outputs) + 1
+
+        # Verify that each party can sign
+        assert malcolm_coinjoin_psbt.sign_with(bip32.HDKey.from_seed(self.malcolm_seed.seed_bytes)) == 3
+        assert zoe_coinjoin_psbt.sign_with(bip32.HDKey.from_seed(self.zoe_seed.seed_bytes)) == 2

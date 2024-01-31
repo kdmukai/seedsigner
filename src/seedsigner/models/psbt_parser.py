@@ -73,6 +73,85 @@ class PSBTParser():
 
 
     @property
+    def is_payjoin_send(self):
+        """
+        Detect the simplest form of a payjoin send: a cooperative spend with only 1
+        external recipient with the sender contributing more than the fee.
+
+        There are more complicated possibilities, but it's harder to reason about them
+        with complete confidence.
+        """
+        if self.is_cooperative_spend is False:
+            return False
+        
+        if self.num_destinations != 1:
+            return False
+
+        # We sent out more than we're getting back plus fee
+        return self.input_amount > self.change_amount + self.fee_amount
+            
+    
+
+    @property
+    def is_coinjoin(self):
+        """
+        A heuristic for analyzing cooperative spends. If your inputs only cover the value
+        of your own outputs (minus a bit to go towards the fee), then we consider this tx
+        a coinjoin; none of your sats are funding any of the external outputs.
+        """
+        if not self.is_cooperative_spend:
+            # Must have mixed inputs
+            print("Not a cooperative spend")
+            return False
+        
+        if self.spend_amount == 0:
+            # Must have external outputs
+            print("No external outputs")
+            return False
+
+        if self.input_amount < self.change_amount:
+            # We're receiving more back from this tx than we put in; more likely a
+            # payjoin.
+            print("Input amount less than change amount")
+            return False
+        
+        if self.input_amount > self.change_amount + self.fee_amount:
+            # We're paying for more than just our own outputs (plus fee)
+            print("Input amount greater than change amount + fee")
+            return False
+
+        return True
+    
+
+    @property
+    def is_unknowable_spend_or_fee(self):
+        """
+        A cooperative spend could be constructed with outputs that make it impossible to
+        be sure if the sender is:
+            * spending solely to an external recipient
+            * or spending to an external recipient AND contributing to the overall fee
+        """
+        if not self.is_cooperative_spend:
+            return False
+        
+        if self.spend_amount == 0:
+            # Must have external outputs
+            return False
+        
+        if self.input_amount < self.change_amount:
+            # We're receiving more back from this tx than we put in; more likely a
+            # payjoin.
+            return False
+        
+        if self.input_amount <= self.change_amount + self.fee_amount:
+            # We aren't paying any sats to external recipients; more like a coinjoin.
+            return False
+        
+        return True
+
+
+
+    @property
     def num_destinations(self):
         return len(self.destination_addresses)
 
