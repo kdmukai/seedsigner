@@ -16,6 +16,7 @@ from ..components import (BtcAmount, Button, Icon, FontAwesomeIconConstants, Ico
 class PSBTOverviewScreen(ButtonListScreen):
     is_cooperative_spend: bool = False
     is_payjoin_receive: bool = False
+    is_payjoin_send: bool = False
 
     display_amount: int = 0
 
@@ -42,8 +43,10 @@ class PSBTOverviewScreen(ButtonListScreen):
         ))
 
         # Prep the transaction flow chart
-        external_input_output_label = "theirs"
-        owner_input_output_label = "yours"
+        external_input_label = "theirs"
+        external_output_label = "theirs"
+        owner_input_label = "yours"
+        owner_output_label = "yours"
         payjoin_receive_label = "PJ receive"
 
         self.chart_x = 0
@@ -80,13 +83,17 @@ class PSBTOverviewScreen(ButtonListScreen):
         
         # First calculate how wide the inputs col will be
         inputs_column = []
-        if self.num_inputs + self.num_external_inputs < 5:
+        if self.is_cooperative_spend and (self.num_inputs > 1 or self.num_external_inputs > 1):
+            inputs_column.append(f"{external_input_label} ({self.num_external_inputs})")
+            inputs_column.append(f"{owner_input_label} ({self.num_inputs})")
+
+        elif self.num_inputs + self.num_external_inputs <= 5:
             for i in range(0, self.num_external_inputs):
-                inputs_column.append(f"{external_input_output_label}")
+                inputs_column.append(f"{external_input_label}")
 
             if self.is_cooperative_spend:
                 for i in range(0, self.num_inputs):
-                    inputs_column.append(f"{owner_input_output_label}")
+                    inputs_column.append(f"{owner_input_label}")
             else:
                 if self.num_inputs > 1:
                     for i in range(0, self.num_inputs):
@@ -96,16 +103,11 @@ class PSBTOverviewScreen(ButtonListScreen):
 
         else:
             # Have to consolidate our display
-            if self.is_cooperative_spend:
-                inputs_column.append(f"{external_input_output_label} ({self.num_external_inputs})")
-                inputs_column.append(f"{owner_input_output_label} ({self.num_inputs})")
-
-            else:
-                inputs_column.append("input 1")
-                inputs_column.append("input 2")
-                inputs_column.append("[ ... ]")
-                inputs_column.append(f"input {self.num_inputs-1}")
-                inputs_column.append(f"input {self.num_inputs}")
+            inputs_column.append("input 1")
+            inputs_column.append("input 2")
+            inputs_column.append("[ ... ]")
+            inputs_column.append(f"input {self.num_inputs-1}")
+            inputs_column.append(f"input {self.num_inputs}")
 
         max_inputs_text_width = 0
         for input in inputs_column:
@@ -144,7 +146,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                 # we can render all the outputs
                 for addr in self.destination_addresses:
                     if self.is_payjoin_receive:
-                        destination_column.append(truncate_destination_addr(external_input_output_label))
+                        destination_column.append(truncate_destination_addr(external_output_label))
                     else:
                         destination_column.append(truncate_destination_addr(addr))
 
@@ -156,8 +158,8 @@ class PSBTOverviewScreen(ButtonListScreen):
             else:
                 # Too many outputs to display, have to consolidate
                 if self.is_cooperative_spend:
-                    destination_column.append(f"{external_input_output_label} ({len(self.destination_addresses)})")
-                    destination_column.append(f"{owner_input_output_label} ({self.num_self_transfer_outputs})")
+                    destination_column.append(f"{external_output_label} ({len(self.destination_addresses)})")
+                    destination_column.append(f"{owner_output_label} ({self.num_self_transfer_outputs})")
                 else:
                     destination_column.append(f"recipient 1")
                     destination_column.append(f"[ ... ]")
@@ -265,7 +267,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                 )
 
             # External inputs are rendered as inert (`True` here)
-            input_curves.append((bezier_points, external_input_output_label in input))
+            input_curves.append((bezier_points, external_output_label in input))
 
             prev_pt = bezier_points[0]
             for pt in bezier_points[1:]:
@@ -356,7 +358,7 @@ class PSBTOverviewScreen(ButtonListScreen):
                     # For Payjoin receive, render all other outputs as inert
                     output_curves.append((bezier_points, True))
             elif self.is_cooperative_spend:
-                if external_input_output_label in destination:
+                if external_output_label in destination:
                     # Render others' outputs as inactive
                     output_curves.append((bezier_points, True))
                 else:
@@ -402,14 +404,6 @@ class PSBTOverviewScreen(ButtonListScreen):
             self.inputs  = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_inactive) for curve, is_inactive in inputs]
             self.outputs = [([(int(i[0]/ssf), int(i[1]/ssf + offset_y)) for i in curve], is_inactive) for curve, is_inactive in outputs]
             self.renderer = renderer
-
-            print("INPUTS:")
-            for points, is_inactive in self.inputs:
-                print(is_inactive, points)
-
-            print("\nOUTPUTS:")
-            for points, is_inactive in self.outputs:
-                print(is_inactive, points)
 
 
         def run(self):
