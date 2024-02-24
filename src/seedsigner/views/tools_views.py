@@ -30,13 +30,14 @@ class ToolsMenuView(View):
     DICE = ("New seed", FontAwesomeIconConstants.DICE)
     KEYBOARD = ("Calc 12th/24th word", FontAwesomeIconConstants.KEYBOARD)
     EXPLORER = "Address Explorer"
-    ADDRESS = "Verify address"
+    ADDRESS = "Verify Address"
 
     def run(self):
         self.IMAGE = (_("New seed"), FontAwesomeIconConstants.CAMERA)
         self.DICE = (_("New seed"), FontAwesomeIconConstants.DICE)
         self.KEYBOARD = (_("Calc 12th/24th word"), FontAwesomeIconConstants.KEYBOARD)
         self.EXPLORER = _("Address Explorer")
+        self.ADDRESS = _("Verify Address")
         button_data = [self.IMAGE, self.DICE, self.KEYBOARD, self.EXPLORER, self.ADDRESS]
 
         selected_menu_num = self.run_screen(
@@ -458,10 +459,10 @@ class ToolsAddressExplorerSelectSourceView(View):
 
     def run(self):
         seeds = self.controller.storage.seeds
-        self.SCAN_SEED = ("Scan a seed", SeedSignerIconConstants.QRCODE)
-        self.SCAN_DESCRIPTOR = ("Scan wallet descriptor", SeedSignerIconConstants.QRCODE)
-        self.TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
-        self.TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)
+        self.SCAN_SEED = (_("Scan a seed"), SeedSignerIconConstants.QRCODE)
+        self.SCAN_DESCRIPTOR = (_("Scan wallet descriptor"), SeedSignerIconConstants.QRCODE)
+        self.TYPE_12WORD = (_("Enter 12-word seed"), FontAwesomeIconConstants.KEYBOARD)
+        self.TYPE_24WORD = (_("Enter 24-word seed"), FontAwesomeIconConstants.KEYBOARD)
         button_data = []
         for seed in seeds:
             button_str = seed.get_fingerprint(self.settings.get_value(SettingsConstants.SETTING__NETWORK))
