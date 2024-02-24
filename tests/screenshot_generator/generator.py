@@ -124,7 +124,7 @@ def test_generate_screenshots(target_locale):
     
 
     settingsqr_data_persistent = "settings::v1 name=English_noob_mode persistent=E coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
-    settingsqr_data_not_persistent = "settings::v1 name=Mode_débutant_éphémère persistent=D coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E locale=fr"
+    settingsqr_data_not_persistent = f"settings::v1 name=Mode_Ephemeral persistent=D coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E locale={target_locale}"
 
     screenshot_sections = {
         "Main Menu Views": [
