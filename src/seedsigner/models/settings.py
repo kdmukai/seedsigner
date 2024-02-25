@@ -228,8 +228,8 @@ class Settings(Singleton):
         settings.get_value(SettingsConstants.SETTING__MY_SETTING_ATTR)
     """
     @property
-    def debug(self) -> bool:
-        return self._data[SettingsConstants.SETTING__DEBUG] == SettingsConstants.OPTION__ENABLED
+    def is_bip39_passphrase_editable(self) -> bool:
+        return self._data[SettingsConstants.SETTING__PASSPHRASE] in [SettingsConstants.PASSPHRASE_EDITABLE, SettingsConstants.PASSPHRASE_REQUIRED_EDITABLE]
 
 
     def handle_microsd_state_change(action: str):

@@ -1,3 +1,4 @@
+from copy import deepcopy
 import embit
 import random
 import time
@@ -328,12 +329,10 @@ class SeedAddPassphraseView(View):
         if ret == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
-        # The new passphrase will be the return value; it might be empty.
+        # The new passphrase will be the return value; even if it was left blank, advance
+        # to the passphrase review View anyway.
         self.seed.set_passphrase(ret)
-        if len(self.seed.passphrase) > 0:
-            return Destination(SeedReviewPassphraseView)
-        else:
-            return Destination(SeedFinalizeView)
+        return Destination(SeedReviewPassphraseView)
 
 
 
@@ -354,7 +353,7 @@ class SeedReviewPassphraseView(View):
         network = self.settings.get_value(SettingsConstants.SETTING__NETWORK)
         passphrase = self.seed.passphrase
         fingerprint_with = self.seed.get_fingerprint(network=network)
-        self.seed.set_passphrase("")
+        self.seed.set_passphrase(None)
         fingerprint_without = self.seed.get_fingerprint(network=network)
         self.seed.set_passphrase(passphrase)
         
@@ -431,8 +430,10 @@ class SeedOptionsView(View):
     EXPORT_XPUB = "Export Xpub"
     EXPLORER = "Address Explorer"
     SIGN_MESSAGE = "Sign Message"
-    BACKUP = ("Backup Seed", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT)
+    BACKUP_SUBMENU = ("Backup Seed", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT)
     BIP85_CHILD_SEED = "BIP-85 Child Seed"
+    ADD_BIP39_PASSPHRASE = "Add BIP-39 Passphrase"
+    BIP39_PASSPHRASE_SUBMENU = ("BIP-39 Passphrase", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT)
     DISCARD = ("Discard Seed", None, None, "red")
 
 
@@ -482,11 +483,18 @@ class SeedOptionsView(View):
             button_data.append(self.EXPORT_XPUB)
 
         button_data.append(self.EXPLORER)
-        button_data.append(self.BACKUP)
 
         if self.settings.get_value(SettingsConstants.SETTING__MESSAGE_SIGNING) == SettingsConstants.OPTION__ENABLED:
             button_data.append(self.SIGN_MESSAGE)
-        
+
+        button_data.append(self.BACKUP_SUBMENU)
+
+        if self.settings.is_bip39_passphrase_editable:
+            if not self.seed.passphrase:
+                button_data.append(self.ADD_BIP39_PASSPHRASE)
+            else:
+                button_data.append(self.BIP39_PASSPHRASE_SUBMENU)
+
         if self.settings.get_value(SettingsConstants.SETTING__BIP85_CHILD_SEEDS) == SettingsConstants.OPTION__ENABLED:
             button_data.append(self.BIP85_CHILD_SEED)
 
@@ -524,8 +532,17 @@ class SeedOptionsView(View):
             self.controller.resume_main_flow = Controller.FLOW__SIGN_MESSAGE
             return Destination(ScanView)
 
-        elif button_data[selected_menu_num] == self.BACKUP:
+        elif button_data[selected_menu_num] == self.BACKUP_SUBMENU:
             return Destination(SeedBackupView, view_args=dict(seed_num=self.seed_num))
+
+        elif button_data[selected_menu_num] in [self.ADD_BIP39_PASSPHRASE, self.BIP39_PASSPHRASE_SUBMENU]:
+            return Destination(
+                SeedPassphraseOptionsView,
+                view_args=dict(
+                    seed_num=self.seed_num,
+                    is_add=(button_data[selected_menu_num] == self.ADD_BIP39_PASSPHRASE)
+                )
+            )
 
         elif button_data[selected_menu_num] == self.BIP85_CHILD_SEED:
             return Destination(SeedBIP85ApplicationModeView, view_args={"seed_num": self.seed_num})
@@ -563,6 +580,76 @@ class SeedBackupView(View):
 
         elif button_data[selected_menu_num] == self.EXPORT_SEEDQR:
             return Destination(SeedTranscribeSeedQRFormatView, view_args={"seed_num": self.seed_num})
+
+
+
+class SeedPassphraseOptionsView(View):
+    """
+    Central routing point for any after-the-fact BIP-39 passphrase changes.
+
+    "Add" forwards right through while "Change/Remove" require a submenu
+    """
+    CHANGE = "Change passphrase"
+    REMOVE = "Remove passphrase"
+
+    def __init__(self, seed_num, is_add: bool = False):
+        super().__init__()
+
+        # Load the selected seed into the Controller as the current "pending" seed.
+        # Note: we take the deliberate approach to keep the existing seed in memory. The
+        # new seed that results from upcoming passphrase changes will be added alongside
+        # the prior seed.
+        self.controller.storage.set_pending_seed(deepcopy(self.controller.get_seed(seed_num)))
+
+        if is_add:
+            # No need to display any UI selection options; just forward straight to 
+            # passphrase entry.
+            self.set_redirect(Destination(SeedAddPassphraseView))
+
+
+    def run(self):
+        button_data = [self.CHANGE, self.REMOVE]
+
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
+            title="BIP-39 Passphrase",
+            button_data=button_data,
+            is_bottom_list=True,
+        )
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            self.controller.storage.clear_pending_seed()
+            return Destination(BackStackView)
+
+        elif button_data[selected_menu_num] == self.CHANGE:
+            # As a security precaution, clear the passphrase so it can't be automatically
+            # pre-filled in the Add Passphrase View; should never re-display a
+            # "Finalized" seed's passphrase.
+            self.controller.storage.get_pending_seed().set_passphrase(None)
+            return Destination(SeedAddPassphraseView)
+
+        elif button_data[selected_menu_num] == self.REMOVE:
+            return Destination(SeedPassphraseRemovedView)
+
+
+
+class SeedPassphraseRemovedView(View):
+    def __init__(self):
+        super().__init__()
+
+        # Wipe the passphrase
+        self.seed = self.controller.storage.get_pending_seed()
+        self.seed.set_passphrase(passphrase=None)
+
+
+    def run(self):
+        self.run_screen(
+            seed_screens.SeedRemovePassphraseScreen,
+            fingerprint=self.seed.get_fingerprint(),
+        )
+
+        seed_num = self.controller.storage.finalize_pending_seed()
+        return Destination(SeedOptionsView, view_args={"seed_num": seed_num}, clear_history=True)
 
 
 

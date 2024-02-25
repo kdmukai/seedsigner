@@ -65,7 +65,7 @@ class TestFlowTest(FlowTest):
             self.run_sequence(
                 initial_destination_view_args=dict(seed_num=0),
                 sequence=[
-                    FlowStep(SeedOptionsView, button_data_selection=SeedOptionsView.BACKUP),
+                    FlowStep(SeedOptionsView, button_data_selection=SeedOptionsView.BACKUP_SUBMENU),
                     FlowStep(SeedBackupView, button_data_selection=SeedBackupView.VIEW_WORDS),
                     FlowStep(SeedWordsWarningView, screen_return_value=0),
                 ],
@@ -112,7 +112,7 @@ class TestFlowTest(FlowTest):
         self.run_sequence(
             initial_destination_view_args=dict(seed_num=0),
             sequence=[
-                FlowStep(SeedOptionsView, button_data_selection=SeedOptionsView.BACKUP),
+                FlowStep(SeedOptionsView, button_data_selection=SeedOptionsView.BACKUP_SUBMENU),
                 FlowStep(SeedBackupView),
             ]
         )

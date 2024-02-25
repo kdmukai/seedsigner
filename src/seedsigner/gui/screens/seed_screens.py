@@ -1032,11 +1032,17 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
 
         if self.passphrase != self.passphrase.strip() or "  " in self.passphrase:
             self.passphrase = self.passphrase.replace(" ", "\u2589")
+        
+        if not self.passphrase:
+            # Display a placeholder in the case where we are removing the passphrase
+            self.passphrase = "(empty)"
+
         available_height = self.components[-1].screen_y - self.top_nav.height + GUIConstants.COMPONENT_PADDING
         max_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 8
         min_font_size = GUIConstants.TOP_NAV_TITLE_FONT_SIZE - 4
         font_size = max_font_size
         max_lines = 3
+
         passphrase = [self.passphrase]
         found_solution = False
         for font_size in range(max_font_size, min_font_size, -2):
@@ -1073,6 +1079,31 @@ class SeedReviewPassphraseScreen(ButtonListScreen):
             ))
             screen_y += char_height + 2
 
+
+
+@dataclass
+class SeedRemovePassphraseScreen(ButtonListScreen):
+    fingerprint: str = None
+    title: str = "Passphrase Removed"
+    is_bottom_list: bool = True
+
+    def __post_init__(self):
+        self.show_back_button = False
+        self.button_data = ["OK"]
+
+        super().__post_init__()
+
+        self.fingerprint_icontl = IconTextLine(
+            icon_name=SeedSignerIconConstants.FINGERPRINT,
+            icon_color=GUIConstants.INFO_COLOR,
+            icon_size=GUIConstants.ICON_FONT_SIZE + 12,
+            label_text="fingerprint",
+            value_text=self.fingerprint,
+            font_size=GUIConstants.BODY_FONT_SIZE + 2,
+            is_text_centered=True,
+            screen_y=self.top_nav.height + int((self.buttons[0].screen_y - self.top_nav.height) / 2) - 30
+        )
+        self.components.append(self.fingerprint_icontl)
 
 
 @dataclass

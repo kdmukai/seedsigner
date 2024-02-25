@@ -47,6 +47,89 @@ class TestSeedFlows(FlowTest):
             FlowStep(seed_views.SeedReviewPassphraseView, button_data_selection=seed_views.SeedReviewPassphraseView.DONE),
             FlowStep(seed_views.SeedOptionsView),
         ])
+    
+
+    def test_passphrase_remove_flow(self):
+        """
+        """
+        # Ensure BIP-39 passphrase edit is enabled
+        self.settings.set_value(SettingsConstants.SETTING__PASSPHRASE, SettingsConstants.PASSPHRASE_EDITABLE)
+
+        mnemonic = "blush twice taste dawn feed second opinion lazy thumb play neglect impact".split()
+        self.controller.storage.set_pending_seed(Seed(mnemonic=mnemonic, passphrase="mypassphrase"))
+        self.controller.storage.finalize_pending_seed()
+        fingerprint_with_passphrase = self.controller.storage.seeds[0].get_fingerprint()
+
+        self.run_sequence(
+            initial_destination_view_args=dict(seed_num=0),
+            sequence=[
+                FlowStep(seed_views.SeedOptionsView, button_data_selection=seed_views.SeedOptionsView.BIP39_PASSPHRASE_SUBMENU),
+                FlowStep(seed_views.SeedPassphraseOptionsView, button_data_selection=seed_views.SeedPassphraseOptionsView.REMOVE),
+                FlowStep(seed_views.SeedPassphraseRemovedView),
+                FlowStep(seed_views.SeedOptionsView),
+            ])
+
+        # The original seed w/passphrase is preserved
+        assert self.controller.storage.seeds[0].get_fingerprint() == fingerprint_with_passphrase
+
+        # The "new" seed with no passphrase is added
+        assert self.controller.storage.seeds[1].get_fingerprint() != fingerprint_with_passphrase
+
+
+    def test_passphrase_add_flow(self):
+        """
+        """
+        # Ensure BIP-39 passphrase edit is enabled
+        self.settings.set_value(SettingsConstants.SETTING__PASSPHRASE, SettingsConstants.PASSPHRASE_EDITABLE)
+
+        mnemonic = "blush twice taste dawn feed second opinion lazy thumb play neglect impact".split()
+        self.controller.storage.set_pending_seed(Seed(mnemonic=mnemonic))
+        self.controller.storage.finalize_pending_seed()
+        fingerprint_without_passphrase = self.controller.storage.seeds[0].get_fingerprint()
+
+        self.run_sequence(
+            initial_destination_view_args=dict(seed_num=0),
+            sequence=[
+                FlowStep(seed_views.SeedOptionsView, button_data_selection=seed_views.SeedOptionsView.ADD_BIP39_PASSPHRASE),
+                FlowStep(seed_views.SeedPassphraseOptionsView, is_redirect=True),
+                FlowStep(seed_views.SeedAddPassphraseView, screen_return_value="mypassphrase"),
+                FlowStep(seed_views.SeedReviewPassphraseView, button_data_selection=seed_views.SeedReviewPassphraseView.DONE),
+                FlowStep(seed_views.SeedOptionsView),
+            ])
+
+        # The original seed w/out passphrase is preserved
+        assert self.controller.storage.seeds[0].get_fingerprint() == fingerprint_without_passphrase
+
+        # The "new" seed with passphrase is added
+        assert self.controller.storage.seeds[1].get_fingerprint() != fingerprint_without_passphrase
+
+
+    def test_passphrase_edit_flow(self):
+        """
+        """
+        # Ensure BIP-39 passphrase edit is enabled
+        self.settings.set_value(SettingsConstants.SETTING__PASSPHRASE, SettingsConstants.PASSPHRASE_EDITABLE)
+
+        mnemonic = "blush twice taste dawn feed second opinion lazy thumb play neglect impact".split()
+        self.controller.storage.set_pending_seed(Seed(mnemonic=mnemonic, passphrase="mypassphrase"))
+        self.controller.storage.finalize_pending_seed()
+        fingerprint_with_original_passphrase = self.controller.storage.seeds[0].get_fingerprint()
+
+        self.run_sequence(
+            initial_destination_view_args=dict(seed_num=0),
+            sequence=[
+                FlowStep(seed_views.SeedOptionsView, button_data_selection=seed_views.SeedOptionsView.BIP39_PASSPHRASE_SUBMENU),
+                FlowStep(seed_views.SeedPassphraseOptionsView,  button_data_selection=seed_views.SeedPassphraseOptionsView.CHANGE),
+                FlowStep(seed_views.SeedAddPassphraseView, screen_return_value="myEDITEDpassphrase"),
+                FlowStep(seed_views.SeedReviewPassphraseView, button_data_selection=seed_views.SeedReviewPassphraseView.DONE),
+                FlowStep(seed_views.SeedOptionsView),
+            ])
+
+        # The seed w/the original passphrase is preserved
+        assert self.controller.storage.seeds[0].get_fingerprint() == fingerprint_with_original_passphrase
+
+        # The "new" seed with updated passphrase is added
+        assert self.controller.storage.seeds[1].get_fingerprint() != fingerprint_with_original_passphrase
 
 
     def test_mnemonic_entry_flow(self):

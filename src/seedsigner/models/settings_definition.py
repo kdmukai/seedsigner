@@ -92,6 +92,13 @@ class SettingsConstants:
         (REGTEST, "Regtest")
     ]
 
+    PASSPHRASE_EDITABLE = "pp_swap"
+    PASSPHRASE_REQUIRED_EDITABLE = "pp_req_swap"
+    ALL_PASSPHRASE_SWAPS = [
+        (PASSPHRASE_EDITABLE, "Enabled, Editable"),
+        (PASSPHRASE_REQUIRED_EDITABLE, "Required, Editable"),
+    ]
+
     @classmethod
     def map_network_to_embit(cls, network) -> str:
         if network == SettingsConstants.MAINNET:
@@ -433,7 +440,7 @@ class SettingsDefinition:
                       display_name="BIP-39 passphrase",
                       type=SettingsConstants.TYPE__SELECT_1,
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
-                      selection_options=SettingsConstants.OPTIONS__ENABLED_DISABLED_REQUIRED,
+                      selection_options=SettingsConstants.OPTIONS__ENABLED_DISABLED_REQUIRED + SettingsConstants.ALL_PASSPHRASE_SWAPS,
                       default_value=SettingsConstants.OPTION__ENABLED),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
