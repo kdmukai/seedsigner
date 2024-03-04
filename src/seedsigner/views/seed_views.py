@@ -290,7 +290,7 @@ class SeedFinalizeView(View):
     FINALIZE = "Done"
     PASSPHRASE = "BIP-39 Passphrase"
     CUSTOM_EXTENSION = "Custom Extension"
-    SWITCH = "Switch"
+    SWITCH = "Continue"
     CANCEL = "Cancel"
 
     def __init__(self):

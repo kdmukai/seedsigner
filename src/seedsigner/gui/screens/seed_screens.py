@@ -9,7 +9,7 @@ from seedsigner.gui.renderer import Renderer
 from seedsigner.helpers.qr import QR
 from seedsigner.models.threads import BaseThread, ThreadsafeCounter
 
-from .screen import RET_CODE__BACK_BUTTON, BaseScreen, BaseTopNavScreen, ButtonListScreen, KeyboardScreen, WarningEdgesMixin
+from .screen import RET_CODE__BACK_BUTTON, BaseScreen, BaseTopNavScreen, ButtonListScreen, KeyboardScreen, WarningEdgesMixin, WarningScreen
 from ..components import (Button, FontAwesomeIconConstants, Fonts, FormattedAddress, IconButton,
     IconTextLine, SeedSignerIconConstants, TextArea, GUIConstants, reflow_text_into_pages)
 
@@ -427,21 +427,17 @@ class SeedFinalizeScreen(ButtonListScreen):
         )
         self.components.append(self.fingerprint_icontl)
 
-class SeedSwitchElectrumModeScreen(ButtonListScreen):
+class SeedSwitchElectrumModeScreen(WarningScreen):
     button_data: list = None
 
     def __post_init__(self):
         self.show_back_button = False
-        self.title = "Switch to Electrum?"
+        self.title = "Electrum Seed"
+        self.status_headline = None
+        self.text="Some functions not supported for Electrum seeds"
         self.is_bottom_list: bool = True
 
         super().__post_init__()
-
-        self.components.append(TextArea(
-            text="It appears this is an Electrum-style seed, switch it to be so? Some functions are not supported for Electrum seeds",
-            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
-            is_text_centered=True,
-        ))
 
 
 @dataclass
