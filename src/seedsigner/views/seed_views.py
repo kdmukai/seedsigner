@@ -661,11 +661,10 @@ class SeedExportXpubScriptTypeView(View):
 
 
 class SeedExportXpubCustomDerivationView(View):
-    def __init__(self, seed_num: int, sig_type: str, script_type: str):
+    def __init__(self, seed_num: int, sig_type: str, **kwargs):
         super().__init__()
         self.seed_num = seed_num
         self.sig_type = sig_type
-        self.script_type = script_type
         self.custom_derivation_path = "m/"
 
 
@@ -682,15 +681,15 @@ class SeedExportXpubCustomDerivationView(View):
         custom_derivation = ret
 
         if self.controller.resume_main_flow == Controller.FLOW__ADDRESS_EXPLORER:
-            from .tools_views import ToolsAddressExplorerAddressTypeView
-            return Destination(ToolsAddressExplorerAddressTypeView, view_args=dict(seed_num=self.seed_num, script_type=self.script_type, custom_derivation=custom_derivation))
+            from .tools_views import ToolsAddressExplorerCustomDerivationRoutingView
+            return Destination(ToolsAddressExplorerCustomDerivationRoutingView, view_args=dict(seed_num=self.seed_num, custom_derivation=custom_derivation))
 
         return Destination(
             SeedExportXpubCoordinatorView,
             view_args={
                 "seed_num": self.seed_num,
                 "sig_type": self.sig_type,
-                "script_type": self.script_type,
+                "script_type": None,
                 "custom_derivation": custom_derivation,
             }
         )
@@ -786,7 +785,7 @@ class SeedExportXpubDetailsView(View):
         Collects the user input from all the previous screens leading up to this and
         finally calculates the xpub and displays the summary view to the user.
     """
-    def __init__(self, seed_num: int, sig_type: str, script_type: str, coordinator: str, custom_derivation: str):
+    def __init__(self, seed_num: int, sig_type: str, script_type: str, coordinator: str, custom_derivation: str = None):
         super().__init__()
         self.sig_type = sig_type
         self.script_type = script_type
@@ -798,7 +797,7 @@ class SeedExportXpubDetailsView(View):
 
 
     def run(self):
-        if self.script_type == SettingsConstants.CUSTOM_DERIVATION:
+        if self.custom_derivation is not None:
             derivation_path = self.custom_derivation
         else:
             derivation_path = embit_utils.get_standard_derivation_path(
@@ -1664,9 +1663,6 @@ class SeedAddressVerificationView(View):
             # TODO: Taproot addr verification
             return Destination(NotYetImplementedView)
 
-        # TODO: This should be in `Seed` or `PSBT` utility class
-        embit_network = SettingsConstants.map_network_to_embit(self.network)
-
         # The ThreadsafeCounter will be shared by the brute-force thread to keep track of
         # its current addr index number and the Screen to display its progress and
         # respond to UI requests to jump the index ahead.
@@ -1682,7 +1678,7 @@ class SeedAddressVerificationView(View):
             seed=self.seed,
             descriptor=self.controller.multisig_wallet_descriptor,
             script_type=self.script_type,
-            embit_network=embit_network,
+            network=self.network,
             derivation_path=self.derivation_path,
             threadsafe_counter=self.threadsafe_counter,
             verified_index=self.verified_index,
@@ -1755,7 +1751,7 @@ class SeedAddressVerificationView(View):
 
 
     class BruteForceAddressVerificationThread(BaseThread):
-        def __init__(self, address: str, seed: Seed, descriptor: Descriptor, script_type: str, embit_network: str, derivation_path: str, threadsafe_counter: ThreadsafeCounter, verified_index: ThreadsafeCounter, verified_index_is_change: ThreadsafeCounter):
+        def __init__(self, address: str, seed: Seed, descriptor: Descriptor, script_type: str, network: str, derivation_path: str, cur_addr_index: ThreadsafeCounter, verified_index: ThreadsafeCounter, verified_index_is_change: ThreadsafeCounter):
             """
                 Either seed or descriptor will be None
             """
@@ -1764,15 +1760,15 @@ class SeedAddressVerificationView(View):
             self.seed = seed
             self.descriptor = descriptor
             self.script_type = script_type
-            self.embit_network = embit_network
+            self.embit_network = SettingsConstants.map_network_to_embit(network)
             self.derivation_path = derivation_path
-            self.threadsafe_counter = threadsafe_counter
+            self.threadsafe_counter = cur_addr_index
             self.verified_index = verified_index
             self.verified_index_is_change = verified_index_is_change
 
             if self.seed:
-                self.xpub = self.seed.get_xpub(wallet_path=self.derivation_path, network=Settings.get_instance().get_value(SettingsConstants.SETTING__NETWORK))
- 
+                self.xpub = self.seed.get_xpub(wallet_path=self.derivation_path, network=network)
+
 
         def run(self):
             while self.keep_running:
@@ -1927,25 +1923,23 @@ class SeedSignMessageStartView(View):
         self.message = message
 
         if self.settings.get_value(SettingsConstants.SETTING__MESSAGE_SIGNING) == SettingsConstants.OPTION__DISABLED:
-            self.set_redirect(Destination(OptionDisabledView, view_args=dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)))
-            return
+            return self.set_redirect(Destination(OptionDisabledView, view_args=dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)))
 
         # calculate the actual receive address
         addr_format = embit_utils.parse_derivation_path(derivation_path)
         if not addr_format["clean_match"]:
-            self.set_redirect(Destination(NotYetImplementedView, view_args=dict(text=f"Signing messages for custom derivation paths not supported")))
             self.controller.resume_main_flow = None
-            return
+            return self.set_redirect(Destination(NotYetImplementedView, view_args=dict(text=f"Signing messages for custom derivation paths not supported")))
 
         # Note: addr_format["network"] can be MAINNET or [TESTNET, REGTEST]
         if self.settings.get_value(SettingsConstants.SETTING__NETWORK) not in addr_format["network"]:
             from seedsigner.views.view import NetworkMismatchErrorView
-            self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
 
             # cleanup. Note: We could leave this in place so the user can resume the
             # flow, but for now we avoid complications and keep things simple.
             self.controller.resume_main_flow = None
-            return
+
+            return self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
 
         data = self.controller.sign_message_data
         if not data:
@@ -1960,9 +1954,9 @@ class SeedSignMessageStartView(View):
     
         if self.seed_num is not None:
             # We already know which seed we're signing with
-            self.set_redirect(Destination(SeedSignMessageConfirmMessageView, skip_current_view=True))
+            return self.set_redirect(Destination(SeedSignMessageConfirmMessageView, skip_current_view=True))
         else:
-            self.set_redirect(Destination(SeedSelectSeedView, view_args=dict(flow=Controller.FLOW__SIGN_MESSAGE), skip_current_view=True))
+            return self.set_redirect(Destination(SeedSelectSeedView, view_args=dict(flow=Controller.FLOW__SIGN_MESSAGE), skip_current_view=True))
 
 
 
@@ -2025,13 +2019,13 @@ class SeedSignMessageConfirmAddressView(View):
                 addr_format["network"] = self.settings.get_value(SettingsConstants.SETTING__NETWORK)
             else:
                 from seedsigner.views.view import NetworkMismatchErrorView
-                self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
 
                 # cleanup. Note: We could leave this in place so the user can resume the
                 # flow, but for now we avoid complications and keep things simple.
                 self.controller.resume_main_flow = None
                 self.controller.sign_message_data = None
-                return
+                
+                return self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
 
         xpub = seed.get_xpub(wallet_path=addr_format["wallet_derivation_path"], network=addr_format["network"])
         embit_network = embit_utils.get_embit_network_name(addr_format["network"])

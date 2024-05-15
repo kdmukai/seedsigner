@@ -20,7 +20,7 @@ from seedsigner.models.seed import Seed
 from seedsigner.models.settings_definition import SettingsConstants
 from seedsigner.views.seed_views import SeedDiscardView, SeedFinalizeView, SeedMnemonicEntryView, SeedOptionsView, SeedWordsWarningView, SeedExportXpubScriptTypeView
 
-from .view import View, Destination, BackStackView
+from .view import ErrorView, NotYetImplementedView, View, Destination, BackStackView
 
 
 
@@ -495,12 +495,99 @@ class ToolsAddressExplorerSelectSourceView(View):
 
 
 
+class ToolsAddressExplorerCustomDerivationRoutingView(View):
+    """
+    A routing-only View that analyzes the proposed custom derivation path to decide if we
+    need more information or if the is unsupported.
+    """
+    def __init__(self, seed_num: int, custom_derivation: str):
+        super().__init__()
+
+        try:
+            details = embit_utils.parse_derivation_path(custom_derivation)
+        except embit_utils.EmbitUtilsException:
+            return self.set_redirect(
+                Destination(
+                    ErrorView,
+                    view_args=dict(
+                        status_headline="Multisig derivation path",
+                        text="Load a multisig descriptor instead.",
+                        button_text="Done",
+                        show_back_button=False,
+                    )
+                )
+            )
+
+        if details["script_type"] == SettingsConstants.CUSTOM_DERIVATION__UNSUPPORTED_PURPOSE:
+            # Unrecognized derivation path 'purpose' (e.g. m/234234234'/...)
+            # TODO: We'd have to ask the user which script type to apply
+            # (e.g. p2wsh, etc) in order to properly generate addrs.
+            return self.set_redirect(Destination(NotYetImplementedView, view_args=dict(text=f"""Unsupported derivation path 'purpose' {custom_derivation.split("/")[1]}""")))
+
+        if details.get("wallet_derivation_path") is not None:
+            # A full address-level derivation path was provided
+            # TODO: Warn/notify the user so they'll know next time?
+            custom_derivation = details["wallet_derivation_path"]
+
+        args = dict(seed_num=seed_num, script_type=details["script_type"], custom_derivation=custom_derivation)
+
+        if isinstance(details["network"], list):
+            # Network ("m{purpose}'/{network}'/etc") was "1'" which could be any of
+            # the test networks. Have to ask the user which is intended.
+            return self.set_redirect(Destination(ToolsAddressExplorerCustomDerivationSelectTestNetworkView, view_args=args))
+
+        else:
+            # Mainnet
+            args["network"] = SettingsConstants.MAINNET
+            return self.set_redirect(Destination(ToolsAddressExplorerAddressTypeView, view_args=args))
+
+
+
+class ToolsAddressExplorerCustomDerivationSelectTestNetworkView(View):
+    """
+        For a derivation path of "m/{purpose}/1'/...", we can't tell if the intended
+        network is testnet or regtest. This view prompts the user to select which.
+    """
+    TESTNET = "Testnet"
+    REGTEST = "Regtest"
+
+    def __init__(self, seed_num: int, script_type: str, custom_derivation: str):
+        super().__init__()
+        self.seed_num = seed_num
+        self.script_type = script_type
+        self.custom_derivation = custom_derivation
+
+
+    def run(self) -> Destination:
+        from .tools_views import ToolsAddressExplorerAddressTypeView
+        button_data = [self.TESTNET, self.REGTEST]
+        ret = self.run_screen(
+            ButtonListScreen,
+            title="Test Network",
+            button_data=button_data,
+            is_bottom_list=True,
+        )
+
+        if ret == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        if button_data[ret] == self.TESTNET:
+            network = SettingsConstants.TESTNET
+        elif button_data[ret] == self.REGTEST:
+            network = SettingsConstants.REGTEST
+        else:
+            raise Exception("Unhandled button_data option")
+
+        return Destination(ToolsAddressExplorerAddressTypeView, view_args=dict(seed_num=self.seed_num, script_type=self.script_type, custom_derivation=self.custom_derivation, network=network))
+
+
+
 class ToolsAddressExplorerAddressTypeView(View):
     RECEIVE = "Receive Addresses"
     CHANGE = "Change Addresses"
 
 
-    def __init__(self, seed_num: int = None, script_type: str = None, custom_derivation: str = None):
+    def __init__(self, seed_num: int = None, script_type: str = None, custom_derivation: str = None, network: str = None):
         """
             If the explorer source is a seed, `seed_num` and `script_type` must be
             specified. `custom_derivation` can be specified as needed.
@@ -509,37 +596,44 @@ class ToolsAddressExplorerAddressTypeView(View):
             `script_type`, and `custom_derivation` should be `None`.
         """
         super().__init__()
-        self.seed_num = seed_num
         self.script_type = script_type
         self.custom_derivation = custom_derivation
+        self.seed = self.controller.storage.seeds[seed_num] if seed_num is not None else None
     
-        network = self.settings.get_value(SettingsConstants.SETTING__NETWORK)
+        if not network:
+            network = self.settings.get_value(SettingsConstants.SETTING__NETWORK)
 
         # Store everything in the Controller's `address_explorer_data` so we don't have
         # to keep passing vals around from View to View and recalculating.
         data = dict(
             seed_num=seed_num,
-            network=self.settings.get_value(SettingsConstants.SETTING__NETWORK),
+            network=network,
             embit_network=SettingsConstants.map_network_to_embit(network),
             script_type=script_type,
         )
-        if self.seed_num is not None:
-            self.seed = self.controller.storage.seeds[seed_num]
-            data["seed_num"] = self.seed
 
-            if self.script_type == SettingsConstants.CUSTOM_DERIVATION:
+        if seed_num is not None:
+            # This is single sig via a seed + standard or custom derivation path
+            if self.custom_derivation is not None:
                 derivation_path = self.custom_derivation
+
             else:
                 derivation_path = embit_utils.get_standard_derivation_path(
-                    network=self.settings.get_value(SettingsConstants.SETTING__NETWORK),
+                    network=network,
                     wallet_type=SettingsConstants.SINGLE_SIG,
                     script_type=self.script_type,
                 )
 
             data["derivation_path"] = derivation_path
             data["xpub"] = self.seed.get_xpub(derivation_path, network=network)
+
+            print(f"{data['xpub']=}")
+            print(f"{self.custom_derivation=}")
+            print(f"{network=}")
         
         else:
+            # This is multisig via a wallet descriptor
+            # TODO: support single sig descriptors
             data["wallet_descriptor"] = self.controller.multisig_wallet_descriptor
 
         self.controller.address_explorer_data = data
@@ -559,7 +653,7 @@ class ToolsAddressExplorerAddressTypeView(View):
         selected_menu_num = self.run_screen(
             ToolsAddressExplorerAddressTypeScreen,
             button_data=button_data,
-            fingerprint=self.seed.get_fingerprint() if self.seed_num is not None else None,
+            fingerprint=self.seed.get_fingerprint() if self.seed else None,
             wallet_descriptor_display_name=wallet_descriptor_display_name,
             script_type=script_type,
             custom_derivation_path=self.custom_derivation,
@@ -617,15 +711,10 @@ class ToolsAddressExplorerAddressListView(View):
 
                 if "xpub" in data:
                     # Single sig explore from seed
-                    if "script_type" in data and data["script_type"] != SettingsConstants.CUSTOM_DERIVATION:
-                        # Standard derivation path
-                        for i in range(self.start_index, self.start_index + addrs_per_screen):
-                            address = embit_utils.get_single_sig_address(xpub=data["xpub"], script_type=data["script_type"], index=i, is_change=self.is_change, embit_network=data["embit_network"])
-                            addresses.append(address)
-                            data[addr_storage_key].append(address)
-                    else:
-                        # TODO: Custom derivation path
-                        raise Exception("Custom Derivation address explorer not yet implemented")
+                    for i in range(self.start_index, self.start_index + addrs_per_screen):
+                        address = embit_utils.get_single_sig_address(xpub=data["xpub"], script_type=data["script_type"], index=i, is_change=self.is_change, embit_network=data["embit_network"])
+                        addresses.append(address)
+                        data[addr_storage_key].append(address)
                 
                 elif "wallet_descriptor" in data:
                     descriptor: Descriptor = data["wallet_descriptor"]

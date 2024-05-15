@@ -123,6 +123,8 @@ class SettingsConstants:
         (CUSTOM_DERIVATION, "Custom Derivation"),
     ]
 
+    CUSTOM_DERIVATION__UNSUPPORTED_PURPOSE = "unsupported_purpose"  # "m/{purpose}'/etc" is nonstandard or not supported
+
     WORDLIST_LANGUAGE__ENGLISH = "en"
     WORDLIST_LANGUAGE__CHINESE_SIMPLIFIED = "zh_Hans_CN"
     WORDLIST_LANGUAGE__CHINESE_TRADITIONAL = "zh_Hant_TW"

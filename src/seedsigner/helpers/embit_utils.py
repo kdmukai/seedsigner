@@ -13,6 +13,11 @@ from embit.util import secp256k1
 from seedsigner.models.settings_definition import SettingsConstants
 
 
+class EmbitUtilsException(Exception):
+    pass
+
+
+
 """
     Collection of generic embit-powered util methods.
 """
@@ -127,7 +132,7 @@ def parse_derivation_path(derivation_path: str) -> dict:
 
     if sections[1] == "48h":
         # So far this helper is only meant for single sig message signing
-        raise Exception("Not implemented")
+        raise EmbitUtilsException("Multisig derivation paths not yet supported.")
 
     lookups = {
         "script_types": {
@@ -141,29 +146,19 @@ def parse_derivation_path(derivation_path: str) -> dict:
         }
     }
 
-    details = dict()
-    details["script_type"] = lookups["script_types"].get(sections[1])
-    if not details["script_type"]:
-        details["script_type"] = SettingsConstants.CUSTOM_DERIVATION
+    details = dict(is_change=None, index=None, wallet_derivation_path=None)
+
+    # Do we explicitly support this m/{purpose}'/etc?
+    details["script_type"] = lookups["script_types"].get(sections[1], SettingsConstants.CUSTOM_DERIVATION__UNSUPPORTED_PURPOSE)
+
     details["network"] = lookups["networks"].get(sections[2])
+    details["account"] = int(sections[3].replace("h", ""))
 
-    # Check if there's a standard change path
-    if sections[-2] in ["0", "1"]:
+    if len(sections) == 6 and sections[-2] in ["0", "1"]:
+        # Probably a standard address-level derivation path (e.g. m/84h/0h/0h/{is_change}/{index})
         details["is_change"] = sections[-2] == "1"
-    else:
-        details["is_change"] = None
-
-    # Check if there's a standard address index
-    if sections[-1].isdigit():
         details["index"] = int(sections[-1])
-    else:
-        details["index"] = None
-
-    if details["is_change"] is not None and details["index"] is not None:
-        # standard change and addr index; safe to truncate to the wallet level
         details["wallet_derivation_path"] = "/".join(sections[:-2])
-    else:
-        details["wallet_derivation_path"] = None
 
     details["clean_match"] = True
     for k, v in details.items():
