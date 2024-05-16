@@ -118,7 +118,41 @@ class Seed:
 
         # TODO: Support other BIP-39 wordlist languages!
         return bip85.derive_mnemonic(root, bip85_num_words, bip85_index)
-        
+
+
+    # ----------------- BIP-352 Silent Payments support -----------------
+    def _derive_bip352_key(self, is_scanning_key: bool = True, account: int = 0, network: str = SettingsConstants.MAINNET):
+        """
+            Derives the BIP-352 scanning or signing key.
+
+            see: https://github.com/bitcoin/bips/blob/master/bip-0352.mediawiki#key-derivation
+        """
+        from seedsigner.helpers import embit_utils
+        purpose = 352  # per BIP-352 spec
+        coin_type = 0 if network == SettingsConstants.MAINNET else 1  # mainnet coins vs testnet coins
+        key_type = 1 if is_scanning_key else 0  # per BIP-352 spec; scanning key vs spending key
+        derivation_path = f"m/{purpose}'/{coin_type}'/{account}'/{key_type}'/0"
+        root = bip32.HDKey.from_seed(self.seed_bytes, version=NETWORKS[SettingsConstants.map_network_to_embit(network)]["xprv"])
+        return root.derive(derivation_path)
+
+
+    def derive_bip352_scanning_key(self, account: int = 0, network: str = SettingsConstants.MAINNET):
+        return self._derive_bip352_key(is_scanning_key=True, account=account, network=network)
+
+
+    def derive_bip352_signing_key(self, account: int = 0, network: str = SettingsConstants.MAINNET):
+        return self._derive_bip352_key(is_scanning_key=False, account=account, network=network)
+    
+
+    def generate_bip352_silent_payment_address(self, network: str = SettingsConstants.MAINNET):
+        from seedsigner.helpers import embit_utils
+        scanning_pk = self.derive_bip352_scanning_key(network=network)
+        signing_pk = self.derive_bip352_signing_key(network=network)
+        scanning_pubkey = scanning_pk.get_public_key()
+        signing_pubkey = signing_pk.get_public_key()
+        return embit_utils.encode_silent_payment_address(scanning_pubkey, signing_pubkey, embit_network=SettingsConstants.map_network_to_embit(network))
+    # ----------------- BIP-352 Silent Payments support -----------------
+
 
     ### override operators    
     def __eq__(self, other):

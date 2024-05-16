@@ -148,9 +148,14 @@ def test_generate_screenshots(target_locale):
             (seed_views.SeedWordsWarningView, dict(seed_num=0)),
             (seed_views.SeedWordsView, dict(seed_num=0)),
             (seed_views.SeedWordsView, dict(seed_num=0, page_index=2), "SeedWordsView_2"),
+
             (seed_views.SeedBIP85ApplicationModeView, dict(seed_num=0)),
             (seed_views.SeedBIP85SelectChildIndexView, dict(seed_num=0, num_words=24)),
-            (seed_views.SeedBIP85InvalidChildIndexView, dict(seed_num=0, num_words=12)), 
+            (seed_views.SeedBIP85InvalidChildIndexView, dict(seed_num=0, num_words=12)),
+
+            (seed_views.SeedBIP352SilentPaymentsOptionsView, dict(seed_num=0)),
+            (seed_views.SeedBIP352GeneratePaymentAddressView, dict(seed_num=0)),
+
             (seed_views.SeedWordsBackupTestPromptView, dict(seed_num=0)),
             (seed_views.SeedWordsBackupTestView, dict(seed_num=0)),
             (seed_views.SeedWordsBackupTestMistakeView, dict(seed_num=0, cur_index=7, wrong_word="unlucky")),

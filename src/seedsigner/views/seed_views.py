@@ -23,7 +23,7 @@ from seedsigner.models.seed import InvalidSeedException, Seed
 from seedsigner.models.settings import Settings, SettingsConstants
 from seedsigner.models.settings_definition import SettingsDefinition
 from seedsigner.models.threads import BaseThread, ThreadsafeCounter
-from seedsigner.views.view import NotYetImplementedView, OptionDisabledView, View, Destination, BackStackView, MainMenuView
+from seedsigner.views.view import BaseQRDisplayView, NotYetImplementedView, OptionDisabledView, View, Destination, BackStackView, MainMenuView
 
 
 
@@ -433,6 +433,7 @@ class SeedOptionsView(View):
     SIGN_MESSAGE = "Sign Message"
     BACKUP = ("Backup Seed", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT)
     BIP85_CHILD_SEED = "BIP-85 Child Seed"
+    BIP352_SILENT_PAYMENTS = "BIP-352 Silent Payments"
     DISCARD = ("Discard Seed", None, None, "red")
 
 
@@ -490,6 +491,9 @@ class SeedOptionsView(View):
         if self.settings.get_value(SettingsConstants.SETTING__BIP85_CHILD_SEEDS) == SettingsConstants.OPTION__ENABLED:
             button_data.append(self.BIP85_CHILD_SEED)
 
+        if self.settings.get_value(SettingsConstants.SETTING__BIP352_SILENT_PAYMENTS) == SettingsConstants.OPTION__ENABLED:
+            button_data.append(self.BIP352_SILENT_PAYMENTS)
+
         button_data.append(self.DISCARD)
         
         selected_menu_num = self.run_screen(
@@ -529,6 +533,9 @@ class SeedOptionsView(View):
 
         elif button_data[selected_menu_num] == self.BIP85_CHILD_SEED:
             return Destination(SeedBIP85ApplicationModeView, view_args={"seed_num": self.seed_num})
+
+        elif button_data[selected_menu_num] == self.BIP352_SILENT_PAYMENTS:
+            return Destination(SeedBIP352SilentPaymentsOptionsView, view_args={"seed_num": self.seed_num})
 
         elif button_data[selected_menu_num] == self.DISCARD:
             return Destination(SeedDiscardView, view_args=dict(seed_num=self.seed_num))
@@ -858,7 +865,7 @@ class SeedExportXpubDetailsView(View):
 
 
 
-class SeedExportXpubQRDisplayView(View):
+class SeedExportXpubQRDisplayView(BaseQRDisplayView):
     def __init__(self, seed_num: int, coordinator: str, derivation_path: str):
         super().__init__()
         self.seed = self.controller.get_seed(seed_num)
@@ -883,12 +890,11 @@ class SeedExportXpubQRDisplayView(View):
             self.qr_encoder = UrXpubQrEncoder(**encoder_args)
 
 
-    def run(self):
-        self.run_screen(
-            QRDisplayScreen,
-            qr_encoder=self.qr_encoder
-        )
+    def get_qr_encoder(self):
+        return self.qr_encoder
+    
 
+    def get_next_destination(self):
         return Destination(MainMenuView)
 
 
@@ -1100,6 +1106,127 @@ class SeedBIP85InvalidChildIndexView(View):
                 ),
                 skip_current_view=True
             )
+
+
+
+"""****************************************************************************
+    BIP-352: Silent Payments
+****************************************************************************"""
+class SeedBIP352SilentPaymentsOptionsView(View):
+    GENERATE_SP_ADDRESS = "Generate payment addr"
+    EXPORT_SIGNING_PUBKEY = "Export signing pubkey"
+    EXPORT_SCANNING_PRIVKEY = "Export scanning privkey"
+
+    def __init__(self, seed_num: int):
+        super().__init__()
+        self.seed_num = seed_num
+
+
+    def run(self):
+        button_data = [
+            self.GENERATE_SP_ADDRESS,
+            self.EXPORT_SIGNING_PUBKEY,
+            self.EXPORT_SCANNING_PRIVKEY,
+        ]
+
+        selected_menu_num = self.run_screen(
+            ButtonListScreen,
+            title="Silent Payments",
+            button_data=button_data,
+            is_button_text_centered=False,
+        )
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            # Explicitly define BACK since various sub-Views route back here and will
+            # have messy BackStacks.
+            return Destination(SeedOptionsView, view_args={"seed_num": self.seed_num}, clear_history=True)
+        
+        elif button_data[selected_menu_num] == self.GENERATE_SP_ADDRESS:
+            return Destination(SeedBIP352GeneratePaymentAddressView, view_args={"seed_num": self.seed_num})
+
+        elif button_data[selected_menu_num] == self.EXPORT_SIGNING_PUBKEY:
+            return Destination(SeedBIP352ExportSigningPubkeyQRView, view_args={"seed_num": self.seed_num})
+        
+        elif button_data[selected_menu_num] == self.EXPORT_SCANNING_PRIVKEY:
+            return Destination(SeedBIP352ExportScanningPrivkeyQRView, view_args={"seed_num": self.seed_num})
+
+
+
+class SeedBIP352GeneratePaymentAddressView(View):
+    EXPORT_VIA_QR_CODE = "Export via QR code"
+
+    def __init__(self, seed_num: int):
+        super().__init__()
+        self.seed_num = seed_num
+        self.seed = self.controller.get_seed(self.seed_num)
+        self.payment_address = self.seed.generate_bip352_silent_payment_address(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+
+
+    def run(self):
+        button_data = [self.EXPORT_VIA_QR_CODE]
+
+        selected_menu_item = self.run_screen(
+            seed_screens.SeedBIP352GeneratePaymentAddressScreen,
+            payment_address=self.payment_address,
+            button_data = button_data
+        )
+
+        if selected_menu_item == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+        
+        elif button_data[selected_menu_item] == self.EXPORT_VIA_QR_CODE:
+            return Destination(SeedBIP352PaymentAddressQRView, view_args={"seed_num": self.seed_num})
+
+
+
+class BaseBIP352QRView(BaseQRDisplayView):
+    def __init__(self, seed_num: int):
+        super().__init__()
+        self.seed_num = seed_num
+        self.seed = self.controller.get_seed(seed_num)
+
+
+    def get_next_destination(self):
+        return Destination(SeedBIP352SilentPaymentsOptionsView, view_args={"seed_num": self.seed_num}, clear_history=True)
+
+
+
+class SeedBIP352PaymentAddressQRView(BaseBIP352QRView):
+    """
+    Display the BIP-352 reusable payment address as a QR code.
+    """
+    def get_qr_encoder(self):
+        payment_address = self.seed.generate_bip352_silent_payment_address(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+        return GenericStaticQrEncoder(data=payment_address)
+
+
+
+class SeedBIP352ExportSigningPubkeyQRView(BaseBIP352QRView):
+    """
+    Display the derived signing key's xpub as a QR code.
+
+    BIP-352 client software will need the signing key's xpub in order to generate the
+    reusable payment address.
+
+    But in order to preserve the derived signing key's airgap, we only support exporting
+    its xpub.
+    """
+    def get_qr_encoder(self):
+        signing_pk = self.seed.derive_bip352_signing_key(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+        return GenericStaticQrEncoder(data=signing_pk.to_public().to_string())
+
+
+
+class SeedBIP352ExportScanningPrivkeyQRView(BaseBIP352QRView):
+    """
+    Display the derived scanning key's xprv as a QR code.
+
+    BIP-352 client software will need the scanning key's xprv in order to scan utxos for
+    incoming payments. By design, the scanning key is a hot key.
+    """
+    def get_qr_encoder(self):
+        scanning_pk = self.seed.derive_bip352_scanning_key(network=self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+        return GenericStaticQrEncoder(data=scanning_pk.to_string())
 
 
 

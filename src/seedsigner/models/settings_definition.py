@@ -160,6 +160,7 @@ class SettingsConstants:
     SETTING__CAMERA_ROTATION = "camera_rotation"
     SETTING__COMPACT_SEEDQR = "compact_seedqr"
     SETTING__BIP85_CHILD_SEEDS = "bip85_child_seeds"
+    SETTING__BIP352_SILENT_PAYMENTS = "bip352_silent_payments"
     SETTING__MESSAGE_SIGNING = "message_signing"
     SETTING__PRIVACY_WARNINGS = "privacy_warnings"
     SETTING__DIRE_WARNINGS = "dire_warnings"
@@ -181,7 +182,7 @@ class SettingsConstants:
 
     VISIBILITY__GENERAL = "general"
     VISIBILITY__ADVANCED = "advanced"
-    VISIBILITY__DEVELOPER = "developer"
+    VISIBILITY__EXPERIMENTAL = "experimental"
     VISIBILITY__HIDDEN = "hidden"   # For data-only (e.g. custom_derivation), not configurable by the user
 
     # TODO: Is there really a difference between ENABLED and PROMPT?
@@ -491,13 +492,13 @@ class SettingsDefinition:
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       default_value=SettingsConstants.OPTION__ENABLED),
 
-        # Developer options
-        # TODO: No real Developer options needed yet. Disable for now.
-        # SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
-        #               attr_name=SettingsConstants.SETTING__DEBUG,
-        #               display_name="Debug",
-        #               visibility=SettingsConstants.VISIBILITY__DEVELOPER,
-        #               default_value=SettingsConstants.OPTION__DISABLED),
+        # Experimental / Edge options
+        SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
+                      attr_name=SettingsConstants.SETTING__BIP352_SILENT_PAYMENTS,
+                      abbreviated_name="bip352",
+                      display_name="BIP-352 silent payments",
+                      visibility=SettingsConstants.VISIBILITY__EXPERIMENTAL,
+                      default_value=SettingsConstants.OPTION__DISABLED),
         
         # "Hidden" settings with no UI interaction
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,

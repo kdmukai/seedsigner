@@ -3,7 +3,7 @@ import embit
 from binascii import b2a_base64
 from hashlib import sha256
 
-from embit import bip32, compact, ec
+from embit import bech32, bip32, compact, ec
 from embit.bip32 import HDKey
 from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
@@ -196,3 +196,18 @@ def sign_message(seed_bytes: bytes, derivation: str, msg: bytes, compressed: boo
     flag = bytes([27 + flag + c])
     ser = flag + secp256k1.ecdsa_signature_serialize_compact(sig._sig)
     return b2a_base64(ser).strip().decode()
+
+
+
+# Basic BIP-352 Silent Payments support
+def encode_silent_payment_address(B_scan: ec.PublicKey, B_m: ec.PublicKey, embit_network: str = "main", version: int = 0) -> str:
+    """
+    Adapted from https://github.com/bitcoin/bips/blob/master/bip-0352/reference.py
+
+    Generates the recipient's reusable silent payment address for a given:
+        * scanning pubkey `B_scan`
+        * spending pubkey `B_m`
+    """
+    data = bech32.convertbits(B_scan.sec() + B_m.sec(), 8, 5)
+    hrp = "sp" if embit_network == "main" else "tsp"
+    return bech32.bech32_encode(bech32.Encoding.BECH32M, hrp, [version] + data)

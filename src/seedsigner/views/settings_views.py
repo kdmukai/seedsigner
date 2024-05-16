@@ -50,13 +50,12 @@ class SettingsMenuView(View):
         elif self.visibility == SettingsConstants.VISIBILITY__ADVANCED:
             title = "Advanced"
 
-            # So far there are no real Developer options; disabling for now
-            # button_data.append(("Developer Options", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
-            # next_destination = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__DEVELOPER})
-            next_destination = None
+            # Set up the next nested level of menuing
+            button_data.append(("Experimental / Edge", None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
+            next_destination = Destination(SettingsMenuView, view_args={"visibility": SettingsConstants.VISIBILITY__EXPERIMENTAL})
         
-        elif self.visibility == SettingsConstants.VISIBILITY__DEVELOPER:
-            title = "Dev Options"
+        elif self.visibility == SettingsConstants.VISIBILITY__EXPERIMENTAL:
+            title = "Experimental / Edge"
             next_destination = None
 
         selected_menu_num = self.run_screen(

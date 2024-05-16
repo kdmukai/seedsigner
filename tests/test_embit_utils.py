@@ -1,5 +1,8 @@
 import pytest
 
+from binascii import unhexlify
+from embit.ec import PrivateKey
+from embit.networks import NETWORKS
 from seedsigner.models.settings_definition import SettingsConstants as SC
 from seedsigner.helpers import embit_utils
 
@@ -400,3 +403,28 @@ def test_parse_derivation_path():
             assert actual_result["index"] == expected_result[3]
         else:
             assert actual_result["index"] == int(derivation_path.split("/")[-1])
+
+
+def test_bip352_encode_silent_payment_address():
+    """
+    Tests BIP-352 support.
+
+    Test vectors from the BIP: https://github.com/bitcoin/bips/blob/master/bip-0352/send_and_receive_test_vectors.json#L76
+    """
+    spend_priv_key = "9d6ad855ce3417ef84e836892e5a56392bfba05fa5d97ccea30e266f540e08b3"
+    scan_priv_key = "0f694e068028a717f8af6b9411f9a133dd3565258714cc226594b34db90c1f2c"
+
+    spend_pk = PrivateKey(unhexlify(spend_priv_key))
+    scan_pk = PrivateKey(unhexlify(scan_priv_key))
+
+    scan_pubkey = scan_pk.get_public_key()
+    spend_pubkey = spend_pk.get_public_key()
+
+    payment_addr = embit_utils.encode_silent_payment_address(scan_pubkey, spend_pubkey)
+    assert payment_addr == "sp1qqgste7k9hx0qftg6qmwlkqtwuy6cycyavzmzj85c6qdfhjdpdjtdgqjuexzk6murw56suy3e0rd2cgqvycxttddwsvgxe2usfpxumr70xc9pkqwv"
+
+    # Test network payment addrs should start with "tsp"
+    test_networks = [k for k in NETWORKS.keys() if k != "main"]
+    for network in test_networks:
+        payment_addr = embit_utils.encode_silent_payment_address(scan_pubkey, spend_pubkey, embit_network=network)
+        assert payment_addr.startswith("tsp")

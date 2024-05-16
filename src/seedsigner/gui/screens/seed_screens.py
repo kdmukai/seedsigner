@@ -542,6 +542,21 @@ class SeedBIP85SelectChildIndexScreen(KeyboardScreen):
         super().__post_init__()
 
 
+@dataclass
+class SeedBIP352GeneratePaymentAddressScreen(ButtonListScreen):
+    payment_address: str = None
+
+    def __post_init__(self):
+        self.title = "Payment Address"
+        self.is_bottom_list = True
+        super().__post_init__()
+
+        self.components.append(FormattedAddress(
+            address=self.payment_address,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+        ))
+
+
 
 @dataclass
 class SeedWordsBackupTestPromptScreen(ButtonListScreen):
