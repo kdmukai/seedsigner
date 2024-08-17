@@ -46,6 +46,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 import RPi.GPIO as GPIO
 from spidev import SpiDev
+import array
 
 # constants
 LCD_WIDTH = 320
@@ -86,6 +87,12 @@ def image_to_data(image: Image) -> object:
     pb = np.array(image.convert('RGB')).astype('uint16')
     # cut of the two least significant / rightmost bits to convert 8-bit color to 6-bit color
     return np.dstack((pb[:, :, 0] & 0xFC, pb[:, :, 1] & 0xFC, pb[:, :, 2] & 0xFC)).flatten().tolist()
+
+    # convert 24-bit RGB-8:8:8 to gBRG-3:5:5:3; then per-pixel byteswap to 16-bit RGB-5:6:5
+    # arr = array.array("H", image.convert("BGR;16").tobytes())
+    # arr.byteswap()
+    # return arr.tobytes()
+
 
 
 class Origin(Enum):
@@ -133,8 +140,9 @@ class ILI9486:
         power, video and audio out area of the Pi."""
         #Initialize SPI
         spi = SpiDev(0, 0)
-        spi.mode = 0b10  # [CPOL|CPHA] -> polarity 1, phase 0
-        spi.max_speed_hz = 40_000_000
+        # spi.mode = 0b10  # [CPOL|CPHA] -> polarity 1, phase 0
+        # spi.lsbfirst = False
+        spi.max_speed_hz = 64_000_000
 
         self.__spi = spi
         self.__dc = dc
@@ -171,11 +179,12 @@ class ILI9486:
         # dc low for command, high for data
         GPIO.output(self.__dc, is_data)
         if isinstance(data, int):
-            self.__spi.writebytes([data])
+            self.__spi.writebytes2([data])
         else:
             for start in range(0, len(data), chunk_size):
                 end = min(start + chunk_size, len(data))
-                self.__spi.writebytes(data[start: end])
+                self.__spi.writebytes2(data[start: end])
+            # self.__spi.writebytes2(data)
         return self
 
     def command(self, data):
@@ -190,11 +199,11 @@ class ILI9486:
         """Resets the display if a reset pin is provided."""
         if self.__rst is not None:
             GPIO.output(self.__rst, GPIO.HIGH)
-            time.sleep(.001)  # wait a bit to make sure the output was HIGH
+            time.sleep(.005)  # wait a bit to make sure the output was HIGH
             GPIO.output(self.__rst, GPIO.LOW)
-            time.sleep(.000100)  # wait 100 µs to trigger the reset (should be 10 µs, but the OS is not precise enough)
+            time.sleep(.02)  # wait 100 µs to trigger the reset (should be 10 µs, but the OS is not precise enough)
             GPIO.output(self.__rst, GPIO.HIGH)
-            time.sleep(.120)  # wait 120 ms for finishing blanking and resetting
+            time.sleep(.15)  # wait 120 ms for finishing blanking and resetting
             self.__inverted = False
             self.__idle = False
         return self
@@ -203,7 +212,7 @@ class ILI9486:
         """Initializes the display. Protected in case you want to override it for e.g. gamma control"""
         self.command(CMD_IFMODE).data(0x00)
         self.command(CMD_SLPOUT)  # turns off the sleep mode
-        time.sleep(0.020)
+        time.sleep(0.12)
 
         self.command(CMD_PXLFMT).data(0x66)  # 18 bits per pixel
         self.command(CMD_RDPXLFMT).data(0x66)  # 18 bits per pixel
@@ -266,8 +275,8 @@ class ILI9486:
         self.set_window(x0, y0, x1, y1)
         data = image_to_data(image)
         self.command(CMD_WRMEM)
-        if isinstance(data, list):
-            self.data(list(data))
+        # if isinstance(data, list):
+        self.data(data)
         return self
     
     def ShowImage(self, image=None, x0 = 0, y0 = 0):

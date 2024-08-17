@@ -24,13 +24,15 @@ class Renderer(ConfigurableSingleton):
         cls._instance = renderer
 
         # Eventually we'll be able to plug in other display controllers
-        renderer.disp = ILI9486().begin()
+        renderer.disp = ILI9486()
+        renderer.disp.begin()
+        renderer.disp.invert()
 
         renderer.canvas_width, renderer.canvas_height = renderer.disp.dimensions()
         # renderer.canvas_width = renderer.disp.width
         # renderer.canvas_height = renderer.disp.height
 
-        print(renderer.canvas_width, renderer.canvas_height)
+        print(f"{renderer.disp.is_landscape()=} | {renderer.canvas_width=}, {renderer.canvas_height=}")
 
         renderer.canvas = Image.new('RGB', (renderer.canvas_width, renderer.canvas_height))
         renderer.draw = ImageDraw.Draw(renderer.canvas)
