@@ -20,15 +20,15 @@
 # THE SOFTWARE.
 
 """
-Wiring notes for the MHS-3.5inch Display:
+Wiring notes for the Waveshare "3.5inch RPi LCD (B)"
 
-The MHS pinout matches the first 2x13 Pi Zero pins.
+Pinout matches the first 2x13 Pi Zero pins.
 
 see:
-* http://www.lcdwiki.com/MHS-3.5inch_RPi_Display
+* https://www.waveshare.com/wiki/3.5inch_RPi_LCD_(B)
 * https://peppe8o.com/raspberry-pi-zero-pinout/
 
-MHS  -> Pi Zero / pin number
+display -> Pi Zero / pin number
 5V -> 5V / 4
 GND -> GND / 6
 LCD_RS (DC) -> 22  # move to match the st7789
@@ -37,7 +37,13 @@ RST -> 13  # move to match the st7789
 LCD_SCK (SCLK) -> SCLK / 23
 LCD_CS (CS) -> CE0 / 24
 
-notes: Screen powered on to a gray full screen, no code errors, but nothing rendered.
+
+Notes:
+* Originally tried the MHS-3.5inch Display but could only get the backlight / white
+background to come up. Never succeeded at painting any pixels. Possible that my
+copy is just broken
+  * * http://www.lcdwiki.com/MHS-3.5inch_RPi_Display
+
 
 """
 from enum import Enum
@@ -84,15 +90,18 @@ CMD_NGAMCTL = 0xE1
 
 def image_to_data(image: Image) -> object:
     """Converts a PIL image to 666RGB format that can be drawn on the LCD."""
-    pb = np.array(image.convert('RGB')).astype('uint16')
-    # cut of the two least significant / rightmost bits to convert 8-bit color to 6-bit color
+    # pb = np.array(image.convert('RGB')).astype('uint16')
+    pb = np.array(image)
+    # cut off the two least significant / rightmost bits to convert 8-bit color to 6-bit 6:6:6 color
     return np.dstack((pb[:, :, 0] & 0xFC, pb[:, :, 1] & 0xFC, pb[:, :, 2] & 0xFC)).flatten().tolist()
+    # return np.dstack((pb[:, :, 0] & 0xFC, pb[:, :, 1] & 0xFC, pb[:, :, 2] & 0xFC)).flatten()
 
     # convert 24-bit RGB-8:8:8 to gBRG-3:5:5:3; then per-pixel byteswap to 16-bit RGB-5:6:5
     # arr = array.array("H", image.convert("BGR;16").tobytes())
     # arr.byteswap()
     # return arr.tobytes()
 
+    # return image.tobytes()
 
 
 class Origin(Enum):
@@ -174,15 +183,16 @@ class ILI9486:
         """Returns true if selected origin is landscape mode; false otherwise"""
         return bool(self.__origin.value & 0x20)
 
-    def send(self, data, is_data=True, chunk_size=4096):
+    def send(self, data, is_data=True, chunk_size=4096*8):
         """Writes a byte or an array of bytes to the display."""
         # dc low for command, high for data
         GPIO.output(self.__dc, is_data)
         if isinstance(data, int):
             self.__spi.writebytes2([data])
         else:
-            for start in range(0, len(data), chunk_size):
-                end = min(start + chunk_size, len(data))
+            data_len = len(data)
+            for start in range(0, data_len, chunk_size):
+                end = min(start + chunk_size, data_len)
                 self.__spi.writebytes2(data[start: end])
             # self.__spi.writebytes2(data)
         return self
