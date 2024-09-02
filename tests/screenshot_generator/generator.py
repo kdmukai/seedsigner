@@ -131,6 +131,29 @@ def test_generate_screenshots(target_locale):
         "addr_format": embit_utils.parse_derivation_path(derivation_path)
     }
 
+    # Miniscript descriptor data
+    miniscript_descriptor = """
+        wsh(
+            or_d(
+                multi(
+                    2,
+                    [0f889044/48'/1'/0'/2']tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31/<0;1>/*,
+                    [03cd0a2b/48'/1'/0'/2']tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15/<0;1>/*,
+                    [3666c686/48'/1'/0'/2']tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr/<0;1>/*
+                ),
+                and_v(
+                    v:thresh(
+                        1,
+                        pkh([0f889044/48'/1'/0'/2']tpubDFQDKbH2mDqNDPNaUVxM6R5mHhzC4u5F6mNnUkCf6gBMbcENMQ1ZGFLZc3QwgdEv2f34wkTvLMG5kD8AZEZRhat1HQDj42eVxQSxbcqxn31/<2;3>/*),
+                        a:pkh([03cd0a2b/48'/1'/0'/2']tpubDEPEYgTj1ddmZqDdpiq5Gjttx3CnNSFppSaUa5eHAUVNMD2FE1ihGA2EMP92mzmSUGJsTAgMhBTACd9xsRDB5K4GKJH8RzbRuFUrmVVLR15/<2;3>/*),
+                        a:pkh([3666c686/48'/1'/0'/2']tpubDERSdjUfKa7Qy6c7k3s1jcEcEUYudhy4WcEN1PDKtTVK7cPQVRQRSGdVDNDGiPGrQ1WT28Qws4zZ4bRj1LnpCgsiGkbqHkxMEdnsr9hS9sr/<2;3>/*)
+                    ),
+                    older(10)
+                )
+            )
+        )#f2sxf7er"""
+    controller.miniscript_data = embit_utils.parse_miniscript_n_of_m_decays_to_1_of_m(embit_utils.parse_miniscript_descriptor(miniscript_descriptor).miniscript)
+
     # Automatically populate all Settings options Views
     settings_views_list = []
     settings_views_list.append(settings_views.SettingsMenuView)
@@ -220,7 +243,9 @@ def test_generate_screenshots(target_locale):
             #seed_views.AddressVerificationSuccessView,
 
             seed_views.LoadMultisigWalletDescriptorView,
-            seed_views.MultisigWalletDescriptorInitialPolicyView,
+            seed_views.MiniscriptDescriptorRecoveryTimelockView,
+            seed_views.MiniscriptDescriptorInitialPolicyView,
+            seed_views.MiniscriptDescriptorRecoveryPolicyView,
             (seed_views.SeedDiscardView, dict(seed_num=0)),
 
             seed_views.SeedSignMessageConfirmMessageView,

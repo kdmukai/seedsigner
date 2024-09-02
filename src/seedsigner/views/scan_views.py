@@ -118,16 +118,17 @@ class ScanView(View):
 
                 descriptor = Descriptor.from_string(descriptor_str)
 
-                if descriptor.miniscript is not None:
-                    from seedsigner.views.seed_views import MiniscriptDescriptorStartView
-                    print(f"Received miniscript descriptor: {descriptor}")
-                    self.controller.miniscript_data = descriptor.miniscript
-                    return Destination(MiniscriptDescriptorStartView, skip_current_view=True)
-
-                elif not descriptor.is_basic_multisig:
-                    # TODO: Handle single-sig descriptors?
-                    logger.info(f"Received single sig descriptor: {descriptor}")
-                    return Destination(NotYetImplementedView)
+                if not descriptor.is_basic_multisig:
+                    if descriptor.miniscript is not None:
+                        from seedsigner.views.seed_views import MiniscriptDescriptorStartView
+                        logger.debug(f"Received miniscript descriptor: {descriptor} | {descriptor.miniscript}")
+                        self.controller.miniscript_data = descriptor.miniscript
+                        return Destination(MiniscriptDescriptorStartView, skip_current_view=True)
+   
+                    else:
+                        # TODO: Handle single-sig descriptors?
+                        logger.info(f"Received single sig descriptor: {descriptor}")
+                        return Destination(NotYetImplementedView)
 
                 self.controller.multisig_wallet_descriptor = descriptor
                 return Destination(MultisigWalletDescriptorView, skip_current_view=True)
