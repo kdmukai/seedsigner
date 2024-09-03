@@ -156,8 +156,8 @@ def test_generate_screenshots(target_locale):
         settings_views_list.append((settings_views.SettingsEntryUpdateSelectionView, dict(attr_name=settings_entry.attr_name), f"SettingsEntryUpdateSelectionView_{settings_entry.attr_name}"))
     
 
-    settingsqr_data_persistent = "settings::v1 name=Total_noob_mode persistent=E coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
-    settingsqr_data_not_persistent = "settings::v1 name=Ephemeral_noob_mode persistent=D coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
+    settingsqr_data_persistent = "settings::v1 name=Total_noob_mode persistent=E coords=spa,spd denom=thr network=M qr_density=6 xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
+    settingsqr_data_not_persistent = "settings::v1 name=Ephemeral_noob_mode persistent=D coords=spa,spd denom=thr network=M qr_density=6 xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
 
     screenshot_sections = {
         "Main Menu Views": [
@@ -248,7 +248,7 @@ def test_generate_screenshots(target_locale):
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=True, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_change"),
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=False, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_selftransfer"),
             psbt_views.PSBTFinalizeView,
-            #PSBTSignedQRDisplayView
+            (NotYetImplementedView, {}, "PSBTSignedQRDisplayView"),
             psbt_views.PSBTSigningErrorView,
         ],
         "Tools Views": [
@@ -375,6 +375,7 @@ def test_generate_screenshots(target_locale):
     controller.psbt = decoder.get_psbt()
     controller.psbt_parser = PSBTParser(p=controller.psbt, seed=seed_12b)
     screencap_view(psbt_views.PSBTOpReturnView, view_name="PSBTOpReturnView_raw_hex_data")
+    
 
     with open(os.path.join(screenshot_root, "README.md"), 'w') as readme_file:
        readme_file.write(readme)

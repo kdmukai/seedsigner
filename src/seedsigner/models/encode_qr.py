@@ -21,7 +21,9 @@ from urtypes.crypto import Account, HDKey, Output, Keypath, PathComponent, SCRIP
 
 @dataclass
 class BaseQrEncoder:
-    qr_density: str = SettingsConstants.DENSITY__MEDIUM
+    screen_width: int = 240
+    screen_height: int = 240
+    qr_density: str = SettingsConstants.DENSITY__6PX
 
 
     def __post_init__(self):
@@ -34,7 +36,17 @@ class BaseQrEncoder:
 
     @property
     def qr_max_fragment_size(self):
-        raise Exception("Not implemented in child class")
+        # See brute force calculations in src/tools/qr_density_calcs.py
+        density_mapping = {
+            SettingsConstants.DENSITY__7PX: 26,
+            SettingsConstants.DENSITY__6PX: 69,
+            SettingsConstants.DENSITY__5PX: 111,
+            SettingsConstants.DENSITY__4PX: 209,
+            SettingsConstants.DENSITY__3PX: 354,
+            SettingsConstants.DENSITY__2PX: 999,
+        }
+        return density_mapping.get(self.qr_density, 69)
+
 
     def seq_len(self):
         raise Exception("Not implemented in child class")
@@ -239,15 +251,6 @@ class BaseSimpleAnimatedQREncoder(BaseQrEncoder):
 
 @dataclass
 class SpecterXPubQrEncoder(BaseSimpleAnimatedQREncoder, BaseXpubQrEncoder):
-    @property
-    def qr_max_fragment_size(self):
-        density_mapping = {
-            SettingsConstants.DENSITY__LOW: 40,
-            SettingsConstants.DENSITY__MEDIUM: 65,
-            SettingsConstants.DENSITY__HIGH: 90,
-        }
-        return density_mapping.get(self.qr_density, 65)
-
 
     def _create_parts(self):
         self.prep_xpub()
@@ -276,6 +279,8 @@ class SpecterXPubQrEncoder(BaseSimpleAnimatedQREncoder, BaseXpubQrEncoder):
 **************************************************************************************"""
 @dataclass
 class BaseFountainQrEncoder(BaseQrEncoder):
+    max_fragment_len: int = None
+
     def __post_init__(self):
         super().__post_init__()
 
@@ -285,16 +290,6 @@ class BaseFountainQrEncoder(BaseQrEncoder):
     @property
     def is_complete(self):
         return self.ur2_encode.is_complete()
-
-
-    @property
-    def qr_max_fragment_size(self):
-        density_mapping = {
-            SettingsConstants.DENSITY__LOW: 10,
-            SettingsConstants.DENSITY__MEDIUM: 30,
-            SettingsConstants.DENSITY__HIGH: 120,
-        }
-        return density_mapping.get(self.qr_density, 30)
 
 
     def _create_parts(self):
@@ -394,4 +389,5 @@ class UrPsbtQrEncoder(BaseFountainQrEncoder):
     def __post_init__(self):
         super().__post_init__()
         qr_ur_bytes = UR("crypto-psbt", UR_PSBT(self.psbt.serialize()).to_cbor())
-        self.ur2_encode = UREncoder(ur=qr_ur_bytes, max_fragment_len=self.qr_max_fragment_size)
+        # print(f"encode_qr.py UrPsbtQrEncoder qr_ur_bytes: {len(qr_ur_bytes.cbor)} | qr_density (aka max_fragment_len)={self.qr_density}")
+        self.ur2_encode = UREncoder(ur=qr_ur_bytes, max_fragment_len=self.max_fragment_len if self.max_fragment_len else self.qr_max_fragment_size)

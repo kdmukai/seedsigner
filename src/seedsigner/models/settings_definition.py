@@ -73,13 +73,29 @@ class SettingsConstants:
     ]
 
     # QR code constants
-    DENSITY__LOW = "L"
-    DENSITY__MEDIUM = "M"
-    DENSITY__HIGH = "H"
+    # DENSITY__LOW = "L"
+    # DENSITY__MEDIUM = "M"
+    # DENSITY__HIGH = "H"
+    # DENSITY__SUPER = "S"
+    # ALL_DENSITIES = [
+    #     (DENSITY__LOW, "Low"),
+    #     (DENSITY__MEDIUM, "Medium"),
+    #     (DENSITY__HIGH, "High"),
+    #     (DENSITY__SUPER, "Super"),
+    # ]
+    DENSITY__7PX = 7
+    DENSITY__6PX = 6
+    DENSITY__5PX = 5
+    DENSITY__4PX = 4
+    DENSITY__3PX = 3
+    DENSITY__2PX = 2
     ALL_DENSITIES = [
-        (DENSITY__LOW, "Low"),
-        (DENSITY__MEDIUM, "Medium"),
-        (DENSITY__HIGH, "High"),
+        (DENSITY__7PX, "7px / QR block"),
+        (DENSITY__6PX, "6px / QR block"),
+        (DENSITY__5PX, "5px / QR block"),
+        (DENSITY__4PX, "4px / QR block"),
+        (DENSITY__3PX, "3px / QR block"),
+        (DENSITY__2PX, "2px / QR block"),
     ]
 
     # Seed-related constants
@@ -409,7 +425,7 @@ class SettingsDefinition:
                       type=SettingsConstants.TYPE__SELECT_1,
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       selection_options=SettingsConstants.ALL_DENSITIES,
-                      default_value=SettingsConstants.DENSITY__MEDIUM),
+                      default_value=SettingsConstants.DENSITY__6PX),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__XPUB_EXPORT,
