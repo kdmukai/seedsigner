@@ -6,6 +6,7 @@ on:
       - dev
       - main
   pull_request:
+  commit:
 
 concurrency:
   # Concurrency group that uses the workflow name and PR number if available
