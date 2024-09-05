@@ -1,12 +1,9 @@
 name: CI
 
 on:
+  # For Keith's fork, run CI tests against all commits
   push:
-    branches:
-      - dev
-      - main
   pull_request:
-  commit:
 
 concurrency:
   # Concurrency group that uses the workflow name and PR number if available
