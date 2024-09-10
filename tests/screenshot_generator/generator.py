@@ -248,7 +248,6 @@ def test_generate_screenshots(target_locale):
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=True, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_change"),
             (psbt_views.PSBTAddressVerificationFailedView, dict(is_change=False, is_multisig=True), "PSBTAddressVerificationFailedView_multisig_selftransfer"),
             psbt_views.PSBTFinalizeView,
-            (NotYetImplementedView, {}, "PSBTSignedQRDisplayView"),
             psbt_views.PSBTSigningErrorView,
         ],
         "Tools Views": [
