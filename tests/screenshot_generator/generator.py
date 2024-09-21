@@ -65,7 +65,7 @@ def test_generate_screenshots(target_locale):
     controller = Controller.get_instance()
 
 
-    def setup_screenshots() -> dict:
+    def setup_screenshots(locale: str) -> dict:
         # Set up some test data that we'll need in the `Controller` for certain Views
         controller = Controller.get_instance()
 
@@ -124,8 +124,8 @@ def test_generate_screenshots(target_locale):
 
             settings_views_list.append((settings_views.SettingsEntryUpdateSelectionView, dict(attr_name=settings_entry.attr_name), f"SettingsEntryUpdateSelectionView_{settings_entry.attr_name}"))
 
-        settingsqr_data_persistent = "settings::v1 name=English_noob_mode persistent=E coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
-        settingsqr_data_not_persistent = f"settings::v1 name=Mode_Ephemeral persistent=D coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E"
+        settingsqr_data_persistent = f"settings::v1 name=English_noob_mode persistent=E coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E locale={locale}"
+        settingsqr_data_not_persistent = f"settings::v1 name=Mode_Ephemeral persistent=D coords=spa,spd denom=thr network=M qr_density=M xpub_export=E sigs=ss scripts=nat xpub_details=E passphrase=E camera=0 compact_seedqr=E bip85=D priv_warn=E dire_warn=E partners=E locale={locale}"
 
         screenshot_sections = {
             "Main Menu Views": [
@@ -303,17 +303,21 @@ def test_generate_screenshots(target_locale):
 
         # Report the translation progress
         if locale != SettingsConstants.LOCALE__ENGLISH:
-            translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "babel", locale, "LC_MESSAGES", "messages.po") 
-            with open(translated_messages_path, 'r') as translation_file:
-                locale_translations = translation_file.read()
-                num_locale_translations = locale_translations.count("msgid \"") - locale_translations.count("""msgstr ""\n\n""") - 1
+            try:
+                translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "babel", locale, "LC_MESSAGES", "messages.po") 
+                with open(translated_messages_path, 'r') as translation_file:
+                    locale_translations = translation_file.read()
+                    num_locale_translations = locale_translations.count("msgid \"") - locale_translations.count("""msgstr ""\n\n""") - 1
 
-            if locale != "en":
-                locale_readme += f"## Translation progress: {num_locale_translations / num_source_messages:.1%}\n\n"
-                locale_readme += f"[{display_name} messages.po catalog](messages.po)\n"
-            locale_readme += "---\n\n"
+                    if locale != "en":
+                        locale_readme += f"## Translation progress: {num_locale_translations / num_source_messages:.1%}\n\n"
+                        locale_readme += f"[{display_name} messages.po catalog](messages.po)\n"
+                    locale_readme += "---\n\n"
+            except Exception as e:
+                from traceback import print_exc
+                print_exc()
 
-        for section_name, screenshot_list in setup_screenshots().items():
+        for section_name, screenshot_list in setup_screenshots(locale).items():
             subdir = section_name.lower().replace(" ", "_")
             screenshot_renderer.set_screenshot_path(os.path.join(screenshot_root, locale, subdir))
             locale_readme += "\n\n---\n\n"
