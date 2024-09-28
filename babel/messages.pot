@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-23 18:47-0400\n"
+"POT-Creation-Date: 2024-09-27 19:42-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -531,47 +531,6 @@ msgstr ""
 
 #: src/seedsigner/models/settings_definition.py
 msgid "Required"
-msgstr ""
-
-#. Translator is expected ONLY to change their own locale below
-#: src/seedsigner/models/settings_definition.py
-msgid "Arabic"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Czech"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "French"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "German"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Hebrew"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Japanese"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Korean"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Portuguese"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Russian"
-msgstr ""
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Spanish"
 msgstr ""
 
 #: src/seedsigner/models/settings_definition.py

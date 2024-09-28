@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-09 11:36-0400\n"
+"POT-Creation-Date: 2024-09-27 19:42-0500\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Dom Azeredo, 2022\n"
 "Language: pt\n"
@@ -20,7 +20,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.10.1\n"
 
 #. The abbreviated label for the special key <del> on a standard keyboard.
 #: src/seedsigner/gui/keyboard.py
@@ -343,7 +343,7 @@ msgid "Optionally scan your transcribed SeedQR to confirm that it reads back cor
 msgstr "Opcionalmente, escaneie sua SeedQR desenhada e confirme se ela é lida corretamente."
 
 #: src/seedsigner/gui/screens/seed_screens.py
-#: src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/seed_views.py src/seedsigner/views/tools_views.py
 msgid "Verify Address"
 msgstr "Verificar Endereço"
 
@@ -538,47 +538,6 @@ msgstr "Solicitar"
 msgid "Required"
 msgstr "Obrigatório"
 
-#. Translator is expected ONLY to change their own locale below
-#: src/seedsigner/models/settings_definition.py
-msgid "Arabic"
-msgstr "عربي"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Czech"
-msgstr "čeština"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "French"
-msgstr "Français"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "German"
-msgstr "Deutsch"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Hebrew"
-msgstr "עִברִית"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Japanese"
-msgstr "日本"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Korean"
-msgstr "한국인"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Portuguese"
-msgstr "Português"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Russian"
-msgstr "Русский"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Spanish"
-msgstr "Español"
-
 #: src/seedsigner/models/settings_definition.py
 msgid "0°"
 msgstr "0°"
@@ -733,14 +692,17 @@ msgid "QR background color"
 msgstr "Cor de fundo do QR "
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
 msgid "Scan a seed"
 msgstr "Ler Seed"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
 msgid "Enter 12-word seed"
 msgstr "Digitar 12 palavras"
 
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
+#: src/seedsigner/views/tools_views.py
 msgid "Enter 24-word seed"
 msgstr "Digitar 24 palavras"
 
@@ -1063,6 +1025,10 @@ msgid "SeedQR Format"
 msgstr "Formato da SeedQR"
 
 #: src/seedsigner/views/seed_views.py
+msgid "SeedQR is your private key!"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py
 msgid "Never photograph or scan it into a device that connects to the internet."
 msgstr ""
 
@@ -1214,6 +1180,10 @@ msgstr ""
 #: src/seedsigner/views/tools_views.py
 msgid "Load seed"
 msgstr "Adicionar Seed"
+
+#: src/seedsigner/views/tools_views.py
+msgid "Scan wallet descriptor"
+msgstr ""
 
 #. label for addresses where others send us incoming payments
 #: src/seedsigner/views/tools_views.py
@@ -1428,4 +1398,34 @@ msgstr ""
 
 #~ msgid "Scan wallet descriptor"
 #~ msgstr ""
+
+#~ msgid "Arabic"
+#~ msgstr "عربي"
+
+#~ msgid "Czech"
+#~ msgstr "čeština"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "German"
+#~ msgstr "Deutsch"
+
+#~ msgid "Hebrew"
+#~ msgstr "עִברִית"
+
+#~ msgid "Japanese"
+#~ msgstr "日本"
+
+#~ msgid "Korean"
+#~ msgstr "한국인"
+
+#~ msgid "Portuguese"
+#~ msgstr "Português"
+
+#~ msgid "Russian"
+#~ msgstr "Русский"
+
+#~ msgid "Spanish"
+#~ msgstr "Español"
 

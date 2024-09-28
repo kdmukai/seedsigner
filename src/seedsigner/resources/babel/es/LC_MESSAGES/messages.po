@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-23 18:47-0400\n"
+"POT-Creation-Date: 2024-09-27 19:42-0500\n"
 "PO-Revision-Date: 2022-04-29 13:50+0000\n"
 "Last-Translator: Bitcoin Hornet, 2022\n"
 "Language: es\n"
@@ -543,47 +543,6 @@ msgstr "Preguntar"
 #: src/seedsigner/models/settings_definition.py
 msgid "Required"
 msgstr "Requerido"
-
-#. Translator is expected ONLY to change their own locale below
-#: src/seedsigner/models/settings_definition.py
-msgid "Arabic"
-msgstr "عربي"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Czech"
-msgstr "čeština"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "French"
-msgstr "Français"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "German"
-msgstr "Deutsch"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Hebrew"
-msgstr "עִברִית"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Japanese"
-msgstr "日本"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Korean"
-msgstr "한국인"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Portuguese"
-msgstr "Português"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Russian"
-msgstr "Русский"
-
-#: src/seedsigner/models/settings_definition.py
-msgid "Spanish"
-msgstr "Español"
 
 #: src/seedsigner/models/settings_definition.py
 msgid "0°"
@@ -1437,4 +1396,34 @@ msgstr ""
 
 #~ msgid "BTC | sats hybrid"
 #~ msgstr "Híbrido: BTC | Sats "
+
+#~ msgid "Arabic"
+#~ msgstr "عربي"
+
+#~ msgid "Czech"
+#~ msgstr "čeština"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "German"
+#~ msgstr "Deutsch"
+
+#~ msgid "Hebrew"
+#~ msgstr "עִברִית"
+
+#~ msgid "Japanese"
+#~ msgstr "日本"
+
+#~ msgid "Korean"
+#~ msgstr "한국인"
+
+#~ msgid "Portuguese"
+#~ msgstr "Português"
+
+#~ msgid "Russian"
+#~ msgstr "Русский"
+
+#~ msgid "Spanish"
+#~ msgstr "Español"
 
