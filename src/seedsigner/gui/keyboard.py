@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from PIL import Image, ImageDraw, ImageFont
 from typing import Tuple
+from gettext import gettext as _
 
 from seedsigner.gui.components import Fonts, GUIConstants
 from seedsigner.hardware.buttons import HardwareButtonsConstants
@@ -27,17 +28,27 @@ class Keyboard:
     REGULAR_KEY_FONT = "regular"
     COMPACT_KEY_FONT = "compact"
 
+    # TRANSLATOR_NOTE: The abbreviated label for the special key <del> on a standard keyboard.
+    babel_extract_food = _("del")
     KEY_BACKSPACE = {
         "code": "DEL",
         "letter": "del",
         "font": COMPACT_KEY_FONT,
         "size": 2,
     }
+    # TRANSLATOR_NOTE: The abbreviated label for the special key <space> on a standard keyboard.
+    babel_extract_food = _("space")
     KEY_SPACE = {
         "code": "SPACE",
         "letter": "space",
         "font": COMPACT_KEY_FONT,
         "size": 1,
+    }
+    KEY_SPACE_2 = {
+        "code": "SPACE",
+        "letter": "space",
+        "font": COMPACT_KEY_FONT,
+        "size": 2,
     }
     KEY_SPACE_3 = {
         "code": "SPACE",
@@ -117,6 +128,7 @@ class Keyboard:
                 rect_color = self.keyboard.deactivated_background_color
                 font_color = "#333"  # Show the letter but render as gray
                 outline_color = self.keyboard.deactivated_background_color
+
                 if self.is_selected:
                     # Inactive, selected just gets highlighted outline
                     outline_color = self.keyboard.highlight_color
@@ -125,11 +137,11 @@ class Keyboard:
                 font_color = "black"
             else:
                 if self.is_additional_key:
-                    # rect_color = "#111"
-                    rect_color = self.keyboard.background_color
+                    rect_color = "#000"
+                    font_color = "#999"
                 else:
                     rect_color = self.keyboard.background_color
-                font_color = "#e8e8e8"
+                    font_color = "#e8e8e8"
 
             self.keyboard.draw.rounded_rectangle(
                 (
@@ -151,7 +163,7 @@ class Keyboard:
                     self.screen_x + int(self.keyboard.key_width * self.size / 2),
                     self.screen_y + self.keyboard.key_height - int((self.keyboard.key_height - text_height)/2)
                 ),
-                self.letter,
+                _(self.letter),
                 fill=font_color,
                 font=font,
                 anchor="ms"
@@ -186,6 +198,7 @@ class Keyboard:
         self.auto_wrap = auto_wrap
         self.background_color = GUIConstants.BUTTON_BACKGROUND_COLOR
         self.deactivated_background_color = GUIConstants.BACKGROUND_COLOR
+        self.additional_key_deactivated_background_color = GUIConstants.BACKGROUND_COLOR
         self.highlight_color = highlight_color
 
         # Does the specified layout work?
@@ -201,8 +214,7 @@ class Keyboard:
         # Set up the rendering and state params
         self.active_keys = list(self.charset)
 
-        # TODO: Remove RobotoCondensed font dependency
-        self.additonal_key_compact_font = Fonts.get_font("RobotoCondensed-Bold.ttf", 18)
+        self.additonal_key_compact_font = Fonts.get_font("RobotoCondensed-Bold", 18)
         self.x_start = rect[0]
         self.y_start = rect[1]
         self.x_gap = 2

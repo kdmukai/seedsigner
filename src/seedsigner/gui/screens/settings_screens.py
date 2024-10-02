@@ -297,9 +297,43 @@ class DonateScreen(BaseTopNavScreen):
 
         self.components.append(TextArea(
             text="seedsigner.com",
-            font_name=GUIConstants.BODY_FONT_NAME["default"],
+            font_name=GUIConstants.get_body_font_name(),
             font_size=28,
             font_color=GUIConstants.ACCENT_COLOR,
             supersampling_factor=1,
             screen_y=self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING
+        ))
+
+
+
+@dataclass
+class SettingsQRConfirmationScreen(ButtonListScreen):
+    config_name: str = None
+    title: str = "Settings QR"
+    status_message: str = "Settings updated..."
+    is_bottom_list: bool = True
+
+    def __post_init__(self):
+        self.title = _("Settings QR")
+        # Customize defaults
+        self.button_data = [_("Home")]
+        self.show_back_button = False
+        super().__post_init__()
+
+        start_y = self.top_nav.height + 20
+        if self.config_name:
+            self.config_name_textarea = TextArea(
+                text=f'"{self.config_name}"',
+                is_text_centered=True,
+                auto_line_break=True,
+                screen_y=start_y
+            )
+            self.components.append(self.config_name_textarea)
+            start_y = self.config_name_textarea.screen_y + 50
+        
+        self.components.append(TextArea(
+            text=self.status_message,
+            is_text_centered=True,
+            auto_line_break=True,
+            screen_y=start_y
         ))

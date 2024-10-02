@@ -1,7 +1,13 @@
 # Running Tests
 
-You must install the test-runner dependencies:
-```
+The tests are designed to be run on non-Raspi hardware.
+
+On your testing machine you'll have to install:
+```bash
+# general dependencies
+pip3 install -r requirements.txt
+
+# test suite dependencies
 pip3 install -r tests/requirements.txt
 ```
 
@@ -23,4 +29,20 @@ pytest tests/test_this_file.py
 Run a specific test:
 ```
 pytest tests/test_this_file.py::test_this_specific_test
+```
+
+### Test Coverage
+Run tests and generate test coverage
+```
+coverage run -m pytest
+```
+
+Show the resulting test coverage details:
+```
+coverage report
+```
+
+Generate the html overview:
+```
+coverage html
 ```

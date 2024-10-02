@@ -1,13 +1,11 @@
 import unicodedata
 
 from binascii import hexlify
-from embit import bip39, bip32
+from embit import bip39, bip32, bip85
 from embit.networks import NETWORKS
 from typing import List
 
 from seedsigner.models.settings import SettingsConstants
-from seedsigner.helpers import embit_utils
-
 
 
 class InvalidSeedException(Exception):
@@ -35,7 +33,7 @@ class Seed:
 
     @staticmethod
     def get_wordlist(wordlist_language_code: str = SettingsConstants.WORDLIST_LANGUAGE__ENGLISH) -> List[str]:
-        # TODO: Support other bip-39 wordlist languages!
+        # TODO: Support other BIP-39 wordlist languages!
         if wordlist_language_code == SettingsConstants.WORDLIST_LANGUAGE__ENGLISH:
             return bip39.WORDLIST
         else:
@@ -104,18 +102,28 @@ class Seed:
 
 
     def set_wordlist_language_code(self, language_code: str):
-        # TODO: Support other bip-39 wordlist languages!
+        # TODO: Support other BIP-39 wordlist languages!
         raise Exception("Not yet implemented!")
 
 
     def get_fingerprint(self, network: str = SettingsConstants.MAINNET) -> str:
         root = bip32.HDKey.from_seed(self.seed_bytes, version=NETWORKS[SettingsConstants.map_network_to_embit(network)]["xprv"])
         return hexlify(root.child(0).fingerprint).decode('utf-8')
-        
+
 
     def get_xpub(self, wallet_path: str = '/', network: str = SettingsConstants.MAINNET):
+        # Import here to avoid slow startup times; takes 1.35s to import the first time
+        from seedsigner.helpers import embit_utils
         return embit_utils.get_xpub(seed_bytes=self.seed_bytes, derivation_path=wallet_path, embit_network=SettingsConstants.map_network_to_embit(network))
 
+
+    def get_bip85_child_mnemonic(self, bip85_index: int, bip85_num_words: int, network: str = SettingsConstants.MAINNET):
+        """Derives the seed's nth BIP-85 child mnemonic"""
+        root = bip32.HDKey.from_seed(self.seed_bytes, version=NETWORKS[SettingsConstants.map_network_to_embit(network)]["xprv"])
+
+        # TODO: Support other BIP-39 wordlist languages!
+        return bip85.derive_mnemonic(root, bip85_num_words, bip85_index)
+        
 
     ### override operators    
     def __eq__(self, other):
