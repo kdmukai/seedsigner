@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: seedsigner 0.7.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-10-08 09:43-0500\n"
+"POT-Creation-Date: 2024-10-11 13:46-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,7 +127,7 @@ msgstr ""
 #: src/seedsigner/gui/screens/psbt_screens.py:155
 #: src/seedsigner/views/psbt_views.py:453
 #: src/seedsigner/views/psbt_views.py:457
-#: src/seedsigner/views/seed_views.py:1884
+#: src/seedsigner/views/seed_views.py:1888
 msgid "change"
 msgstr ""
 
@@ -204,15 +204,15 @@ msgid "Darker"
 msgstr ""
 
 #: src/seedsigner/gui/screens/screen.py:860
-#: src/seedsigner/views/seed_views.py:1321
-#: src/seedsigner/views/seed_views.py:1570
+#: src/seedsigner/views/seed_views.py:1325
+#: src/seedsigner/views/seed_views.py:1574
 msgid "Success!"
 msgstr ""
 
 #: src/seedsigner/gui/screens/screen.py:864
-#: src/seedsigner/views/seed_views.py:1323
-#: src/seedsigner/views/seed_views.py:1573
-#: src/seedsigner/views/seed_views.py:1943
+#: src/seedsigner/views/seed_views.py:1327
+#: src/seedsigner/views/seed_views.py:1577
+#: src/seedsigner/views/seed_views.py:1947
 msgid "OK"
 msgstr ""
 
@@ -388,7 +388,7 @@ msgstr ""
 
 #: src/seedsigner/gui/screens/seed_screens.py:1408
 #: src/seedsigner/views/seed_views.py:97
-#: src/seedsigner/views/seed_views.py:1654
+#: src/seedsigner/views/seed_views.py:1658
 #: src/seedsigner/views/tools_views.py:40
 msgid "Verify Address"
 msgstr ""
@@ -570,7 +570,7 @@ msgstr ""
 #: src/seedsigner/gui/screens/tools_screens.py:410
 #: src/seedsigner/views/seed_views.py:489
 #: src/seedsigner/views/seed_views.py:676
-#: src/seedsigner/views/seed_views.py:1942
+#: src/seedsigner/views/seed_views.py:1946
 #: src/seedsigner/views/tools_views.py:39
 #: src/seedsigner/views/tools_views.py:474
 msgid "Address Explorer"
@@ -915,7 +915,7 @@ msgstr ""
 #: src/seedsigner/views/seed_views.py:324
 #: src/seedsigner/views/seed_views.py:384
 #: src/seedsigner/views/seed_views.py:1001
-#: src/seedsigner/views/seed_views.py:1515 src/seedsigner/views/view.py:386
+#: src/seedsigner/views/seed_views.py:1519 src/seedsigner/views/view.py:386
 msgid "Done"
 msgstr ""
 
@@ -1034,7 +1034,7 @@ msgid "Discard Seed?"
 msgstr ""
 
 #: src/seedsigner/views/seed_views.py:487
-#: src/seedsigner/views/seed_views.py:1941
+#: src/seedsigner/views/seed_views.py:1945
 msgid "Verify Addr"
 msgstr ""
 
@@ -1126,145 +1126,147 @@ msgstr ""
 msgid "Word #{} is not \"{}\"!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1286
-msgid "Verification Error"
-msgstr ""
-
-#: src/seedsigner/views/seed_views.py:1288
+#. User selected the wrong word during the mnemonic backup test (e.g.
+#. incorrectly said the 5th word was "zoo")
+#: src/seedsigner/views/seed_views.py:1287
 msgid "Wrong Word!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1319
+#: src/seedsigner/views/seed_views.py:1290
+msgid "Verification Error"
+msgstr ""
+
+#: src/seedsigner/views/seed_views.py:1323
 msgid "Backup Verified"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1322
+#: src/seedsigner/views/seed_views.py:1326
 msgid "All mnemonic backup words were successfully verified!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1345
+#: src/seedsigner/views/seed_views.py:1349
 msgid "Standard: 25x25"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1346
+#: src/seedsigner/views/seed_views.py:1350
 msgid "Compact: 21x21"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1350
+#: src/seedsigner/views/seed_views.py:1354
 msgid "Standard: 29x29"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1351
+#: src/seedsigner/views/seed_views.py:1355
 msgid "Compact: 25x25"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1372
+#: src/seedsigner/views/seed_views.py:1376
 msgid "SeedQR Format"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1421
+#: src/seedsigner/views/seed_views.py:1425
 msgid "SeedQR is your private key!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1422
+#: src/seedsigner/views/seed_views.py:1426
 msgid "Never photograph or scan it into a device that connects to the internet."
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1514
-#: src/seedsigner/views/seed_views.py:1558
-#: src/seedsigner/views/seed_views.py:1569
-#: src/seedsigner/views/seed_views.py:1581
+#: src/seedsigner/views/seed_views.py:1518
+#: src/seedsigner/views/seed_views.py:1562
+#: src/seedsigner/views/seed_views.py:1573
+#: src/seedsigner/views/seed_views.py:1585
 msgid "Confirm SeedQR"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1519
+#: src/seedsigner/views/seed_views.py:1523
 msgid "Confirm SeedQR?"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1549
+#: src/seedsigner/views/seed_views.py:1553
 msgid "Scan your SeedQR"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1559
-#: src/seedsigner/views/seed_views.py:1582
+#: src/seedsigner/views/seed_views.py:1563
+#: src/seedsigner/views/seed_views.py:1586
 msgid "Error!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1560
+#: src/seedsigner/views/seed_views.py:1564
 msgid "Your transcribed SeedQR does not match your original seed!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1562
-#: src/seedsigner/views/seed_views.py:1585
+#: src/seedsigner/views/seed_views.py:1566
+#: src/seedsigner/views/seed_views.py:1589
 msgid "Review SeedQR"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1571
+#: src/seedsigner/views/seed_views.py:1575
 msgid "Your transcribed SeedQR successfully scanned and yielded the same seed."
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1583
+#: src/seedsigner/views/seed_views.py:1587
 msgid "Your transcribed SeedQR could not be read!"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1655
+#: src/seedsigner/views/seed_views.py:1659
 msgid "Sig type can't be auto-detected from this address. Please specify:"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1705
+#: src/seedsigner/views/seed_views.py:1709
 msgid "Can't validate a single sig addr without specifying a seed"
 msgstr ""
 
 #. Option when scanning for a matching address; skips ten addresses ahead
-#: src/seedsigner/views/seed_views.py:1751
+#: src/seedsigner/views/seed_views.py:1755
 msgid "Skip 10"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1752
-#: src/seedsigner/views/seed_views.py:1909
+#: src/seedsigner/views/seed_views.py:1756
+#: src/seedsigner/views/seed_views.py:1913
 msgid "Cancel"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1878
+#: src/seedsigner/views/seed_views.py:1882
 msgid "multisig"
 msgstr ""
 
 #. Inserts the seed fingerprint
-#: src/seedsigner/views/seed_views.py:1881
+#: src/seedsigner/views/seed_views.py:1885
 msgid "seed {}"
 msgstr ""
 
 #. Used in a sentence describing the address type (change or receive)
-#: src/seedsigner/views/seed_views.py:1887
+#: src/seedsigner/views/seed_views.py:1891
 msgid "receive"
 msgstr ""
 
 #. Address verification success message (e.g. "bc1qabc = seed 12345678's
 #. receive address #0.")
-#: src/seedsigner/views/seed_views.py:1890
+#: src/seedsigner/views/seed_views.py:1894
 msgid "{} = {}'s {} address #{}."
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1897
+#: src/seedsigner/views/seed_views.py:1901
 msgid "Address Verified"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1908
+#: src/seedsigner/views/seed_views.py:1912
 msgid "Scan Descriptor"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:1940
+#: src/seedsigner/views/seed_views.py:1944
 msgid "Return to PSBT"
 msgstr ""
 
-#: src/seedsigner/views/seed_views.py:2005
-#: src/seedsigner/views/seed_views.py:2092
+#: src/seedsigner/views/seed_views.py:2009
+#: src/seedsigner/views/seed_views.py:2096
 msgid "Signing messages for custom derivation paths not supported"
 msgstr ""
 
 #. Inserts mainnet/testnet/regtest and derivation path
-#: src/seedsigner/views/seed_views.py:2011
-#: src/seedsigner/views/seed_views.py:2100
+#: src/seedsigner/views/seed_views.py:2015
+#: src/seedsigner/views/seed_views.py:2104
 msgid "Current network setting ({}) doesn't match {}"
 msgstr ""
 

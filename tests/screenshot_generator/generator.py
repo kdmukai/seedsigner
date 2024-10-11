@@ -304,7 +304,7 @@ def test_generate_screenshots(target_locale):
         # Report the translation progress
         if locale != SettingsConstants.LOCALE__ENGLISH:
             try:
-                translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "babel", locale, "LC_MESSAGES", "messages.po") 
+                translated_messages_path = os.path.join(pathlib.Path(__file__).parent.resolve().parent.resolve().parent.resolve(), "src", "seedsigner", "resources", "seedsigner-translations", "l10n", locale, "LC_MESSAGES", "messages.po") 
                 with open(translated_messages_path, 'r') as translation_file:
                     locale_translations = translation_file.read()
                     num_locale_translations = locale_translations.count("msgid \"") - locale_translations.count("""msgstr ""\n\n""") - 1

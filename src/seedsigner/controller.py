@@ -134,8 +134,8 @@ class Controller(Singleton):
     screensaver: 'ScreensaverScreen' = None
     toast_notification_thread: 'BaseToastOverlayManagerThread' = None
 
-    # Babel initialization
-    gettext.install('messages', localedir='seedsigner/resources/babel')
+    # Multilanguage / Localization (l10n) initialization
+    gettext.install('messages', localedir='seedsigner/resources/seedsigner-translations/l10n')
 
 
     @classmethod
