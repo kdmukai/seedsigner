@@ -311,7 +311,6 @@ def test_generate_screenshots(target_locale):
 
                     if locale != "en":
                         locale_readme += f"## Translation progress: {num_locale_translations / num_source_messages:.1%}\n\n"
-                        locale_readme += f"[{display_name} messages.po catalog](messages.po)\n"
                     locale_readme += "---\n\n"
             except Exception as e:
                 from traceback import print_exc
@@ -353,9 +352,6 @@ def test_generate_screenshots(target_locale):
 
         with open(os.path.join(screenshot_root, locale, "README.md"), 'w') as readme_file:
             readme_file.write(locale_readme)
-
-        if locale != "en":
-            shutil.copy(translated_messages_path, os.path.join(screenshot_root, locale, "messages.po"))
 
         print(f"Done with locale: {locale}.")
         
