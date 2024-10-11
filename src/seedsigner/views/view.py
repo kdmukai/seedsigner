@@ -292,16 +292,26 @@ class PowerOffView(View):
                 call("sudo shutdown --poweroff now", shell=True)
 
 
+
+@dataclass
 class NotYetImplementedView(View):
     """
         Temporary View to use during dev.
     """
+    text: str = None
+
+    def __post_init__(self):
+        if not self.text:
+            self.text = _("This is still on our to-do list!")
+        return super().__post_init__()
+
+
     def run(self):
         self.run_screen(
             WarningScreen,
             title=_("Work In Progress"),
             status_headline=_("Not Yet Implemented"),
-            text=_("This is still on our to-do list!"),
+            text=self.text,
             button_data=[_("Back to Main Menu")],
         )
 
