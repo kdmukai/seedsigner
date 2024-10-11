@@ -35,11 +35,12 @@ class Settings(Singleton):
                 with open(Settings.SETTINGS_FILENAME) as settings_file:
                     settings.update(json.load(settings_file))
 
-            # Setup Babel
+            # Setup multilanguage support
             path = os.path.join(
                 pathlib.Path(__file__).parent.resolve().parent.resolve(),
                 "resources",
-                "babel"
+                "seedsigner-translations",
+                "l10n"
             )
             gettext.bindtextdomain('messages', localedir=path)
             gettext.textdomain('messages')
@@ -182,7 +183,7 @@ class Settings(Singleton):
         self._data[attr_name] = value
         self.save()
 
-        # Special handling for babel
+        # Special handling for localization
         if attr_name == SettingsConstants.SETTING__LOCALE:
             self.load_locale()
 

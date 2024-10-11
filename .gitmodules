@@ -1,0 +1,4 @@
+[submodule "src/seedsigner/resources/seedsigner-translations"]
+	path = src/seedsigner/resources/seedsigner-translations
+	url = https://github.com/SeedSigner/seedsigner-translations.git
+	branch = dev
