@@ -512,8 +512,8 @@ class PSBTMathScreen(ButtonListScreen):
         image = Image.new("RGB", (body_width*ssf, body_height*ssf))
         draw = ImageDraw.Draw(image)
 
-        body_font = Fonts.get_font(GUIConstants.BODY_FONT_NAME, (GUIConstants.BODY_FONT_SIZE)*ssf)
-        fixed_width_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_FONT_NAME, (GUIConstants.BODY_FONT_SIZE + 6)*ssf)
+        body_font = Fonts.get_font(GUIConstants.get_body_font_name(), (GUIConstants.get_body_font_size())*ssf)
+        fixed_width_font = Fonts.get_font(GUIConstants.FIXED_WIDTH_FONT_NAME, (GUIConstants.get_body_font_size() + 6)*ssf)
         left, top, right, bottom  = fixed_width_font.getbbox(self.input_amount + "+")
         digits_width, digits_height = right - left, bottom - top
 

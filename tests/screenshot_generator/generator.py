@@ -1,13 +1,9 @@
 import embit
+import pathlib
 import os
 import sys
 import time
-import pathlib
-import pytest
-import shutil
-
-from mock import Mock, patch, MagicMock
-
+from unittest.mock import Mock, patch, MagicMock
 from seedsigner.helpers import embit_utils
 from seedsigner.models.settings import Settings
 
