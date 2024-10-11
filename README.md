@@ -25,6 +25,7 @@ My self-directed exploration, from mid November through mid December 2022, to ca
 # Project Summary
 
 [![CI](https://github.com/SeedSigner/seedsigner/actions/workflows/tests.yml/badge.svg)](https://github.com/SeedSigner/seedsigner/actions/workflows/tests.yml)
+[![Build](https://github.com/SeedSigner/seedsigner/actions/workflows/build.yml/badge.svg)](https://github.com/SeedSigner/seedsigner/actions/workflows/build.yml)
 
 The goal of SeedSigner is to lower the cost and complexity of Bitcoin multi-signature wallet use. To accomplish this goal, SeedSigner offers anyone the opportunity to build a verifiably air-gapped, stateless Bitcoin signing device using inexpensive, publicly available hardware components (usually < $50). SeedSigner helps users save with Bitcoin by assisting with trustless private key generation and multisignature (aka "multisig") wallet setup, and helps users transact with Bitcoin via a secure, air-gapped QR-exchange signing model.
 
