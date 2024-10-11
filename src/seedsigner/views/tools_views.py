@@ -194,8 +194,11 @@ class ToolsImageEntropyMnemonicLengthView(View):
 ****************************************************************************"""
 class ToolsDiceEntropyMnemonicLengthView(View):
     def run(self):
-        TWELVE = _("12 words (50 rolls)")
-        TWENTY_FOUR = _("24 words (99 rolls)")
+        # TRANSLATOR_NOTE: Inserts the number of dice rolls needed for a 12-word mnemonic
+        TWELVE = _("12 words ({} rolls)").format(mnemonic_generation.DICE__NUM_ROLLS__12WORD)
+
+        # TRANSLATOR_NOTE: Inserts the number of dice rolls needed for a 24-word mnemonic
+        TWENTY_FOUR = _("24 words ({} rolls)").format(mnemonic_generation.DICE__NUM_ROLLS__24WORD)
         
         button_data = [TWELVE, TWENTY_FOUR]
         selected_menu_num = ButtonListScreen(
@@ -209,10 +212,10 @@ class ToolsDiceEntropyMnemonicLengthView(View):
             return Destination(BackStackView)
 
         elif button_data[selected_menu_num] == TWELVE:
-            return Destination(ToolsDiceEntropyEntryView, view_args=dict(total_rolls=50))
+            return Destination(ToolsDiceEntropyEntryView, view_args=dict(total_rolls=mnemonic_generation.DICE__NUM_ROLLS__12WORD))
 
         elif button_data[selected_menu_num] == TWENTY_FOUR:
-            return Destination(ToolsDiceEntropyEntryView, view_args=dict(total_rolls=99))
+            return Destination(ToolsDiceEntropyEntryView, view_args=dict(total_rolls=mnemonic_generation.DICE__NUM_ROLLS__24WORD))
 
 
 
