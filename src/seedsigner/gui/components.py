@@ -866,11 +866,14 @@ class BtcAmount(BaseComponent):
         denomination = Settings.get_instance().get_value(SettingsConstants.SETTING__BTC_DENOMINATION)
         network = Settings.get_instance().get_value(SettingsConstants.SETTING__NETWORK)
 
-        btc_unit = "tBtc"
-        sats_unit = "tSats"
+        # TRANSLATOR_NOTE: Testnet bitcoin
+        btc_unit = _("tBtc")
+
+        # TRANSLATOR_NOTE: Testnet sats
+        sats_unit = _("tSats")
         if network == SettingsConstants.MAINNET:
-            btc_unit = "btc"
-            sats_unit = "sats"
+            btc_unit = _("btc")
+            sats_unit = _("sats")
             btc_color = GUIConstants.ACCENT_COLOR
 
         elif network == SettingsConstants.TESTNET:

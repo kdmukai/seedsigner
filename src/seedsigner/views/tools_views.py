@@ -650,8 +650,8 @@ class ToolsAddressExplorerAddressListView(View):
                             data[addr_storage_key].append(address)
                     else:
                         # TODO: Custom derivation path
-                        raise Exception("Custom Derivation address explorer not yet implemented")
-                
+                        raise Exception(_("Custom Derivation address explorer not yet implemented"))
+
                 elif "wallet_descriptor" in data:
                     descriptor: Descriptor = data["wallet_descriptor"]
                     if descriptor.is_basic_multisig:
@@ -661,7 +661,7 @@ class ToolsAddressExplorerAddressListView(View):
                             data[addr_storage_key].append(address)
 
                     else:
-                        raise Exception("Single sig descriptors not yet supported")
+                        raise Exception(_("Single sig descriptors not yet supported"))
             finally:
                 # Everything is set. Stop the loading screen
                 self.loading_screen.stop()
@@ -679,6 +679,7 @@ class ToolsAddressExplorerAddressListView(View):
                 end_digits = -4
             button_data.append(f"{cur_index}:{address[:8]}...{address[end_digits:]}")
 
+        # TRANSLATOR_NOTE: Insert the number of addrs displayed per screen (e.g. "Next 10")
         button_data.append((_("Next {}").format(addrs_per_screen), None, None, None, SeedSignerIconConstants.CHEVRON_RIGHT))
 
         selected_menu_num = self.run_screen(
