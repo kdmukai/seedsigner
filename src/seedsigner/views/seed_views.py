@@ -94,7 +94,7 @@ class SeedSelectSeedView(View):
         seeds = self.controller.storage.seeds
 
         if self.flow == Controller.FLOW__VERIFY_SINGLESIG_ADDR:
-            title = "Verify Address"
+            title = _("Verify Address")
             if not seeds:
                 text = _("Load the seed to verify")
             else: 
@@ -433,11 +433,13 @@ class SeedDiscardView(View):
         button_data = [self.KEEP, self.DISCARD]
 
         fingerprint = self.seed.get_fingerprint(self.settings.get_value(SettingsConstants.SETTING__NETWORK))
+        # TRANSLATOR_NOTE: Inserts the seed fingerprint
+        text = _("Wipe seed {} from the device?").format(fingerprint)
         selected_menu_num = self.run_screen(
             WarningScreen,
             title=_("Discard Seed?"),
             status_headline=None,
-            text=_("Wipe seed {} from the device?").format(fingerprint),
+            text=text,
             show_back_button=False,
             button_data=button_data,
         )
@@ -1003,6 +1005,7 @@ class SeedWordsView(View):
 
         if self.bip85_data is not None:
             mnemonic = self.seed.get_bip85_child_mnemonic(self.bip85_data["child_index"], self.bip85_data["num_words"]).split()
+            # TRANSLATOR_NOTE: Inserts the child index (e.g. "Child #0")
             title = _("Child #{}").format(self.bip85_data["child_index"])
         else:
             mnemonic = self.seed.mnemonic_display_list
@@ -1222,8 +1225,10 @@ class SeedWordsBackupTestView(View):
         button_data = [real_word, fake_word1, fake_word2, fake_word3]
         random.shuffle(button_data)
 
+        # TRANSLATOR_NOTE: Inserts the word number (e.g. "Verify Word #1")
+        title = _("Verify Word #{}").format(self.cur_index + 1)
         selected_menu_num = ButtonListScreen(
-            title=_("Verify Word #{}").format(self.cur_index + 1),
+            title=title,
             show_back_button=False,
             button_data=button_data,
             is_bottom_list=True,
@@ -1275,12 +1280,18 @@ class SeedWordsBackupTestMistakeView(View):
         RETRY = _("Try Again")
         button_data = [REVIEW, RETRY]
 
+        # TRANSLATOR_NOTE: Inserts the word number and the word (e.g. "Word #1 is not "apple"!")
+        text = _("Word #{} is not \"{}\"!").format(self.cur_index + 1, self.wrong_word)
+
+        # TRANSLATOR_NOTE: User selected the wrong word during the mnemonic backup test (e.g. incorrectly said the 5th word was "zoo")
+        status_headline = _("Wrong Word!")
+
         selected_menu_num = DireWarningScreen(
             title=_("Verification Error"),
             show_back_button=False,
-            status_headline=_("Wrong Word!"),
-            text=_("Word #{} is not \"{}\"!").format(self.cur_index + 1, self.wrong_word),
+            status_headline=status_headline,
             button_data=button_data,
+            text=text,
         ).display()
 
         if button_data[selected_menu_num] == REVIEW:
@@ -1870,11 +1881,25 @@ class AddressVerificationSuccessView(View):
         if sig_type == SettingsConstants.MULTISIG:
             source = _("multisig")
         else:
+            # TRANSLATOR_NOTE: Inserts the seed fingerprint
             source = _("seed {}").format(self.seed.get_fingerprint())
 
+        # TRANSLATOR_NOTE: Used in a sentence describing the address type (change or receive)
+        change_text = _("change")
+
+        # TRANSLATOR_NOTE: Used in a sentence describing the address type (change or receive)
+        receive_text = _("receive")
+
+        # TRANSLATOR_NOTE: Address verification success message (e.g. "bc1qabc = seed 12345678's receive address #0.")
+        text = _("{} = {}'s {} address #{}.""").format(
+            address[:7],
+            source,
+            change_text if verified_index_is_change else receive_text,
+            verified_index
+        )
         LargeIconStatusScreen(
             status_headline=_("Address Verified"),
-            text=f"""{address[:7]} = {source}'s {"change" if verified_index_is_change else "receive"} address #{verified_index}.""",
+            text=text,
             show_back_button=False,
         ).display()
 
@@ -1981,12 +2006,17 @@ class SeedSignMessageStartView(View):
         # calculate the actual receive address
         addr_format = embit_utils.parse_derivation_path(derivation_path)
         if not addr_format["clean_match"]:
-            raise NotYetImplementedView("Signing messages for custom derivation paths not supported")
+            raise NotYetImplementedView(_("Signing messages for custom derivation paths not supported"))
 
         # Note: addr_format["network"] can be MAINNET or [TESTNET, REGTEST]
         if self.settings.get_value(SettingsConstants.SETTING__NETWORK) not in addr_format["network"]:
             from seedsigner.views.view import NetworkMismatchErrorView
-            self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
+            # TRANSLATOR_NOTE: Inserts mainnet/testnet/regtest and derivation path
+            text = _("Current network setting ({}) doesn't match {}").format(
+                self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK),
+                self.derivation_path,
+            )
+            self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=text)))
 
             # cleanup. Note: We could leave this in place so the user can resume the
             # flow, but for now we avoid complications and keep things simple.
@@ -2063,7 +2093,7 @@ class SeedSignMessageConfirmAddressView(View):
         seed = self.controller.storage.seeds[seed_num]
         addr_format = embit_utils.parse_derivation_path(self.derivation_path)
         if not addr_format["clean_match"] or addr_format["script_type"] == SettingsConstants.CUSTOM_DERIVATION:
-            raise Exception("Signing messages for custom derivation paths not supported")
+            raise Exception(_("Signing messages for custom derivation paths not supported"))
 
         if addr_format["network"] != SettingsConstants.MAINNET:
             # We're in either Testnet or Regtest or...?
@@ -2071,7 +2101,11 @@ class SeedSignMessageConfirmAddressView(View):
                 addr_format["network"] = self.settings.get_value(SettingsConstants.SETTING__NETWORK)
             else:
                 from seedsigner.views.view import NetworkMismatchErrorView
-                self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match {self.derivation_path}")))
+                text = _("Current network setting ({}) doesn't match {}").format(
+                    self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK),
+                    self.derivation_path,
+                )
+                self.set_redirect(Destination(NetworkMismatchErrorView, view_args=dict(text=text)))
 
                 # cleanup. Note: We could leave this in place so the user can resume the
                 # flow, but for now we avoid complications and keep things simple.

@@ -16,6 +16,7 @@ from seedsigner.views.view import BackStackView, MainMenuView, NotYetImplemented
 
 
 class PSBTSelectSeedView(View):
+    # TODO: Class-level attrs vs dynamic gettext calls
     SCAN_SEED = ("Scan a seed", SeedSignerIconConstants.QRCODE)
     TYPE_12WORD = ("Enter 12-word seed", FontAwesomeIconConstants.KEYBOARD)
     TYPE_24WORD = ("Enter 24-word seed", FontAwesomeIconConstants.KEYBOARD)

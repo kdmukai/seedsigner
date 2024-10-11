@@ -347,7 +347,10 @@ class NetworkMismatchErrorView(ErrorView):
         self.title = _("Network Mismatch")
         self.button_text = _("Change Setting")
         if not self.text:
-            self.text = f"Current network setting ({self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK)}) doesn't match current action."
+            # TRANSLATOR_NOTE: Inserts mainnet/testnet/regtest
+            self.text = _("Current network setting ({}) doesn't match current action.").format(
+                self.settings.get_value_display_name(SettingsConstants.SETTING__NETWORK),
+            )
 
         if not self.next_destination:
             from seedsigner.views.settings_views import SettingsEntryUpdateSelectionView
@@ -382,7 +385,11 @@ class OptionDisabledView(View):
         self.UPDATE_SETTING = _("Update Setting")
         self.DONE = _("Done")
         self.settings_entry = SettingsDefinition.get_settings_entry(self.settings_attr)
-        self.error_msg = f"\"{self.settings_entry.display_name}\" is currently disabled in Settings."
+
+        # TRANSLATOR_NOTE: Inserts the name of a settings option (e.g. "Persistent Settings" is currently...)
+        self.error_msg = _("\"{}\" is currently disabled in Settings.").format(
+            self.settings_entry.display_name,
+        )
 
 
     def run(self):

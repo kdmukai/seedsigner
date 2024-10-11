@@ -724,10 +724,12 @@ class QRDisplayScreen(BaseScreen):
             )
             chevron_down_icon.render()
 
+            # TRANSLATOR_NOTE: Increase QR code screen brightness
+            text = _("Brighter")
             TextArea(
                 image_draw=img_draw,
                 canvas=rectangle,
-                text="Brighter",
+                text=text,
                 font_size=GUIConstants.get_body_font_size(),
                 font_name=GUIConstants.get_button_font_name(),
                 background_color=(0, 0, 0, overlay_opacity),
@@ -740,10 +742,12 @@ class QRDisplayScreen(BaseScreen):
                 allow_text_overflow=False
             ).render()
 
+            # TRANSLATOR_NOTE: Decrease QR code screen brightness
+            text = _("Darker")
             TextArea(
                 image_draw=img_draw,
                 canvas=rectangle,
-                text="Darker",
+                text=text,
                 font_size=GUIConstants.get_body_font_size(),
                 font_name=GUIConstants.get_button_font_name(),
                 background_color=(0, 0, 0, overlay_opacity),
@@ -1037,8 +1041,9 @@ class PowerOffNotRequiredScreen(BaseTopNavScreen):
         self.show_back_button = True
         super().__post_init__()
 
+        text = _("It is safe to disconnect power at any time.")
         self.components.append(TextArea(
-            text="It is safe to disconnect power at any time.",
+            text=text,
             screen_y=self.top_nav.height,
             height=self.canvas_height - self.top_nav.height,
         ))
