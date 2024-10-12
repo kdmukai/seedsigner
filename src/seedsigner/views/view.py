@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from gettext import gettext as _
 from typing import Type
 
@@ -326,7 +326,7 @@ class ErrorView(View):
     status_headline: str = None
     text: str = None
     button_text: str = None
-    next_destination: Destination = Destination(MainMenuView, clear_history=True)
+    next_destination: Destination = field(default_factory=lambda: Destination(MainMenuView, clear_history=True))
 
 
     def run(self):
