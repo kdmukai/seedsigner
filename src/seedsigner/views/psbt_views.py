@@ -342,11 +342,9 @@ class PSBTChangeDetailsView(View):
             # TRANSLATOR_NOTE: The amount you're receiving back from the transaction
             title = _("Your Change")
             self.VERIFY_MULTISIG = _("Verify Multisig Change")
-            unverified_warning_text = "Can't Verify that Change Outputs Belong to your Wallet"
         else:
             title = _("Self-Transfer")
             self.VERIFY_MULTISIG = _("Verify Multisig Addr")
-            unverified_warning_text = "Can't Verify that Self-Transfer Outputs Belong to your Wallet"
         # if psbt_parser.num_change_outputs > 1:
         #     title += f" (#{self.change_address_num + 1})"
 
@@ -428,17 +426,6 @@ class PSBTChangeDetailsView(View):
             return Destination(BackStackView)
 
         elif button_data[selected_menu_num] == self.NEXT or button_data[selected_menu_num] == self.SKIP_VERIFICATION:
-            if button_data[selected_menu_num] == self.SKIP_VERIFICATION:
-                selected_menu_num = self.run_screen(
-                    DireWarningScreen,
-                    title="Security Warning",
-                    status_icon_name=SeedSignerIconConstants.WARNING,
-                    status_headline="Potential Loss of Funds",
-                    text=unverified_warning_text,
-                )
-
-                if selected_menu_num == RET_CODE__BACK_BUTTON:
-                    return Destination(BackStackView)
 
             if self.change_address_num < psbt_parser.num_change_outputs - 1:
                 return Destination(PSBTChangeDetailsView, view_args={"change_address_num": self.change_address_num + 1})
