@@ -564,23 +564,23 @@ class PSBTMathScreen(ButtonListScreen):
         # spend_amount will be zero on self-transfers; only display when there's an
         # external recipient.
         if self.num_recipients > 0:
-            cur_y += int(digits_height * 1.2)
+            cur_y += digits_height + GUIConstants.BODY_LINE_SPACING * ssf
             render_amount(
                 cur_y,
                 f"-{self.spend_amount}",
                 info_text=ngettext("recipient", "recipients", self.num_recipients),
             )
 
-        cur_y += int(digits_height * 1.2)
+        cur_y += digits_height + GUIConstants.BODY_LINE_SPACING * ssf
         render_amount(
             cur_y,
             f"-{self.fee_amount}",
             info_text=_("fee"),
         )
 
-        cur_y += int(digits_height * 1.2) + 4 * ssf
+        cur_y += digits_height + GUIConstants.BODY_LINE_SPACING * ssf
         draw.line((0, cur_y, image.width, cur_y), fill=GUIConstants.BODY_FONT_COLOR, width=1)
-        cur_y += 8 * ssf
+        cur_y += GUIConstants.BODY_LINE_SPACING * ssf
 
         render_amount(
             cur_y,
