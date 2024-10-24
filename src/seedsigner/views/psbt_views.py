@@ -301,9 +301,10 @@ class PSBTAddressDetailsView(View):
             return Destination(PSBTFinalizeView)
 
 
+
 class PSBTChangeDetailsView(View):
     NEXT = "Next"
-    SKIP_VERIFICATION = "Skip Verificiation"
+    SKIP_VERIFICATION = "Skip Verification"
     VERIFY_MULTISIG = "Verify Multisig Change"
 
 
@@ -436,7 +437,6 @@ class PSBTChangeDetailsView(View):
             return Destination(BackStackView)
 
         elif button_data[selected_menu_num] == self.NEXT or button_data[selected_menu_num] == self.SKIP_VERIFICATION:
-
             if self.change_address_num < psbt_parser.num_change_outputs - 1:
                 return Destination(PSBTChangeDetailsView, view_args={"change_address_num": self.change_address_num + 1})
 
@@ -482,6 +482,7 @@ class PSBTAddressVerificationFailedView(View):
         # We're done with this PSBT. Route back to MainMenuView which always
         #   clears all ephemeral data (except in-memory seeds).
         return Destination(MainMenuView, clear_history=True)
+
 
 
 class PSBTOpReturnView(View):
