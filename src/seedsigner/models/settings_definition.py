@@ -228,7 +228,9 @@ class SettingsConstants:
 
     # Label strings
     LABEL__BIP39_PASSPHRASE = "BIP-39 Passphrase"
-    LABEL__CUSTOM_EXTENSION = "Custom Extension"
+    LABEL__CUSTOM_EXTENSION = "Custom Extension"   # Terminology used by Electrum seeds
+
+
 
 @dataclass
 class SettingsEntry:
@@ -489,8 +491,9 @@ class SettingsDefinition:
 
         SettingsEntry(category=SettingsConstants.CATEGORY__FEATURES,
                       attr_name=SettingsConstants.SETTING__ELECTRUM_SEEDS,
-                      abbreviated_name="Electrum",
-                      display_name="Electrum seed support (Native Segwit only)",
+                      abbreviated_name="electrum",
+                      display_name="Electrum seeds",
+                      help_text="Native Segwit only",
                       visibility=SettingsConstants.VISIBILITY__ADVANCED,
                       default_value=SettingsConstants.OPTION__DISABLED),
 
