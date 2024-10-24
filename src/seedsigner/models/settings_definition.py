@@ -132,16 +132,17 @@ class SettingsConstants:
         (MULTISIG, _("Multisig")),
     ]
 
-    LEGACY_P2PKH = "leg"  # Intentionally excluded from ALL_SCRIPT_TYPES
+    LEGACY_P2PKH = "leg"
     NATIVE_SEGWIT = "nat"
     NESTED_SEGWIT = "nes"
     TAPROOT = "tr"
     CUSTOM_DERIVATION = "cus"
     ALL_SCRIPT_TYPES = [
-        (NATIVE_SEGWIT, _("Native Segwit")),
-        (NESTED_SEGWIT, _("Nested Segwit (legacy)")),
-        (TAPROOT, _("Taproot")),
-        (CUSTOM_DERIVATION, _("Custom Derivation")),
+        (NATIVE_SEGWIT, "Native Segwit"),
+        (NESTED_SEGWIT, "Nested Segwit"),
+        (LEGACY_P2PKH, "Legacy"),
+        (TAPROOT, "Taproot"),
+        (CUSTOM_DERIVATION, "Custom Derivation"),
     ]
 
     WORDLIST_LANGUAGE__ENGLISH = "en"
