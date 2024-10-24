@@ -669,15 +669,12 @@ class PSBTChangeDetailsScreen(ButtonListScreen):
         ))
 
         self.components.append(FormattedAddress(
-            screen_y=self.components[-1].screen_y + self.components[-1].height + GUIConstants.COMPONENT_PADDING,
+            screen_y=self.components[-1].screen_y + self.components[-1].height,
             address=self.address,
             max_lines=1,
         ))
 
         screen_y = self.components[-1].screen_y + self.components[-1].height + 2*GUIConstants.COMPONENT_PADDING
-        if self.is_multisig and not self.is_change_addr_verified:
-            # Adjust the vertical spacing
-            screen_y -= GUIConstants.COMPONENT_PADDING
         self.components.append(IconTextLine(
             # TRANSLATOR_NOTE: First variable is either "Multisig" or the fingerprint for single sig; Second is "Change" or "Addr" (change vs receive addr); Third is the address index number (e.g. your #4 receive addr).
             value_text="""{}: {} #{}""".format(_("Multisig") if self.is_multisig else self.fingerprint, _("Change") if self.is_change_derivation_path else _("Addr"), self.derivation_path_addr_index),
