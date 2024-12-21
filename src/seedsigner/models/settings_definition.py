@@ -47,7 +47,9 @@ class SettingsConstants:
     ]
 
     LOCALE__ARABIC = "ar"
+    LOCALE__CATALAN = "ca"
     LOCALE__CZECH = "cs"
+    LOCALE__DUTCH = "nl"
     LOCALE__ENGLISH = "en"
     LOCALE__FRENCH = "fr"
     LOCALE__GERMAN = "de"
@@ -62,6 +64,8 @@ class SettingsConstants:
         # (LOCALE__ARABIC, "Arabic"),
         # (LOCALE__CZECH, "čeština"),
         (LOCALE__ENGLISH, "English"),
+        # (LOCALE__CATALAN, "Català"),
+        # (LOCALE__DUTCH, "Nederlands"),
         # (LOCALE__FRENCH, "Français"),
         # (LOCALE__GERMAN, "Deutsch"),
         # (LOCALE__HEBREW, "Hebrew"),
