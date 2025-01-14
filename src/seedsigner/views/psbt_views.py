@@ -265,7 +265,7 @@ class PSBTAddressDetailsView(View):
 
         button_data = []
         if self.address_num < psbt_parser.num_destinations - 1:
-            button_data.append(ButtonOption("Next Recipient"))
+            button_data.append(ButtonOption("Next recipient"))
         else:
             # TRANSLATOR_NOTE: Short for "Next step"
             button_data.append(ButtonOption("Next"))
@@ -300,8 +300,8 @@ class PSBTAddressDetailsView(View):
 
 class PSBTChangeDetailsView(View):
     NEXT = ButtonOption("Next")
-    SKIP_VERIFICATION = ButtonOption("Skip Verification")
-    VERIFY_MULTISIG = ButtonOption("Verify Multisig Change")
+    SKIP_VERIFICATION = ButtonOption("Skip verification")
+    VERIFY_MULTISIG = ButtonOption("Verify multisig change")
 
     def __init__(self, change_address_num):
         super().__init__()
@@ -571,7 +571,7 @@ class PSBTSignedQRDisplayView(View):
 
 
 class PSBTSigningErrorView(View):
-    SELECT_DIFF_SEED = ButtonOption("Select Diff Seed")
+    SELECT_DIFF_SEED = ButtonOption("Select diff seed")
     
     def run(self):
         psbt_parser: PSBTParser = self.controller.psbt_parser

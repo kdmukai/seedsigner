@@ -326,7 +326,7 @@ class NetworkMismatchErrorView(ErrorView):
         from seedsigner.views.settings_views import SettingsEntryUpdateSelectionView
         self.title: str = _("Network Mismatch")
         self.show_back_button: bool = False
-        self.button_text: str = _("Change Setting")
+        self.button_text: str = _("Change setting")
         self.next_destination = Destination(SettingsEntryUpdateSelectionView, view_args=dict(attr_name=SettingsConstants.SETTING__NETWORK), clear_history=True)
         super().__post_init__()
 
@@ -358,7 +358,7 @@ class UnhandledExceptionView(View):
 
 @dataclass
 class OptionDisabledView(View):
-    UPDATE_SETTING = ButtonOption("Update Setting")
+    UPDATE_SETTING = ButtonOption("Update setting")
     DONE = ButtonOption("Done")
     settings_attr: str
 
