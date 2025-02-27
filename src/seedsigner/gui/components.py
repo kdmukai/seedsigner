@@ -48,28 +48,24 @@ class GUIConstants:
     ICON_TOAST_FONT_SIZE = 30
     ICON_PRIMARY_SCREEN_SIZE = 50
 
-    TOP_NAV_TITLE_FONT_NAME = {
-        "default": "OpenSans-SemiBold",
-        # "ar": "multilanguage/NotoSansAR-Regular",
-        # "he": "multilanguage/NotoSansHE-Regular",
-        # "ja": "multilanguage/NotoSansJP-Regular",
-        # "kr": "multilanguage/NotoSansKR-Regular",
-        # "ru": "multilanguage/NotoSans-Regular",
+    BASE_LOCALE_FONTS = {
+        "default": "OpenSans-Regular",
+        # SettingsConstants.LOCALE__ARABIC: "NotoSansAR-Regular",
+        SettingsConstants.LOCALE__CHINESE_SIMPLIFIED: "NotoSansSC-Regular",
+        SettingsConstants.LOCALE__CHINESE_TRADITIONAL: "NotoSansTC-Regular",
+        SettingsConstants.LOCALE__JAPANESE: "NotoSansJP-Regular",
+        SettingsConstants.LOCALE__KOREAN: "NotoSansKR-Regular",
     }
+
+    TOP_NAV_TITLE_FONT_NAME = BASE_LOCALE_FONTS.copy()
+    TOP_NAV_TITLE_FONT_NAME["default"] = "OpenSans-SemiBold"
     TOP_NAV_TITLE_FONT_SIZE = {
         "default": 20,
     }
     TOP_NAV_HEIGHT = 48
     TOP_NAV_BUTTON_SIZE = 32
 
-    BODY_FONT_NAME = {
-        "default": "OpenSans-Regular",
-        # "ar": "multilanguage/NotoSansAR-Regular",
-        # "he": "multilanguage/NotoSansHE-Regular",
-        # "ja": "multilanguage/NotoSansJP-Regular",
-        # "kr": "multilanguage/NotoSansKR-Regular",
-        # "ru": "multilanguage/NotoSans-Regular",
-    }
+    BODY_FONT_NAME = BASE_LOCALE_FONTS.copy()
     BODY_FONT_SIZE = {
         "default": 17,
         # "ar": 16,
@@ -85,14 +81,8 @@ class GUIConstants:
     LABEL_FONT_SIZE = BODY_FONT_MIN_SIZE
     LABEL_FONT_COLOR = "#777777"
 
-    BUTTON_FONT_NAME = {
-        "default": "OpenSans-SemiBold",
-        # "ar": "multilanguage/NotoSansAR-Regular",
-        # "he": "multilanguage/NotoSansHE-Regular",
-        # "ja": "multilanguage/NotoSansJP-Regular",
-        # "kr": "multilanguage/NotoSansKR-Regular",
-        # "ru": "multilanguage/NotoSans-Regular",
-    }
+    BUTTON_FONT_NAME = BASE_LOCALE_FONTS.copy()
+    BUTTON_FONT_NAME["default"] = "OpenSans-SemiBold"
     BUTTON_FONT_SIZE = {
         "default": 18,
         # "ar": 16,
