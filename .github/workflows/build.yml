@@ -48,6 +48,8 @@ jobs:
           path: "seedsigner-os/opt/rootfs-overlay/opt"
           # get full history + tags for "git describe"
           fetch-depth: 0
+          # Need to include the seedsigner-translations repo
+          submodules: true
 
       - name: Get and set meta data
         run: |
