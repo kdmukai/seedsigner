@@ -1,6 +1,6 @@
 [submodule "src/seedsigner/resources/seedsigner-translations"]
 	path = src/seedsigner/resources/seedsigner-translations
-	url = https://github.com/SeedSigner/seedsigner-translations.git
+	url = https://github.com/kdmukai/seedsigner-translations.git
 	branch = dev
 [submodule "seedsigner-screenshots"]
 	path = seedsigner-screenshots
