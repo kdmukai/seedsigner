@@ -2,13 +2,7 @@ name: Build
 
 on:
   pull_request:
-    # # Build on changes to this workflow files in PRs to test proposed changes
-    # paths:
-    #   - '.github/workflows/build.yml'
   push:
-    branches:
-      - main
-      - dev
   workflow_dispatch:
     inputs:
       os-ref:
