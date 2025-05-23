@@ -2,13 +2,7 @@ name: Build
 
 on:
   pull_request:
-    # Build on changes to this workflow files in PRs to test proposed changes
-    paths:
-      - '.github/workflows/build.yml'
   push:
-    branches:
-      - main
-      - dev
   workflow_dispatch:
     inputs:
       os-ref:
@@ -48,6 +42,8 @@ jobs:
           path: "seedsigner-os/opt/rootfs-overlay/opt"
           # get full history + tags for "git describe"
           fetch-depth: 0
+          # Need to include the seedsigner-translations repo
+          submodules: true
 
       - name: Get and set meta data
         run: |
