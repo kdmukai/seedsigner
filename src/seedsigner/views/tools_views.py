@@ -580,7 +580,7 @@ class ToolsAddressExplorerAddressTypeView(View):
         data = self.controller.address_explorer_data
 
         wallet_descriptor_display_name = None
-        if "wallet_descriptor" in data:
+        if "wallet_descriptor" in data and data["wallet_descriptor"]:
             wallet_descriptor_display_name = data["wallet_descriptor"].brief_policy.replace(" (sorted)", "")
             wallet_descriptor_display_name = " / ".join(wallet_descriptor_display_name.split(" of ")) # i18n w/o l10n since coming from non-l10n embit
 

@@ -1,3 +1,4 @@
+from binascii import a2b_base64
 import embit
 import pathlib
 import pytest
@@ -259,6 +260,64 @@ def generate_screenshots(locale):
             controller.psbt_parser = PSBTParser(p=controller.psbt, seed=seed_12b)
 
 
+        def PSBTAddressDetailsView_testnet_cb_before():
+            controller.settings.set_value(
+                attr_name=SettingsConstants.SETTING__NETWORK,
+                value=SettingsConstants.TESTNET
+            )
+            controller.psbt_parser = PSBTParser(
+                PSBT.parse(a2b_base64(BASE64_PSBT_1)),
+                seed=seed_12b,
+                network=SettingsConstants.TESTNET
+            )
+
+
+        def PSBTAddressDetailsView_regtest_cb_before():
+            controller.settings.set_value(
+                attr_name=SettingsConstants.SETTING__NETWORK,
+                value=SettingsConstants.REGTEST
+            )
+            controller.psbt_parser = PSBTParser(
+                PSBT.parse(a2b_base64(BASE64_PSBT_1)),
+                seed=seed_12b,
+                network=SettingsConstants.REGTEST
+            )
+
+
+        def payjoin_receive_cb_before():
+            # use tx from test_psbt_parser.py payjoin test
+            zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
+            payjoin_base64 = "cHNidP8BAJoCAAAAAmvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////cCbPlwdnpnw1C2WK42cWoRXQaB6ARoY4uSCdISXffg4BAAAAAP3///8C1rU8AAAAAAAWABRy418s7hAxS+UrCmrk9CT6oWMBRYZatwEAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB13AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+K9W0BAAAAABYAFMOlZFGAF2Q4fD7HIIw4kCVhc6cMAQMEAQAAAAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgLPexMz/QGBiOpmYwsv7ruEgtUDt2Jel5DGWtlet5JzuxgDzQorVAAAgAAAAIAAAACAAQAAAAEAAAAAIgIDxpTFZnPjW8NV3oaa3bP9TPainGiPkc4pIjKn7rLA88EYD4iQRFQAAIAAAACAAAAAgAAAAAAFAAAAAA=="
+            controller.psbt_seed = zoe_seed
+            decoder = DecodeQR()
+            decoder.add_data(payjoin_base64)
+            controller.psbt = decoder.get_psbt()
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed, network=SettingsConstants.REGTEST)
+            controller.multisig_wallet_descriptor = None
+
+
+        def payjoin_send_cb_before():
+            # payjoin sender's context
+            malcolm_seed = Seed("better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
+            payjoin_base64 = "cHNidP8BAJoCAAAAAmvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////cCbPlwdnpnw1C2WK42cWoRXQaB6ARoY4uSCdISXffg4BAAAAAP3///8C1rU8AAAAAAAWABRy418s7hAxS+UrCmrk9CT6oWMBRYZatwEAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB13AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+K9W0BAAAAABYAFMOlZFGAF2Q4fD7HIIw4kCVhc6cMAQMEAQAAACIGAvJY/nFTCdMxuP4cxQ/rbCgA8WIQe8wlFl+n3h9yelGnGAPNCitUAACAAAAAgAAAAIAAAAAAAQAAAAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAAAAiAgLPexMz/QGBiOpmYwsv7ruEgtUDt2Jel5DGWtlet5JzuxgDzQorVAAAgAAAAIAAAACAAQAAAAEAAAAAAA=="
+            controller.psbt_seed = malcolm_seed
+            decoder = DecodeQR()
+            decoder.add_data(payjoin_base64)
+            controller.psbt = decoder.get_psbt()
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+
+
+        def coinjoin_cb_before():
+            malcolm_seed = Seed("better gown govern speak spawn vendor exercise item uncle odor sound cat".split())
+            # Messy coinjoin w/extra outputs
+            malcolm_coinjoin_psbt_base64 = "cHNidP8BAP3uAQIAAAAFUsuOhcX/DvTI/BZgYs2yeiYVP7E7N9tDoG9SdYnfSEMCAAAAAP3///9Sy46Fxf8O9Mj8FmBizbJ6JhU/sTs320Ogb1J1id9IQwMAAAAA/f///1LLjoXF/w70yPwWYGLNsnomFT+xOzfbQ6BvUnWJ30hDAQAAAAD9////mT05iCk32P6+TGMEMGKw6mH6fTafsNiCaqnbPbBgd14DAAAAAP3///+ZPTmIKTfY/r5MYwQwYrDqYfp9Np+w2IJqqds9sGB3XgEAAAAA/f///wk5bD0AAAAAABYAFC9NKd1nKSURCfVJ0o6jWWeWlmjhgJaYAAAAAAAWABRX/KTAYaj0b7PKz5gyctryXOfEsoCWmAAAAAAAFgAU/TrhKNM2cRT6q+DIUguvy+qU4/eQ0AMAAAAAABYAFPi2CaO4LYCR+yyZ9PAwK7uDjkjtQv0FAAAAAAAWABSRrp8CppZ5NN7QHVu1NHo2xDTJB4CWmAAAAAAAFgAUZzErX2kA+Nl0IANrpZ9W08BrBiqAlpgAAAAAABYAFAyWIwiu+QIC4ZlObGHDlvZn6cwdgJaYAAAAAAAWABRR4vxAHWefj/vT6SRg4QuJGLOEwZDQAwAAAAAAFgAURsVsVzfCll3oga2Z1CByV626Q955AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+mDV0AAAAAABYAFB+v75HNdP9+BwA5PwHAAwouJdHyAQMEAQAAACIGAgr+mKm0GojP1MHLvlMUOEF7JHomGlLx1e1CbQsJdpNhGAPNCitUAACAAAAAgAAAAIAAAAAAAgAAAAABAR/TPGwAAAAAABYAFFHsyt85+w/2e7hF0EPwiCY/TflkAQMEAQAAACIGA+f4JzG7qkZI4HSOq4FYksLwMmk3sksU1v7O0rMzVsrzGAPNCitUAACAAAAAgAAAAIAAAAAABAAAAAABAR9ISakAAAAAABYAFONgMJvheO31yuSQZOaRNSrrbLdUAQMEAQAAACIGAwdb3fkBR1JOPt/lypRlqhdAzMUR3v1BknnKcD2IXtXzGAPNCitUAACAAAAAgAAAAIAAAAAAAwAAAAABAR9Y7VcAAAAAABYAFECoFhF19GpZPD+U34VOInM2mHmZAQMEAQAAAAABAR8NznsBAAAAABYAFC/fIiBm/J4dpWT5LUL4UnElwVsQAQMEAQAAAAAiAgOY2SYAfhS5fpzPQjMbNMEFbu+0q4EXkrYrhO4ksgJUGxgDzQorVAAAgAAAAIAAAACAAQAAAAIAAAAAIgID+67J/K4WQEgB5upEyOHKgHz+gjBNpa8pKEYoHIyQgUAYA80KK1QAAIAAAACAAAAAgAAAAAAGAAAAACICArA+YcBFJsnK5Tv5TkMdRC00Dw0+Rkf2S85oIr+PtG8RGAPNCitUAACAAAAAgAAAAIAAAAAABQAAAAAAAAAAAAA="
+
+            decoder = DecodeQR()
+            decoder.add_data(malcolm_coinjoin_psbt_base64)
+            controller.psbt = decoder.get_psbt()
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+
+
         screenshot_sections = {
             "Main Menu Views": [
                 ScreenshotConfig(OpeningSplashView, dict(is_screenshot_renderer=True, force_partner_logos=True)),
@@ -349,6 +408,8 @@ def generate_screenshots(locale):
                 ScreenshotConfig(psbt_views.PSBTNoChangeWarningView),
                 ScreenshotConfig(psbt_views.PSBTMathView),
                 ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0)),
+                ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0), screenshot_name="PSBTAddressDetailsView_testnet", run_before=PSBTAddressDetailsView_testnet_cb_before),
+                ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0), screenshot_name="PSBTAddressDetailsView_regtest", run_before=PSBTAddressDetailsView_regtest_cb_before),
 
                 ScreenshotConfig(psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), screenshot_name="PSBTChangeDetailsView_multisig_unverified", run_before=load_basic_psbt_cb),
                 ScreenshotConfig(psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), screenshot_name="PSBTChangeDetailsView_multisig_verified", run_before=load_multisig_wallet_descriptor_cb),
@@ -362,6 +423,21 @@ def generate_screenshots(locale):
                 ScreenshotConfig(psbt_views.PSBTFinalizeView),
                 #ScreenshotConfig(PSBTSignedQRDisplayViewScreenshotConfig),
                 ScreenshotConfig(psbt_views.PSBTSigningErrorView),
+
+                # Payjoin from the receiver's perspective
+                ScreenshotConfig(psbt_views.PSBTOverviewView, screenshot_name="PSBTOverviewView_payjoin_receive", run_before=payjoin_receive_cb_before),
+                ScreenshotConfig(psbt_views.PSBTMathView, screenshot_name="PSBTMathView_payjoin_receive"),  # Relies on callback above
+                ScreenshotConfig(psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), screenshot_name="PSBTChangeDetailsView_payjoin_receive"),  # Relies on callback above
+
+                # Payjoin from the sender's perspective
+                ScreenshotConfig(psbt_views.PSBTOverviewView, screenshot_name="PSBTOverviewView_payjoin_send", run_before=payjoin_send_cb_before),
+                ScreenshotConfig(psbt_views.PSBTMathView, screenshot_name="PSBTMathView_payjoin_send"),  # Relies on callback above
+                ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0), screenshot_name="PSBTAddressDetailsView_payjoin_send"),  # Relies on callback above
+                ScreenshotConfig(psbt_views.PSBTChangeDetailsView, dict(change_address_num=0), screenshot_name="PSBTChangeDetailsView_payjoin_send"),  # Relies on callback above
+
+                # Coinjoin
+                ScreenshotConfig(psbt_views.PSBTOverviewView, screenshot_name="PSBTOverviewView_coinjoin", run_before=coinjoin_cb_before),
+                ScreenshotConfig(psbt_views.PSBTMathView, screenshot_name="PSBTMathView_coinjoin"),  # Relies on callback above
             ],
             "Tools Views": [
                 ScreenshotConfig(tools_views.ToolsMenuView),
@@ -377,7 +453,7 @@ def generate_screenshots(locale):
                 ScreenshotConfig(tools_views.ToolsCalcFinalWordShowFinalWordView, dict(coin_flips="0010101"), screenshot_name="ToolsCalcFinalWordShowFinalWordView_coin_flips"),
                 ScreenshotConfig(tools_views.ToolsCalcFinalWordDoneView),
                 ScreenshotConfig(tools_views.ToolsAddressExplorerSelectSourceView),
-                ScreenshotConfig(tools_views.ToolsAddressExplorerAddressTypeView),
+                ScreenshotConfig(tools_views.ToolsAddressExplorerAddressTypeView, run_before=load_multisig_wallet_descriptor_cb),
                 ScreenshotConfig(tools_views.ToolsAddressExplorerAddressListView),
                 # ScreenshotConfig(tools_views.ToolsAddressExplorerAddressView),
             ],

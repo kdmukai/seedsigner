@@ -25,7 +25,7 @@ class PSBTSelectSeedView(View):
             raise Exception("No PSBT currently loaded")
 
         if self.controller.psbt_seed:
-             if PSBTParser.has_matching_input_fingerprint(psbt=self.controller.psbt, seed=self.controller.psbt_seed, network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)):
+             if PSBTParser.has_matching_input_fingerprint(psbt=self.controller.psbt, seed=self.controller.psbt_seed):
                  # skip the seed prompt if a seed was previous selected and has matching input fingerprint
                  return Destination(PSBTOverviewView)
 
@@ -33,7 +33,7 @@ class PSBTSelectSeedView(View):
         button_data = []
         for seed in seeds:
             button_str = seed.get_fingerprint(self.settings.get_value(SettingsConstants.SETTING__NETWORK))
-            if not PSBTParser.has_matching_input_fingerprint(psbt=self.controller.psbt, seed=seed, network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)):
+            if not PSBTParser.has_matching_input_fingerprint(psbt=self.controller.psbt, seed=seed):
                 # Doesn't look like this seed can sign the current PSBT
                 # TRANSLATOR_NOTE: Inserts fingerprint w/"?" to indicate that this seed can't sign the current PSBT
                 button_str = _("{} (?)").format(button_str)
@@ -83,12 +83,18 @@ class PSBTSelectSeedView(View):
 
 
 class PSBTOverviewView(View):
+    psbt_parser: PSBTParser = None
+    title: str = "Review PSBT"
+    display_amount: int = 0
+
+
     def __init__(self):
         super().__init__()
 
         self.loading_screen = None
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
 
-        if not self.controller.psbt_parser or self.controller.psbt_parser.seed != self.controller.psbt_seed:
+        if not self.psbt_parser or self.psbt_parser.seed != self.controller.psbt_seed:
             # The PSBTParser takes a while to read the PSBT. Run the loading screen while
             # we wait.
             from seedsigner.gui.screens.screen import LoadingScreenThread
@@ -96,21 +102,48 @@ class PSBTOverviewView(View):
             self.loading_screen.start()
                 
             try:
-                self.controller.psbt_parser = PSBTParser(
+                self.psbt_parser = PSBTParser(
                     self.controller.psbt,
                     seed=self.controller.psbt_seed,
                     network=self.settings.get_value(SettingsConstants.SETTING__NETWORK)
                 )
+                self.controller.psbt_parser = self.psbt_parser
             except Exception as e:
                 self.loading_screen.stop()
                 raise e
 
+        if self.psbt_parser.is_cooperative_spend:
+            if self.psbt_parser.is_payjoin_receive:
+                self.title = "Payjoin Receive"
+            elif self.psbt_parser.is_payjoin_send:
+                self.title = "Payjoin Send"
+            elif self.psbt_parser.is_coinjoin:
+                self.title = "Review Coinjoin"
+            else:
+                self.title = "Cooperative Spend"
+
+        if self.psbt_parser.is_cooperative_spend:
+            if self.psbt_parser.is_payjoin_receive:
+                # Display how much we'll actually net receive from the payjoin
+                self.display_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+            elif self.psbt_parser.is_coinjoin:
+                # Our only expense is what we're contributing towards the fee
+                self.display_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount
+            else:
+                self.display_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount - self.psbt_parser.fee_amount
+
+        elif not self.psbt_parser.destination_addresses:
+            # This is a self-transfer
+            self.display_amount = self.psbt_parser.change_amount
+
+        else:
+            # This is a normal spend
+            self.display_amount = self.psbt_parser.spend_amount
+
 
     def run(self):
         from seedsigner.gui.screens.psbt_screens import PSBTOverviewScreen
-        psbt_parser = self.controller.psbt_parser
-
-        change_data = psbt_parser.change_data
+        change_data = self.psbt_parser.change_data
         """
             change_data = [
                 {
@@ -124,7 +157,6 @@ class PSBTOverviewView(View):
         num_change_outputs = 0
         num_self_transfer_outputs = 0
         for change_output in change_data:
-            # print(f"""{change_output["derivation_path"][0]}""")
             if change_output["derivation_path"][0].split("/")[-2] == "1":
                 num_change_outputs += 1
             else:
@@ -137,14 +169,19 @@ class PSBTOverviewView(View):
         # Run the overview screen
         selected_menu_num = self.run_screen(
             PSBTOverviewScreen,
-            spend_amount=psbt_parser.spend_amount,
-            change_amount=psbt_parser.change_amount,
-            fee_amount=psbt_parser.fee_amount,
-            num_inputs=psbt_parser.num_inputs,
+            title=self.title,
+            is_cooperative_spend=self.psbt_parser.is_cooperative_spend,
+            is_payjoin_receive=self.psbt_parser.is_payjoin_receive,
+
+            display_amount=self.display_amount,
+
+            num_inputs=self.psbt_parser.num_inputs,
+            num_external_inputs=self.psbt_parser.num_external_inputs,
+
             num_self_transfer_outputs=num_self_transfer_outputs,
             num_change_outputs=num_change_outputs,
-            destination_addresses=psbt_parser.destination_addresses,
-            has_op_return=psbt_parser.op_return_data is not None,
+            destination_addresses=self.psbt_parser.destination_addresses,
+            has_op_return=self.psbt_parser.op_return_data is not None,
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -153,10 +190,10 @@ class PSBTOverviewView(View):
 
         # expecting p2sh (legacy multisig) and p2pkh to have no policy set
         # skip change warning and psbt math view
-        if psbt_parser.policy == None:
+        if self.psbt_parser.policy == None:
             return Destination(PSBTUnsupportedScriptTypeWarningView)
         
-        elif psbt_parser.change_amount == 0:
+        elif self.psbt_parser.change_amount == 0:
             return Destination(PSBTNoChangeWarningView)
 
         else:
@@ -166,12 +203,13 @@ class PSBTOverviewView(View):
 
 class PSBTUnsupportedScriptTypeWarningView(View):
     def run(self):
-        selected_menu_num = WarningScreen(
+        selected_menu_num = self.run_screen(
+            WarningScreen,
             status_headline=_("Unsupported Script Type!"),
             text=_("PSBT has unsupported input script type, please verify your change addresses."),
             button_data=[ButtonOption("Continue")],
-        ).display()
-        
+        )
+
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
         
@@ -186,12 +224,13 @@ class PSBTUnsupportedScriptTypeWarningView(View):
 
 class PSBTNoChangeWarningView(View):
     def run(self):
-        selected_menu_num = WarningScreen(
+        selected_menu_num = self.run_screen(
+            WarningScreen,
             # TRANSLATOR_NOTE: User will receive no change back; the inputs to this transaction are fully spent
             status_headline=_("Full Spend!"),
             text=_("This PSBT spends its entire input value. No change is coming back to your wallet."),
             button_data=[ButtonOption("Continue")],
-        ).display()
+        )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
@@ -213,28 +252,70 @@ class PSBTMathView(View):
         -------------------
         + change value
     """
+    def __init__(self):
+        super().__init__()
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
+        if not self.psbt_parser:
+            # Should not be able to get here
+            self.set_redirect(Destination(MainMenuView))
+            return
+
+
     def run(self):
         from seedsigner.gui.screens.psbt_screens import PSBTMathScreen
-        psbt_parser: PSBTParser = self.controller.psbt_parser
-        if not psbt_parser:
-            # Should not be able to get here
-            return Destination(MainMenuView)
+        from seedsigner.views.psbt_views import PSBTChangeDetailsView
+        spend_amount = self.psbt_parser.spend_amount
+        fee_amount = self.psbt_parser.fee_amount
+        if self.psbt_parser.is_payjoin_receive:
+            # Payjoin sender pays the fees; recipient doesn't contribute any sats to fees
+            spend_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
+            fee_amount = 0
+
+        elif self.psbt_parser.is_payjoin_send:
+            # Spend should just omit recipient's input contribution
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount
+
+        elif self.psbt_parser.is_coinjoin:
+            # Coinjoin sends none of your own sats to anyone else, you just contribute to
+            # the fee.
+            spend_amount = 0
+            fee_amount = self.psbt_parser.input_amount - self.psbt_parser.change_amount
         
+        elif self.psbt_parser.is_unknowable_spend_or_fee:
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount + self.psbt_parser.fee_amount
+            fee_amount = None
+
+        elif self.psbt_parser.is_cooperative_spend:
+            spend_amount = self.psbt_parser.spend_amount - self.psbt_parser.external_input_amount
+
         selected_menu_num = self.run_screen(
             PSBTMathScreen,
-            input_amount=psbt_parser.input_amount,
-            num_inputs=psbt_parser.num_inputs,
-            spend_amount=psbt_parser.spend_amount,
-            num_recipients=psbt_parser.num_destinations,
-            fee_amount=psbt_parser.fee_amount,
-            change_amount=psbt_parser.change_amount,
+            is_cooperative_spend=self.psbt_parser.is_cooperative_spend,
+            is_payjoin_receive=self.psbt_parser.is_payjoin_receive,
+            is_payjoin_send=self.psbt_parser.is_payjoin_send,
+            is_coinjoin=self.psbt_parser.is_coinjoin,
+            is_unknowable_spend_vs_fee=self.psbt_parser.is_unknowable_spend_or_fee,
+
+            num_inputs=self.psbt_parser.num_inputs,
+            num_recipients=self.psbt_parser.num_destinations,
+
+            input_amount=self.psbt_parser.input_amount,
+            spend_amount=spend_amount,
+            fee_amount=fee_amount,
+            change_amount=self.psbt_parser.change_amount,
         )
 
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
 
-        if len(psbt_parser.destination_addresses) > 0:
+        if self.psbt_parser.is_payjoin_receive or self.psbt_parser.is_coinjoin:
+            # Payjoin receives and coinjoins ignore any other outputs except their own
+            # receive addrs
+            return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
+
+        if len(self.psbt_parser.destination_addresses) > 0:
             return Destination(PSBTAddressDetailsView, view_args={"address_num": 0})
+
         else:
             # This is a self-transfer
             return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
@@ -245,6 +326,10 @@ class PSBTAddressDetailsView(View):
     """
         Shows the recipient's address and amount they will receive
     """
+    NEXT = ButtonOption("Next")
+    NEXT_RECIPIENT = ButtonOption("Next Recipient")
+
+
     def __init__(self, address_num):
         super().__init__()
         self.address_num = address_num
@@ -265,17 +350,20 @@ class PSBTAddressDetailsView(View):
 
         button_data = []
         if self.address_num < psbt_parser.num_destinations - 1:
-            button_data.append(ButtonOption("Next Recipient"))
+            button_data = [self.NEXT_RECIPIENT]
         else:
-            # TRANSLATOR_NOTE: Short for "Next step"
-            button_data.append(ButtonOption("Next"))
+            button_data = [self.NEXT]
+
+        amount = psbt_parser.destination_amounts[self.address_num]
+        if psbt_parser.is_cooperative_spend:
+            amount = psbt_parser.spend_amount - psbt_parser.external_input_amount
 
         selected_menu_num = self.run_screen(
             PSBTAddressDetailsScreen,
             title=title,
             button_data=button_data,
             address=psbt_parser.destination_addresses[self.address_num],
-            amount=psbt_parser.destination_amounts[self.address_num],
+            amount=amount,
         )
         
         if selected_menu_num == RET_CODE__BACK_BUTTON:
@@ -349,6 +437,11 @@ class PSBTChangeDetailsView(View):
         else:
             title = _("Self-Transfer")
             self.VERIFY_MULTISIG.button_label = _("Verify Multisig Addr")
+
+        if psbt_parser.is_cooperative_spend:
+            if psbt_parser.is_payjoin_receive:
+                title = "Payjoin Receive"
+
         # if psbt_parser.num_change_outputs > 1:
         #     title += f" (#{self.change_address_num + 1})"
 
@@ -409,10 +502,14 @@ class PSBTChangeDetailsView(View):
                     is_change_addr_verified = True
                     button_data = [self.NEXT]
 
+            except Exception as e:
+                print(e)
+                raise e
+
             finally:
                 loading_screen.stop()
 
-        if is_change_addr_verified == False and (not psbt_parser.is_multisig or self.controller.multisig_wallet_descriptor is not None):
+        if is_change_addr_verified is False and (not psbt_parser.is_multisig or self.controller.multisig_wallet_descriptor is not None):
             return Destination(PSBTAddressVerificationFailedView, view_args=dict(is_change=is_change_derivation_path, is_multisig=psbt_parser.is_multisig), clear_history=True)
 
         selected_menu_num = self.run_screen(
@@ -466,13 +563,14 @@ class PSBTAddressVerificationFailedView(View):
             # TRANSLATOR_NOTE: Variable is either "change" or "self-transfer".
             text = _("PSBT's {} address could not be generated from your seed.").format(_("change") if self.is_change else _("self-transfer"))
         
-        DireWarningScreen(
+        self.run_screen(
+            DireWarningScreen,
             title=_("Suspicious PSBT"),
             status_headline=_("Address Verification Failed"),
             text=text,
             button_data=[ButtonOption("Discard PSBT")],
             show_back_button=False,
-        ).display()
+        )
 
         # We're done with this PSBT. Route back to MainMenuView which always
         #   clears all ephemeral data (except in-memory seeds).

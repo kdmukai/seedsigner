@@ -3,9 +3,11 @@ from binascii import hexlify
 from embit import psbt, script, ec, bip32
 from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
-from embit.psbt import PSBT
+from embit.psbt import PSBT, PSBTScope, InputScope, OutputScope, DerivationPath
+from embit.script import Script
+from embit.transaction import TransactionOutput
 from io import BytesIO
-from typing import List
+from typing import OrderedDict
 
 from seedsigner.models.seed import Seed
 from seedsigner.models.settings import SettingsConstants
@@ -30,7 +32,9 @@ class PSBTParser():
         self.change_data = []
         self.fee_amount = 0
         self.input_amount = 0
+        self.external_input_amount = 0
         self.num_inputs = 0
+        self.num_external_inputs = 0  # inputs that are not controlled by the seed; cooperative spend/payjoins
         self.destination_addresses = []
         self.destination_amounts = []
         self.op_return_data: bytes = None
@@ -57,6 +61,102 @@ class PSBTParser():
             Multisig psbts will have "m" and "n" defined in policy
         """
         return "m" in self.policy
+
+
+    @property
+    def is_cooperative_spend(self):
+        """
+        Does the tx include inputs that the seed does not control?
+        """
+        return self.num_external_inputs > 0
+
+
+    @property
+    def is_payjoin_receive(self):
+        """
+        Payjoins are a specific type of cooperative spend where the recipient contributes
+        an input to the tx, but receives an output that is larger than their input.
+        """
+        return self.is_cooperative_spend and self.input_amount < self.change_amount
+
+
+    @property
+    def is_payjoin_send(self):
+        """
+        Detect the simplest form of a payjoin send: a cooperative spend with only 1
+        external recipient with the sender contributing more than the fee.
+
+        There are more complicated possibilities, but it's harder to reason about them
+        with complete confidence.
+        """
+        if self.is_cooperative_spend is False:
+            return False
+        
+        if self.num_destinations != 1:
+            return False
+
+        # We sent out more than we're getting back plus fee
+        return self.input_amount > self.change_amount + self.fee_amount
+            
+    
+
+    @property
+    def is_coinjoin(self):
+        """
+        A heuristic for analyzing cooperative spends. If your inputs only cover the value
+        of your own outputs (minus a bit to go towards the fee), then we consider this tx
+        a coinjoin; none of your sats are funding any of the external outputs.
+        """
+        if not self.is_cooperative_spend:
+            # Must have mixed inputs
+            print("Not a cooperative spend")
+            return False
+        
+        if self.spend_amount == 0:
+            # Must have external outputs
+            print("No external outputs")
+            return False
+
+        if self.input_amount < self.change_amount:
+            # We're receiving more back from this tx than we put in; more likely a
+            # payjoin.
+            print("Input amount less than change amount")
+            return False
+        
+        if self.input_amount > self.change_amount + self.fee_amount:
+            # We're paying for more than just our own outputs (plus fee)
+            print("Input amount greater than change amount + fee")
+            return False
+
+        return True
+    
+
+    @property
+    def is_unknowable_spend_or_fee(self):
+        """
+        A cooperative spend could be constructed with outputs that make it impossible to
+        be sure if the sender is:
+            * spending solely to an external recipient
+            * or spending to an external recipient AND contributing to the overall fee
+        """
+        if not self.is_cooperative_spend:
+            return False
+        
+        if self.spend_amount == 0:
+            # Must have external outputs
+            return False
+        
+        if self.input_amount < self.change_amount:
+            # We're receiving more back from this tx than we put in; more likely a
+            # payjoin.
+            return False
+        
+        if self.input_amount <= self.change_amount + self.fee_amount:
+            # We aren't paying any sats to external recipients; more like a coinjoin.
+            return False
+        
+        return True
+
 
 
     @property
@@ -90,23 +190,85 @@ class PSBTParser():
         return True
 
 
+    def derive_script_for_root(self, policy: dict, scope: InputScope | OutputScope) -> Script:
+        sc = script.Script(b"")
+
+        # multisig, we know witness script
+        if policy["type"] == "p2wsh":
+            sc = script.p2wsh(scope.witness_script)
+
+        elif policy["type"] == "p2sh-p2wsh":
+            sc = script.p2sh(script.p2wsh(scope.witness_script))
+
+        # Arbitrary p2sh; includes pre-segwit multisig (m/45')
+        elif policy["type"] == "p2sh":
+            sc = script.p2sh(scope.redeem_script)
+
+        # single-sig
+        elif "pkh" in policy["type"]:
+            my_pubkey = None
+            # should be one or zero for single-key addresses
+            if len(scope.bip32_derivations.values()) > 0:
+                derivation_paths: list[DerivationPath] = list(scope.bip32_derivations.values())
+                der = derivation_paths[0].derivation
+                my_pubkey = self.root.derive(der)
+
+            if policy["type"] == "p2pkh" and my_pubkey is not None:
+                sc = script.p2pkh(my_pubkey)
+
+            elif policy["type"] == "p2sh-p2wpkh" and my_pubkey is not None:
+                sc = script.p2sh(script.p2wpkh(my_pubkey))
+
+            elif policy["type"] == "p2wpkh" and my_pubkey is not None:
+                sc = script.p2wpkh(my_pubkey)
+
+        elif "p2tr" in policy["type"]:
+            my_pubkey = None
+            # should have one or zero derivations for single-key addresses
+            if len(scope.taproot_bip32_derivations.values()) > 0:
+                # TODO: Support keys in taptree leaves
+                leaf_hashes, derivation = list(scope.taproot_bip32_derivations.values())[0]
+                der = derivation.derivation
+                my_pubkey = self.root.derive(der)
+                sc = script.p2tr(my_pubkey)
+
+        return sc
+
+
     def _parse_inputs(self):
         self.input_amount = 0
-        self.num_inputs = len(self.psbt.inputs)
-        for inp in self.psbt.inputs:
-            if inp.witness_utxo:
-                self.input_amount += inp.witness_utxo.value
-                script_pubkey = inp.witness_utxo.script_pubkey
-            elif inp.non_witness_utxo:
-                self.input_amount += inp.utxo.value
-                script_pubkey = inp.script_pubkey
+        self.external_input_amount = 0
+        self.num_inputs = 0
+        for cur_input in self.psbt.inputs:
+            inp_policy = None
 
-            inp_policy = PSBTParser._get_policy(inp, script_pubkey, self.psbt.xpubs)
-            if self.policy == None:
-                self.policy = inp_policy
-            else:
-                if self.policy != inp_policy:
-                    raise RuntimeError("Mixed inputs in the transaction")
+            if cur_input.witness_utxo:
+                script_pubkey = cur_input.witness_utxo.script_pubkey
+            elif cur_input.non_witness_utxo:
+                self.input_amount += cur_input.utxo.value
+                script_pubkey = cur_input.script_pubkey
+
+            inp_policy = PSBTParser._get_policy(cur_input, script_pubkey, self.psbt.xpubs)
+
+            if cur_input.witness_utxo:
+                utxo: TransactionOutput = cur_input.witness_utxo
+                if self.policy == None:
+                    self.policy = inp_policy
+                else:
+                    if self.policy != inp_policy:
+                        # TODO: Could be allowed in Payjoin txs
+                        raise RuntimeError("Mixed inputs in the transaction")
+
+                sc = self.derive_script_for_root(inp_policy, cur_input)
+                if sc.data != utxo.script_pubkey.data:
+                    # Current root does not control this input
+                    self.num_external_inputs += 1
+                    self.external_input_amount += utxo.value
+
+                else:
+                    self.num_inputs += 1
+                    self.input_amount += utxo.value
+
 
     def _parse_outputs(self):
         self.spend_amount = 0
@@ -115,11 +277,12 @@ class PSBTParser():
         self.fee_amount = 0
         self.destination_addresses = []
         self.destination_amounts = []
-        for i, out in enumerate(self.psbt.outputs):
-            out_policy = PSBTParser._get_policy(out, self.psbt.tx.vout[i].script_pubkey, self.psbt.xpubs)
-            is_change = False
+        for i, cur_output in enumerate(self.psbt.outputs):
+            tx_vout: TransactionOutput = self.psbt.tx.vout[i]
+            out_policy = PSBTParser._get_policy(cur_output, tx_vout.script_pubkey, self.psbt.xpubs)
+            is_own_output = False
 
-            # if policy is the same - probably change
+            # if policy is the same, it's possibly a change or receive output
             if out_policy == self.policy:
                 # double-check that it's change
                 # we already checked in get_cosigners and parse_multisig
@@ -128,67 +291,14 @@ class PSBTParser():
                 # so we only need to check that scriptpubkey is generated from
                 # witness script
 
-                # empty script by default
-                sc = script.Script(b"")
+                sc = self.derive_script_for_root(out_policy, cur_output)
 
-                # if older multisig, just use existing script
-                if self.policy["type"] == "p2sh":
-                    sc = script.p2sh(out.redeem_script)
+                if sc.data == tx_vout.script_pubkey.data:
+                    is_own_output = True
 
-                # multisig, we know witness script
-                if self.policy["type"] == "p2wsh":
-                    sc = script.p2wsh(out.witness_script)
-
-                elif self.policy["type"] == "p2sh-p2wsh":
-                    sc = script.p2sh(script.p2wsh(out.witness_script))
-                
-                # Arbitrary p2sh; includes pre-segwit multisig (m/45')
-                elif self.policy["type"] == "p2sh":
-                    sc = script.p2sh(out.redeem_script)
-
-                # single-sig
-                elif "pkh" in self.policy["type"]:
-                    my_pubkey = None
-
-                    # should be one or zero for single-key addresses
-                    if len(out.bip32_derivations.values()) > 0:
-                        der = list(out.bip32_derivations.values())[0].derivation
-                        my_pubkey = self.root.derive(der)
-
-                    if self.policy["type"] == "p2pkh" and my_pubkey is not None:
-                        sc = script.p2pkh(my_pubkey)
-
-                    elif self.policy["type"] == "p2sh-p2wpkh" and my_pubkey is not None:
-                        sc = script.p2sh(script.p2wpkh(my_pubkey))
-
-                    elif self.policy["type"] == "p2wpkh" and my_pubkey is not None:
-                        sc = script.p2wpkh(my_pubkey)
-
-                    if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
-                        is_change = True
-
-                elif "p2tr" in self.policy["type"]:
-                    my_pubkey = None
-                    # should have one or zero derivations for single-key addresses
-                    if len(out.taproot_bip32_derivations.values()) > 0:
-                        # TODO: Support keys in taptree leaves
-                        leaf_hashes, derivation = list(out.taproot_bip32_derivations.values())[0]
-                        der = derivation.derivation
-                        my_pubkey = self.root.derive(der)
-                        sc = script.p2tr(my_pubkey)
-
-                    if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
-                        is_change = True
-
-                if sc.data == self.psbt.tx.vout[i].script_pubkey.data:
-                    is_change = True
-
-            if self.psbt.tx.vout[i].script_pubkey.data[0] == OPCODES.OP_RETURN:
-                # The data is written as: OP_RETURN + OP_PUSHDATA1 + len(payload) + payload
-                self.op_return_data = self.psbt.tx.vout[i].script_pubkey.data[3:]
-
-            elif is_change:
-                addr = self.psbt.tx.vout[i].script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
+            if is_own_output:
+                # This is a receive or change output that we control
+                addr = tx_vout.script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
                 fingerprints = []
                 derivation_paths = []
 
@@ -207,17 +317,22 @@ class PSBTParser():
                 self.change_data.append({
                     "output_index": i,
                     "address": addr,
-                    "amount": self.psbt.tx.vout[i].value,
+                    "amount": tx_vout.value,
                     "fingerprint": fingerprints,
                     "derivation_path": derivation_paths,
                 })
-                self.change_amount += self.psbt.tx.vout[i].value
+                self.change_amount += tx_vout.value
+
+            elif tx_vout.script_pubkey.data[0] == OPCODES.OP_RETURN:
+                # The data is written as: OP_RETURN + OP_PUSHDATA1 + len(payload) + payload
+                self.op_return_data = tx_vout.script_pubkey.data[3:]
 
             else:
-                addr = self.psbt.tx.vout[i].script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
+                # This is an external addr that we don't control
+                addr = tx_vout.script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
                 self.destination_addresses.append(addr)
-                self.destination_amounts.append(self.psbt.tx.vout[i].value)
-                self.spend_amount += self.psbt.tx.vout[i].value
+                self.destination_amounts.append(tx_vout.value)
+                self.spend_amount += tx_vout.value
 
         self.fee_amount = self.psbt.fee()
         return True
@@ -227,6 +342,7 @@ class PSBTParser():
     def trim(tx):
         trimmed_psbt = psbt.PSBT(tx.tx)
         for i, inp in enumerate(tx.inputs):
+            print(inp.partial_sigs)
             if inp.final_scriptwitness:
                 # Taproot sign; trim to only final_scriptwitness
                 # From BIP-371 and BIP-174, once final script witness is populated
@@ -252,7 +368,7 @@ class PSBTParser():
 
 
     @staticmethod
-    def _get_policy(scope, scriptpubkey, xpubs):
+    def _get_policy(scope: PSBTScope, scriptpubkey: Script, xpubs: OrderedDict[bip32.HDKey, DerivationPath]) -> dict:
         """Parse scope and get policy"""
         # we don't know the policy yet, let's parse it
         script_type = scriptpubkey.script_type()
@@ -291,7 +407,7 @@ class PSBTParser():
 
 
     @staticmethod
-    def _parse_multisig(sc):
+    def _parse_multisig(sc: Script):
         """Takes a script and extracts m,n and pubkeys from it"""
         # OP_m <len:pubkey> ... <len:pubkey> OP_n OP_CHECKMULTISIG
         # check min size
@@ -320,7 +436,7 @@ class PSBTParser():
 
 
     @staticmethod
-    def _get_cosigners(pubkeys, derivations, xpubs):
+    def _get_cosigners(pubkeys: list[ec.PublicKey], derivations: OrderedDict[ec.PublicKey, DerivationPath], xpubs: OrderedDict[bip32.HDKey, DerivationPath]):
         """Returns xpubs used to derive pubkeys using global xpub field from psbt"""
         cosigners = []
         for i, pubkey in enumerate(pubkeys):
@@ -344,34 +460,12 @@ class PSBTParser():
 
 
     @staticmethod
-    def get_input_fingerprints(psbt: PSBT) -> List[str]:
-        """
-            Exctracts the fingerprint from each input's derivation path.
-
-            TODO: It's unclear if these derivations/fingerprints would ever be missing.
-            Research on PSBT standard and known wallet coordinator implementations
-            needed.
-        """
-        fingerprints = set()
-        for input in psbt.inputs:
-            for pub, derivation_path in input.bip32_derivations.items():
-                fingerprints.add(hexlify(derivation_path.fingerprint).decode())
-
-            for pub, (leaf_hashes, derivation_path) in input.taproot_bip32_derivations.items():
-                # TODO: Support spends from leaves; depends on support in embit
-                if len(leaf_hashes) > 0:
-                    raise Exception("Signing keyspends from within a taptree not yet implemented")
-                fingerprints.add(hexlify(derivation_path.fingerprint).decode())
-        return list(fingerprints)
-
-
-    @staticmethod
-    def has_matching_input_fingerprint(psbt: PSBT, seed: Seed, network: str = SettingsConstants.MAINNET):
+    def has_matching_input_fingerprint(psbt: PSBT, seed: Seed):
         """
             Extracts the fingerprint from each psbt input utxo. Returns True if any match
             the current seed.
         """
-        seed_fingerprint = seed.get_fingerprint(network)
+        seed_fingerprint = seed.get_fingerprint()
         for input in psbt.inputs:
             for pub, derivation_path in input.bip32_derivations.items():
                 if seed_fingerprint == hexlify(derivation_path.fingerprint).decode():
