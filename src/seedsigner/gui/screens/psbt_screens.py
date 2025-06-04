@@ -34,7 +34,6 @@ class PSBTOverviewScreen(ButtonListScreen):
 
     def __post_init__(self):
         # Customize defaults
-        self.title = _("Review PSBT")
         self.is_bottom_list = True
         self.button_data = [ButtonOption("Review Details")]
 
