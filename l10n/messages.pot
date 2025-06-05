@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: seedsigner 0.8.5\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-20 09:27-0500\n"
+"POT-Creation-Date: 2025-06-05 15:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,34 +51,40 @@ msgid "SD card inserted"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
-msgid "Review PSBT"
-msgstr ""
-
-#: src/seedsigner/gui/screens/psbt_screens.py
 msgid "Review Details"
 msgstr ""
 
+#. Label for inputs/outputs in the PSBT Overview flow diagram (Payjoin and
+#. coinjoin transactions will have "theirs" vs "yours")
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "theirs"
+msgstr ""
+
+#. Label for inputs/outputs in the PSBT Overview flow diagram (Payjoin and
+#. coinjoin transactions will have "theirs" vs "yours")
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "yours"
+msgstr ""
+
+#. Label for Payjoin receive outputs in the PSBT Overview flow diagram
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "PJ receive"
+msgstr ""
+
+#. Input number will be inserted (e.g. "input 3")
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "input {}"
+msgstr ""
+
+#. Label for a single input in the PSBT Overview flow diagram
 #: src/seedsigner/gui/screens/psbt_screens.py
 msgid "1 input"
-msgstr ""
-
-#: src/seedsigner/gui/screens/psbt_screens.py
-msgid "input 1"
-msgstr ""
-
-#: src/seedsigner/gui/screens/psbt_screens.py
-msgid "input 2"
 msgstr ""
 
 #. Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...],
 #. 8"
 #: src/seedsigner/gui/screens/psbt_screens.py
 msgid "[ ... ]"
-msgstr ""
-
-#. Input number will be inserted (e.g. "input 3")
-#: src/seedsigner/gui/screens/psbt_screens.py
-msgid "input {}"
 msgstr ""
 
 #. Ellipsis ("...") characters used to truncate an address (e.g. "bc1qabc...")
@@ -125,6 +131,37 @@ msgid "Review Recipients"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
+#: src/seedsigner/views/psbt_views.py
+msgid "Payjoin Receive"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "Review Receive Addr"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+#: src/seedsigner/views/psbt_views.py
+msgid "Payjoin Send"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "Review Recipient"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "Coinjoin"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "Review Receive Addrs"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+#: src/seedsigner/views/psbt_views.py
+msgid "Cooperative Spend"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
 msgid "input"
 msgid_plural "inputs"
 msgstr[0] ""
@@ -139,6 +176,33 @@ msgstr[1] ""
 #. Denonination is inserted (e.g. your "btc change" or "sats change")
 #: src/seedsigner/gui/screens/psbt_screens.py
 msgid "{} change"
+msgstr ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "your utxo"
+msgid_plural "your utxos"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "receive"
+msgstr ""
+
+#. Label indicating the user is not paying any of the transaction fee ("n/a" =
+#. "not applicable")
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "fee (n/a)"
+msgstr ""
+
+#. Label for the total amount received in a Payjoin
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "PJ total"
+msgstr ""
+
+#. Label for a complex cooperative spend where we can't be sure if the user is
+#. contributing to the fee
+#: src/seedsigner/gui/screens/psbt_screens.py
+msgid "and/or fee"
 msgstr ""
 
 #: src/seedsigner/gui/screens/psbt_screens.py
@@ -434,7 +498,6 @@ msgstr ""
 msgid "Review Message"
 msgstr ""
 
-#. Short for "Next step"
 #: src/seedsigner/gui/screens/seed_screens.py
 #: src/seedsigner/views/psbt_views.py src/seedsigner/views/seed_views.py
 #: src/seedsigner/views/tools_views.py
@@ -840,7 +903,15 @@ msgid "Select Signer"
 msgstr ""
 
 #: src/seedsigner/views/psbt_views.py
+msgid "Review PSBT"
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py
 msgid "Parsing PSBT..."
+msgstr ""
+
+#: src/seedsigner/views/psbt_views.py
+msgid "Review Coinjoin"
 msgstr ""
 
 #: src/seedsigner/views/psbt_views.py
@@ -869,15 +940,15 @@ msgid ""
 " wallet."
 msgstr ""
 
+#: src/seedsigner/views/psbt_views.py
+msgid "Next Recipient"
+msgstr ""
+
 #. Future-tense used to indicate that this transaction will send this amount,
 #. as opposed to "Send" on its own which could be misread as an instant command
 #. (e.g. "Send Now").
 #: src/seedsigner/views/psbt_views.py
 msgid "Will Send"
-msgstr ""
-
-#: src/seedsigner/views/psbt_views.py
-msgid "Next Recipient"
 msgstr ""
 
 #: src/seedsigner/views/psbt_views.py

@@ -47,10 +47,15 @@ class PSBTOverviewScreen(ButtonListScreen):
         ))
 
         # Prep the transaction flow chart
+        # TRANSLATOR_NOTE: Label for inputs/outputs in the PSBT Overview flow diagram (Payjoin and coinjoin transactions will have "theirs" vs "yours")
         external_input_label = _("theirs")
         external_output_label = _("theirs")
+
+        # TRANSLATOR_NOTE: Label for inputs/outputs in the PSBT Overview flow diagram (Payjoin and coinjoin transactions will have "theirs" vs "yours")
         owner_input_label = _("yours")
         owner_output_label = _("yours")
+
+        # TRANSLATOR_NOTE: Label for Payjoin receive outputs in the PSBT Overview flow diagram
         payjoin_receive_label = _("PJ receive")
 
         self.chart_x = 0
@@ -72,7 +77,7 @@ class PSBTOverviewScreen(ButtonListScreen):
         font_size = GUIConstants.BODY_FONT_MIN_SIZE * ssf
         font = Fonts.get_font(GUIConstants.get_body_font_name(), font_size)
 
-        (left, top, right, bottom) = font.getbbox(text="abcdefghijklmnopqrstuvwxyz1234567890[]", anchor="ls")
+        (left, top, right, bottom) = font.getbbox(text="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ1234567890[]", anchor="ls")
         chart_text_height = bottom
         vertical_center = int(image.height/2)
 
@@ -88,33 +93,38 @@ class PSBTOverviewScreen(ButtonListScreen):
         # First calculate how wide the inputs col will be
         inputs_column = []
         if self.is_cooperative_spend and (self.num_inputs > 1 or self.num_external_inputs > 1):
-            inputs_column.append(f"{external_input_label} ({self.num_external_inputs})")
-            inputs_column.append(f"{owner_input_label} ({self.num_inputs})")
+            input_label = external_input_label
+            num_inputs = self.num_external_inputs
+            # TRANSLATOR_NOTE: Lists the type of input and number of inputs for that type in the PSBT Overview flow diagram for a cooperative spend (e.g. "theirs (2)")
+            inputs_column.append(_(f"{input_label} ({num_inputs})"))
+
+            input_label = owner_input_label
+            num_inputs = self.num_inputs
+            inputs_column.append(_(f"{input_label} ({num_inputs})"))
 
         elif self.num_inputs + self.num_external_inputs <= 5:
             for i in range(0, self.num_external_inputs):
-                inputs_column.append(f"{external_input_label}")
+                inputs_column.append(external_input_label)
 
             if self.is_cooperative_spend:
                 for i in range(0, self.num_inputs):
-                    inputs_column.append(f"{owner_input_label}")
+                    inputs_column.append(owner_input_label)
             else:
                 if self.num_inputs > 1:
                     for i in range(0, self.num_inputs):
                         # TRANSLATOR_NOTE: Input number will be inserted (e.g. "input 3")
                         inputs_column.append(_("input {}").format(i+1))
                 else:
+                    # TRANSLATOR_NOTE: Label for a single input in the PSBT Overview flow diagram
                     inputs_column.append(_("1 input"))
 
         else:
-            # Have to consolidate our display
-            inputs_column.append(_("input 1"))
-            inputs_column.append(_("input 2"))
+            # Have to consolidate our display; show labels for: 1, 2, [...], n-1, n
+            inputs_column.append(_("input {}").format(1))
+            inputs_column.append(_("input {}").format(2))
             # TRANSLATOR_NOTE: Indicates that items have been omitted from a series: e.g. "1, 2, 3, [...], 8"
             inputs_column.append(_("[ ... ]"))
-            # TRANSLATOR_NOTE: Input number will be inserted (e.g. "input 3")
             inputs_column.append(_("input {}").format(self.num_inputs-1))
-            # TRANSLATOR_NOTE: Input number will be inserted (e.g. "input 3")
             inputs_column.append(_("input {}").format(self.num_inputs))
 
         max_inputs_text_width = 0
@@ -629,19 +639,23 @@ class PSBTMathScreen(ButtonListScreen):
         recipient_amount_display = f"-{self.spend_amount}"
         recipient_label = ngettext("recipient", "recipients", self.num_recipients)
         fee_label = _("fee")
+        # TRANSLATOR_NOTE: Denonination is inserted (e.g. your "btc change" or "sats change")
         total_label = _("{} change").format(denomination)
         if self.is_cooperative_spend:
             input_label = ngettext("your utxo", "your utxos", self.num_inputs)
             if self.is_payjoin_receive:
                 recipient_amount_display = f"+{self.spend_amount}"
                 recipient_label = _("receive")
+                # TRANSLATOR_NOTE: Label indicating the user is not paying any of the transaction fee ("n/a" = "not applicable")
                 fee_label = _("fee (n/a)")
+                # TRANSLATOR_NOTE: Label for the total amount received in a Payjoin
                 total_label = _("PJ total")
 
             elif self.is_payjoin_send:
                 pass
 
             elif self.is_unknowable_spend_vs_fee:
+                # TRANSLATOR_NOTE: Label for a complex cooperative spend where we can't be sure if the user is contributing to the fee
                 fee_label = _("and/or fee")
 
         render_amount(

@@ -86,7 +86,7 @@ class PSBTOverviewView(View):
     def __init__(self):
         super().__init__()
 
-        self.title = "Review PSBT"
+        self.title = _("Review PSBT")
         self.display_amount: int = 0
         self.loading_screen = None
         self.psbt_parser: PSBTParser = self.controller.psbt_parser
@@ -111,13 +111,13 @@ class PSBTOverviewView(View):
 
         if self.psbt_parser.is_cooperative_spend:
             if self.psbt_parser.is_payjoin_receive:
-                self.title = "Payjoin Receive"
+                self.title = _("Payjoin Receive")
             elif self.psbt_parser.is_payjoin_send:
-                self.title = "Payjoin Send"
+                self.title = _("Payjoin Send")
             elif self.psbt_parser.is_coinjoin:
-                self.title = "Review Coinjoin"
+                self.title = _("Review Coinjoin")
             else:
-                self.title = "Cooperative Spend"
+                self.title = _("Cooperative Spend")
 
         if self.psbt_parser.is_cooperative_spend:
             if self.psbt_parser.is_payjoin_receive:
