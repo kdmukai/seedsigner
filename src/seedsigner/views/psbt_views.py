@@ -83,14 +83,11 @@ class PSBTSelectSeedView(View):
 
 
 class PSBTOverviewView(View):
-    psbt_parser: PSBTParser = None
-    title: str = "Review PSBT"
-    display_amount: int = 0
-
-
     def __init__(self):
         super().__init__()
 
+        self.title = "Review PSBT"
+        self.display_amount: int = 0
         self.loading_screen = None
         self.psbt_parser: PSBTParser = self.controller.psbt_parser
 
