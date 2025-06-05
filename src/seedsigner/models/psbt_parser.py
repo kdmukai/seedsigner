@@ -241,33 +241,39 @@ class PSBTParser():
         self.num_inputs = 0
         for cur_input in self.psbt.inputs:
             inp_policy = None
+            utxo: TransactionOutput = None
 
             if cur_input.witness_utxo:
                 script_pubkey = cur_input.witness_utxo.script_pubkey
+                utxo = cur_input.witness_utxo
+
             elif cur_input.non_witness_utxo:
-                self.input_amount += cur_input.utxo.value
+                utxo = cur_input.utxo
                 script_pubkey = cur_input.script_pubkey
+            
+            # Sanity check
+            if utxo is None:
+                raise RuntimeError("No utxo in input")
 
+            # Retrieve and store / compare the policy
             inp_policy = PSBTParser._get_policy(cur_input, script_pubkey, self.psbt.xpubs)
+            if self.policy == None:
+                self.policy = inp_policy
+            else:
+                if self.policy != inp_policy:
+                    # TODO: Could be allowed in Payjoin txs
+                    raise RuntimeError("Mixed inputs in the transaction")
 
-            if cur_input.witness_utxo:
-                utxo: TransactionOutput = cur_input.witness_utxo
-                if self.policy == None:
-                    self.policy = inp_policy
-                else:
-                    if self.policy != inp_policy:
-                        # TODO: Could be allowed in Payjoin txs
-                        raise RuntimeError("Mixed inputs in the transaction")
+            # Did the current root supply this input or is it an external input?
+            sc = self.derive_script_for_root(inp_policy, cur_input)
+            if sc.data != script_pubkey.data:
+                # Current root does not control this input
+                self.num_external_inputs += 1
+                self.external_input_amount += utxo.value
 
-                sc = self.derive_script_for_root(inp_policy, cur_input)
-                if sc.data != utxo.script_pubkey.data:
-                    # Current root does not control this input
-                    self.num_external_inputs += 1
-                    self.external_input_amount += utxo.value
-
-                else:
-                    self.num_inputs += 1
-                    self.input_amount += utxo.value
+            else:
+                self.num_inputs += 1
+                self.input_amount += utxo.value
 
 
     def _parse_outputs(self):
