@@ -119,7 +119,6 @@ class PSBTOverviewView(View):
             else:
                 self.title = _("Cooperative Spend")
 
-        if self.psbt_parser.is_cooperative_spend:
             if self.psbt_parser.is_payjoin_receive:
                 # Display how much we'll actually net receive from the payjoin
                 self.display_amount = self.psbt_parser.change_amount - self.psbt_parser.input_amount
