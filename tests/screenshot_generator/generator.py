@@ -217,10 +217,15 @@ def generate_screenshots(locale):
         # Set up screenshot-specific callbacks to inject data before the View is run and
         # reset data after the View is run.
         def load_basic_psbt_cb():
+            controller.settings.set_value(
+                attr_name=SettingsConstants.SETTING__NETWORK,
+                value=SettingsConstants.MAINNET
+            )
             decoder = DecodeQR()
             decoder.add_data(BASE64_PSBT_1)
             controller.psbt = decoder.get_psbt()
             controller.psbt_seed = seed_12b
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=seed_12b)
             controller.multisig_wallet_descriptor = None
 
 
@@ -289,10 +294,14 @@ def generate_screenshots(locale):
             zoe_seed = Seed("sign sword lift deer ocean insect web lazy sick pencil start select".split())
             payjoin_base64 = "cHNidP8BAJoCAAAAAmvBiAY6UU7NLa1KICrjrxyaV9NB3dQVUnWnmNpP7SBGAQAAAAD9////cCbPlwdnpnw1C2WK42cWoRXQaB6ARoY4uSCdISXffg4BAAAAAP3///8C1rU8AAAAAAAWABRy418s7hAxS+UrCmrk9CT6oWMBRYZatwEAAAAAFgAUDJYjCK75AgLhmU5sYcOW9mfpzB13AAAATwEENYfPA1cd2/6AAAAAbkDx9gLVRoKpONU2bM/jX7KuFUkRrTY2S1T6FTWCql0DOnituHh02lj72WonxwTWYlCjMEObWa+aDr6zT79MNS4QA80KK1QAAIAAAACAAAAAgAABAR+K9W0BAAAAABYAFMOlZFGAF2Q4fD7HIIw4kCVhc6cMAQMEAQAAAAABAR+GLYYAAAAAABYAFGcxK19pAPjZdCADa6WfVtPAawYqAQMEAQAAACIGA/XjxxoNMFunU4xNwU+BEIFSe1ilt+54iu5OC24O68qhGA+IkERUAACAAAAAgAAAAIAAAAAABAAAAAAiAgLPexMz/QGBiOpmYwsv7ruEgtUDt2Jel5DGWtlet5JzuxgDzQorVAAAgAAAAIAAAACAAQAAAAEAAAAAIgIDxpTFZnPjW8NV3oaa3bP9TPainGiPkc4pIjKn7rLA88EYD4iQRFQAAIAAAACAAAAAgAAAAAAFAAAAAA=="
             controller.psbt_seed = zoe_seed
+            controller.settings.set_value(
+                attr_name=SettingsConstants.SETTING__NETWORK,
+                value=SettingsConstants.MAINNET
+            )
             decoder = DecodeQR()
             decoder.add_data(payjoin_base64)
             controller.psbt = decoder.get_psbt()
-            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed, network=SettingsConstants.REGTEST)
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=zoe_seed, network=SettingsConstants.MAINNET)
             controller.multisig_wallet_descriptor = None
 
 
@@ -304,7 +313,7 @@ def generate_screenshots(locale):
             decoder = DecodeQR()
             decoder.add_data(payjoin_base64)
             controller.psbt = decoder.get_psbt()
-            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.MAINNET)
 
 
         def coinjoin_cb_before():
@@ -315,7 +324,7 @@ def generate_screenshots(locale):
             decoder = DecodeQR()
             decoder.add_data(malcolm_coinjoin_psbt_base64)
             controller.psbt = decoder.get_psbt()
-            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.REGTEST)
+            controller.psbt_parser = PSBTParser(p=controller.psbt, seed=malcolm_seed, network=SettingsConstants.MAINNET)
 
 
         screenshot_sections = {
