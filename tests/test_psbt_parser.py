@@ -563,8 +563,8 @@ class TestPSBTParserCooperativeSpend:
         assert len(zoe_psbt.inputs) == 3
         assert len(zoe_psbt.outputs) == 3
         assert zoe_psbt.outputs[0].value == 10_000_000
-        assert zoe_psbt.outputs[0].value == 10_000_000
-        assert zoe_psbt.outputs[0].value == 10_000_000
+        assert zoe_psbt.outputs[1].value == 10_000_000
+        assert zoe_psbt.outputs[2].value == 10_000_000
         assert sum([inp.utxo.value for inp in zoe_psbt.inputs]) == 3 * 10_000_000
 
         # Now merge the two txs into an initial coinjoin tx
@@ -658,6 +658,7 @@ class TestPSBTParserCooperativeSpend:
         assert malcolm_psbt.outputs[1].value == equal_size_amount
         assert malcolm_psbt.outputs[2].value == equal_size_amount
         assert malcolm_psbt.outputs[3].value == equal_size_amount
+        malcolm_fee_value = malcolm_psbt.fee()
 
         zoe_psbt: PSBT = PSBT.parse(a2b_base64(zoe_psbt_base64))
         assert len(zoe_psbt.inputs) == 1
@@ -668,6 +669,7 @@ class TestPSBTParserCooperativeSpend:
 
         assert zoe_psbt.outputs[1].value == equal_size_amount
         assert zoe_psbt.outputs[2].value == equal_size_amount
+        zoe_fee_value = zoe_psbt.fee()
 
         # Now merge the two txs into an initial coinjoin tx
         malcolm_coinjoin_psbt = deepcopy(malcolm_psbt)
@@ -690,6 +692,7 @@ class TestPSBTParserCooperativeSpend:
         zoe_coinjoin_psbt.locktime = malcolm_coinjoin_psbt.locktime
 
         assert malcolm_coinjoin_psbt.tx.txid() == zoe_coinjoin_psbt.tx.txid()
+        assert malcolm_coinjoin_psbt.fee() == malcolm_fee_value + zoe_fee_value
 
         # Malcolm's version won't know any of Zoe's bip32 derivation details
         # malcolm_coinjoin_psbt = deepcopy(initial_coinjoin_psbt)
