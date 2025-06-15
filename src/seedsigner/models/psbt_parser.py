@@ -106,7 +106,8 @@ class PSBTParser():
                 self.policy = inp_policy
             else:
                 if self.policy != inp_policy:
-                    raise RuntimeError("Mixed inputs in the transaction")
+                    logger.warning("Mixed inputs in the transaction")
+                    # raise RuntimeError("Mixed inputs in the transaction")
 
     def _parse_outputs(self):
         self.spend_amount = 0
