@@ -1,6 +1,5 @@
 from binascii import hexlify
 from embit import bip32, bech32
-from embit import ec
 from seedsigner.models.seed import Seed
 
 
@@ -31,17 +30,14 @@ def get_nsec(seed: Seed) -> str:
 
 def get_npub(seed: Seed) -> str:
     nostr_root = derive_nostr_key(seed=seed)
-    privkey = ec.PrivateKey(secret=nostr_root.secret)
-    pubkey = privkey.get_public_key().xonly()
-    converted_bits = bech32.convertbits(pubkey, 8, 5)
+    converted_bits = bech32.convertbits(nostr_root.xonly(), 8, 5)
     return bech32.bech32_encode(encoding=bech32.Encoding.BECH32, hrp=NOSTR__PUBKEY_NPUB, data=converted_bits)
 
 
 
 def get_pubkey_hex(seed: Seed) -> str:
     nostr_root = derive_nostr_key(seed=seed)
-    privkey = ec.PrivateKey(secret=nostr_root.secret)
-    return hexlify(privkey.get_public_key().xonly()).decode()
+    return hexlify(nostr_root.xonly()).decode()
 
 
 
