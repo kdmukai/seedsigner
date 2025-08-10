@@ -4,6 +4,7 @@ from seedsigner.models.psbt_parser import PSBTParser
 from seedsigner.models.settings import SettingsConstants
 from seedsigner.gui.components import FontAwesomeIconConstants, SeedSignerIconConstants
 from seedsigner.gui.screens.screen import (RET_CODE__BACK_BUTTON, ButtonListScreen, ButtonOption, WarningScreen, DireWarningScreen, QRDisplayScreen)
+from seedsigner.helpers import embit_utils
 from seedsigner.views.view import BackStackView, MainMenuView, NotYetImplementedView, View, Destination
 
 
@@ -280,8 +281,12 @@ class PSBTAddressDetailsView(View):
         
         if selected_menu_num == RET_CODE__BACK_BUTTON:
             return Destination(BackStackView)
+        
+        if "@" in psbt_parser.destination_addresses[self.address_num]:
+            # This is a BIP-353 email style address
+            return Destination(PSBTBIP353DNSSECWarningView, view_args={"address_num": self.address_num})
 
-        if self.address_num < len(psbt_parser.destination_addresses) - 1:
+        elif self.address_num < len(psbt_parser.destination_addresses) - 1:
             # Show the next receive addr
             return Destination(PSBTAddressDetailsView, view_args={"address_num": self.address_num + 1})
 
@@ -290,6 +295,100 @@ class PSBTAddressDetailsView(View):
             return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
 
         elif psbt_parser.op_return_data:
+            return Destination(PSBTOpReturnView)
+
+        else:
+            # There's no change output to verify. Move on to sign the PSBT.
+            return Destination(PSBTFinalizeView)
+
+
+
+class PSBTBIP353DNSSECWarningView(View):
+    """
+    """
+    def __init__(self, address_num):
+        super().__init__()
+        self.address_num = address_num
+        psbt_parser: PSBTParser = self.controller.psbt_parser
+
+        if not psbt_parser:
+            # Should not be able to get here
+            raise Exception("Routing error")
+
+        self.hrn = psbt_parser.dnssec_proofs[self.address_num][0].decode()
+
+
+    def run(self):
+        from seedsigner.gui.screens import WarningScreen
+
+        selected_menu_num = WarningScreen(
+            title=_("BIP-353 Verification"),
+            status_icon_name=SeedSignerIconConstants.WARNING,
+            status_headline=_("Verify Online"),
+            text=_("Compare the recipient's address on the next screen with a live check at https://satsto.me"),
+            button_data=[ButtonOption("View Address")],
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        return Destination(
+            PSBTBIP353DNSSECDetailsView,
+            view_args={"address_num": self.address_num},
+        )
+
+
+
+class PSBTBIP353DNSSECDetailsView(View):
+    """
+    """
+    def __init__(self, address_num):
+        super().__init__()
+        self.address_num = address_num
+        self.psbt_parser: PSBTParser = self.controller.psbt_parser
+
+        if not self.psbt_parser:
+            # Should not be able to get here
+            raise Exception("Routing error")
+
+        try:
+            result = embit_utils.bip353_verify(self.psbt_parser.dnssec_proofs[self.address_num])
+        except Exception as e:
+            print(f"Failed to verify DNSSEC proof: {e}")
+            raise e
+
+        self.hrn = self.psbt_parser.dnssec_proofs[self.address_num][0].decode()
+        # Trim the "bitcoin:" prefix
+        self.address = result.get("verified_rrs")[0].get("contents").split(":")[1]
+
+
+    def run(self):
+        from seedsigner.gui.screens.psbt_screens import PSBTBIP353DNSSECDetailsScreen
+
+        button_data = []
+        # TRANSLATOR_NOTE: Short for "Next step"
+        button_data.append(ButtonOption("Next"))
+
+        selected_menu_num = self.run_screen(
+            PSBTBIP353DNSSECDetailsScreen,
+            button_data=button_data,
+            hrn=self.hrn,
+            address=self.address,
+        )
+        
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        # TODO: DRY this repetitive routing logic
+        if self.address_num < len(self.psbt_parser.destination_addresses) - 1:
+            # Show the next receive addr
+            return Destination(PSBTAddressDetailsView, view_args={"address_num": self.address_num + 1})
+
+        elif self.psbt_parser.change_amount > 0:
+            # Move on to display change
+            return Destination(PSBTChangeDetailsView, view_args={"change_address_num": 0})
+
+        elif self.psbt_parser.op_return_data:
             return Destination(PSBTOpReturnView)
 
         else:

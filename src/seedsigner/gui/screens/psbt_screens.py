@@ -621,29 +621,81 @@ class PSBTAddressDetailsScreen(ButtonListScreen):
             screen_y=int(GUIConstants.COMPONENT_PADDING/2),
         )
 
-        formatted_address = FormattedAddress(
-            image_draw=draw,
-            canvas=center_img,
-            width=self.canvas_width - 2*GUIConstants.EDGE_PADDING,
-            screen_x=GUIConstants.EDGE_PADDING,
-            screen_y=btc_amount.height + GUIConstants.COMPONENT_PADDING,
-            font_size=24,
-            address=self.address,
-        )
-
-        # Render each to the temp img we passed in
+        # Render to the temp img we passed in
         btc_amount.render()
-        formatted_address.render()
+
+        recipient_display = None
+        if "@" in self.address:
+            # This is a BIP-353 email style address
+            recipient_display = TextArea(
+                image_draw=draw,
+                canvas=center_img,
+                text=self.address,
+                font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
+                screen_y=btc_amount.height + 2*GUIConstants.COMPONENT_PADDING,
+                font_size=GUIConstants.get_button_font_size() + 2,
+                font_color=GUIConstants.ACCENT_COLOR,
+            )
+        
+        else:
+            recipient_display = FormattedAddress(
+                image_draw=draw,
+                canvas=center_img,
+                width=self.canvas_width - 2*GUIConstants.EDGE_PADDING,
+                screen_x=GUIConstants.EDGE_PADDING,
+                screen_y=btc_amount.height + GUIConstants.COMPONENT_PADDING,
+                font_size=24,
+                address=self.address,
+            )
+
+        recipient_display.render()
 
         self.body_img = center_img.crop((
             0,
             0,
             self.canvas_width,
-            formatted_address.screen_y + formatted_address.height
+            recipient_display.screen_y + recipient_display.height
         ))
         body_img_y = self.top_nav.height + int((center_img_height - self.body_img.height - GUIConstants.COMPONENT_PADDING)/2)
 
         self.paste_images.append((self.body_img, (0, body_img_y)))
+
+
+@dataclass
+class PSBTBIP353DNSSECDetailsScreen(ButtonListScreen):
+    hrn: str = None
+    address: str = None
+
+    def __post_init__(self):
+        # Customize defaults
+        self.is_bottom_list = True
+        self.title = _("BIP-353 Address")
+
+        super().__post_init__()
+    
+        hrn_display = TextArea(
+            text=self.hrn,
+            font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
+            font_size=GUIConstants.get_button_font_size() + 2,
+            font_color=GUIConstants.ACCENT_COLOR,
+            screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
+            allow_text_overflow=True,
+        )
+        self.components.append(hrn_display)
+
+        note_display = TextArea(
+            text=_("DNS record verified as:"),
+            screen_y=hrn_display.screen_y + hrn_display.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(note_display)
+
+        address_display = FormattedAddress(
+            address=self.address,
+            width=self.canvas_width - 2*GUIConstants.EDGE_PADDING,
+            screen_x=GUIConstants.EDGE_PADDING,
+            screen_y=note_display.screen_y + note_display.height + GUIConstants.COMPONENT_PADDING,
+        )
+        self.components.append(address_display)
 
 
 

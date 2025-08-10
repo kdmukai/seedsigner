@@ -108,6 +108,10 @@ seed_24_w_passphrase = Seed(mnemonic=mnemonic_24, passphrase="some-PASS*phrase9"
 
 MULTISIG_WALLET_DESCRIPTOR = """wsh(sortedmulti(1,[22bde1a9/48h/1h/0h/2h]tpubDFfsBrmpj226ZYiRszYi2qK6iGvh2vkkghfGB2YiRUVY4rqqedHCFEgw12FwDkm7rUoVtq9wLTKc6BN2sxswvQeQgp7m8st4FP8WtP8go76/{0,1}/*,[73c5da0a/48h/1h/0h/2h]tpubDFH9dgzveyD8zTbPUFuLrGmCydNvxehyNdUXKJAQN8x4aZ4j6UZqGfnqFrD4NqyaTVGKbvEW54tsvPTK2UoSbCC1PJY8iCNiwTL3RWZEheQ/{0,1}/*))#3jhtf6yx"""
 
+# BIP-353 test data
+bip353_seed = Seed(mnemonic="scrub combine tail keep embrace artwork car glove stick level pear cry".split())
+BIP353_PSBT = """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"""
+
 
 
 def generate_screenshots(locale):
@@ -224,6 +228,14 @@ def generate_screenshots(locale):
             controller.multisig_wallet_descriptor = None
 
 
+        def load_bip353_psbt_cb():
+            print("Loading BIP-353 PSBT")
+            controller.psbt = PSBT.from_base64(BIP353_PSBT)
+            print("BIP-353 PSBT loaded")
+            controller.psbt_seed = bip353_seed
+            controller.multisig_wallet_descriptor = None
+
+
         def load_multisig_wallet_descriptor_cb():
             controller.multisig_wallet_descriptor = embit.descriptor.Descriptor.from_string(MULTISIG_WALLET_DESCRIPTOR)
 
@@ -261,88 +273,88 @@ def generate_screenshots(locale):
 
 
         screenshot_sections = {
-            "Main Menu Views": [
-                ScreenshotConfig(OpeningSplashView, dict(is_screenshot_renderer=True, force_partner_logos=True)),
-                ScreenshotConfig(OpeningSplashView, dict(is_screenshot_renderer=True, force_partner_logos=False), screenshot_name="OpeningSplashView_no_partner_logos"),
-                ScreenshotConfig(MainMenuView),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SDCardStateChangeToast_removed',  toast_thread=SDCardStateChangeToastManagerThread(action=MicroSD.ACTION__REMOVED, activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SDCardStateChangeToast_inserted', toast_thread=SDCardStateChangeToastManagerThread(action=MicroSD.ACTION__INSERTED, activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_RemoveSDCardToast',               toast_thread=RemoveSDCardToastManagerThread(activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_DefaultToast',                    toast_thread=DefaultToast("This is a default text toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_InfoToast',                       toast_thread=InfoToast("This is an info toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SuccessToast',                    toast_thread=SuccessToast("This is a success toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_WarningToast',                    toast_thread=WarningToast("This is a warning toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_DireWarningToast',                toast_thread=DireWarningToast("This is a dire warning toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_ErrorToast',                      toast_thread=ErrorToast("This is an error toast!", activation_delay=0, duration=0)),
-                ScreenshotConfig(PowerOptionsView),
-                ScreenshotConfig(RestartView),
-                ScreenshotConfig(PowerOffView),
-            ],
-            "Seed Views": [
-                ScreenshotConfig(seed_views.SeedsMenuView),
-                ScreenshotConfig(seed_views.LoadSeedView),
-                ScreenshotConfig(seed_views.SeedMnemonicEntryView),
-                ScreenshotConfig(seed_views.SeedMnemonicInvalidView),
-                ScreenshotConfig(seed_views.SeedFinalizeView),
-                ScreenshotConfig(seed_views.SeedAddPassphraseView, screenshot_name="SeedAddPassphraseView_lowercase"),
-                ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__UPPERCASE_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_uppercase"),
-                ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__DIGITS_BUTTON_TEXT),    screenshot_name="SeedAddPassphraseView_digits"),
-                ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__SYMBOLS_1_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_symbols_1"),
-                ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__SYMBOLS_2_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_symbols_2"),
-                ScreenshotConfig(seed_views.SeedAddPassphraseExitDialogView),
-                ScreenshotConfig(seed_views.SeedReviewPassphraseView),
+            # "Main Menu Views": [
+            #     ScreenshotConfig(OpeningSplashView, dict(is_screenshot_renderer=True, force_partner_logos=True)),
+            #     ScreenshotConfig(OpeningSplashView, dict(is_screenshot_renderer=True, force_partner_logos=False), screenshot_name="OpeningSplashView_no_partner_logos"),
+            #     ScreenshotConfig(MainMenuView),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SDCardStateChangeToast_removed',  toast_thread=SDCardStateChangeToastManagerThread(action=MicroSD.ACTION__REMOVED, activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SDCardStateChangeToast_inserted', toast_thread=SDCardStateChangeToastManagerThread(action=MicroSD.ACTION__INSERTED, activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_RemoveSDCardToast',               toast_thread=RemoveSDCardToastManagerThread(activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_DefaultToast',                    toast_thread=DefaultToast("This is a default text toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_InfoToast',                       toast_thread=InfoToast("This is an info toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_SuccessToast',                    toast_thread=SuccessToast("This is a success toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_WarningToast',                    toast_thread=WarningToast("This is a warning toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_DireWarningToast',                toast_thread=DireWarningToast("This is a dire warning toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(MainMenuView, screenshot_name='MainMenuView_ErrorToast',                      toast_thread=ErrorToast("This is an error toast!", activation_delay=0, duration=0)),
+            #     ScreenshotConfig(PowerOptionsView),
+            #     ScreenshotConfig(RestartView),
+            #     ScreenshotConfig(PowerOffView),
+            # ],
+            # "Seed Views": [
+            #     ScreenshotConfig(seed_views.SeedsMenuView),
+            #     ScreenshotConfig(seed_views.LoadSeedView),
+            #     ScreenshotConfig(seed_views.SeedMnemonicEntryView),
+            #     ScreenshotConfig(seed_views.SeedMnemonicInvalidView),
+            #     ScreenshotConfig(seed_views.SeedFinalizeView),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseView, screenshot_name="SeedAddPassphraseView_lowercase"),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__UPPERCASE_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_uppercase"),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__DIGITS_BUTTON_TEXT),    screenshot_name="SeedAddPassphraseView_digits"),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__SYMBOLS_1_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_symbols_1"),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseView, dict(initial_keyboard=SeedAddPassphraseScreen.KEYBOARD__SYMBOLS_2_BUTTON_TEXT), screenshot_name="SeedAddPassphraseView_symbols_2"),
+            #     ScreenshotConfig(seed_views.SeedAddPassphraseExitDialogView),
+            #     ScreenshotConfig(seed_views.SeedReviewPassphraseView),
                 
-                ScreenshotConfig(seed_views.SeedOptionsView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedBackupView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedExportXpubSigTypeView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedExportXpubScriptTypeView, dict(seed_num=0, sig_type="msig")),
-                ScreenshotConfig(seed_views.SeedExportXpubCustomDerivationView, dict(seed_num=0, sig_type="ss", script_type="")),
-                ScreenshotConfig(seed_views.SeedExportXpubCoordinatorView, dict(seed_num=0, sig_type="ss", script_type="nat")),
-                ScreenshotConfig(seed_views.SeedExportXpubWarningView, dict(seed_num=0, sig_type="msig", script_type="nes", coordinator="spd", custom_derivation="")),
-                ScreenshotConfig(seed_views.SeedExportXpubDetailsView, dict(seed_num=0, sig_type="ss", script_type="nat", coordinator="bw", custom_derivation="")),
-                #ScreenshotConfig(SeedExportXpubQRDisplayView),
-                ScreenshotConfig(seed_views.SeedWordsWarningView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedWordsView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedWordsView, dict(seed_num=0, page_index=2), screenshot_name="SeedWordsView_2"),
-                ScreenshotConfig(seed_views.SeedBIP85ApplicationModeView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedBIP85SelectChildIndexView, dict(seed_num=0, num_words=24)),
-                ScreenshotConfig(seed_views.SeedBIP85InvalidChildIndexView, dict(seed_num=0, num_words=12)), 
-                ScreenshotConfig(seed_views.SeedWordsBackupTestPromptView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedWordsBackupTestView, dict(seed_num=0, rand_seed=6102)),
-                ScreenshotConfig(seed_views.SeedWordsBackupTestMistakeView, dict(seed_num=0, cur_index=7, wrong_word="satoshi")),
-                ScreenshotConfig(seed_views.SeedWordsBackupTestSuccessView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRFormatView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRWarningView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=0, seedqr_format=QRType.SEED__COMPACTSEEDQR, num_modules=21), screenshot_name="SeedTranscribeSeedQRWholeQRView_12_Compact"),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=0, seedqr_format=QRType.SEED__SEEDQR, num_modules=25),        screenshot_name="SeedTranscribeSeedQRWholeQRView_12_Standard"),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=2, seedqr_format=QRType.SEED__COMPACTSEEDQR, num_modules=25), screenshot_name="SeedTranscribeSeedQRWholeQRView_24_Compact"),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=2, seedqr_format=QRType.SEED__SEEDQR, num_modules=29),        screenshot_name="SeedTranscribeSeedQRWholeQRView_24_Standard"),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRZoomedInView, dict(seed_num=0, seedqr_format=QRType.SEED__COMPACTSEEDQR, initial_zone_x=1, initial_zone_y=1), screenshot_name="SeedTranscribeSeedQRZoomedInView_12_Compact"),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRZoomedInView, dict(seed_num=0, seedqr_format=QRType.SEED__SEEDQR, initial_zone_x=2, initial_zone_y=2),        screenshot_name="SeedTranscribeSeedQRZoomedInView_12_Standard"),
+            #     ScreenshotConfig(seed_views.SeedOptionsView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedBackupView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedExportXpubSigTypeView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedExportXpubScriptTypeView, dict(seed_num=0, sig_type="msig")),
+            #     ScreenshotConfig(seed_views.SeedExportXpubCustomDerivationView, dict(seed_num=0, sig_type="ss", script_type="")),
+            #     ScreenshotConfig(seed_views.SeedExportXpubCoordinatorView, dict(seed_num=0, sig_type="ss", script_type="nat")),
+            #     ScreenshotConfig(seed_views.SeedExportXpubWarningView, dict(seed_num=0, sig_type="msig", script_type="nes", coordinator="spd", custom_derivation="")),
+            #     ScreenshotConfig(seed_views.SeedExportXpubDetailsView, dict(seed_num=0, sig_type="ss", script_type="nat", coordinator="bw", custom_derivation="")),
+            #     #ScreenshotConfig(SeedExportXpubQRDisplayView),
+            #     ScreenshotConfig(seed_views.SeedWordsWarningView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedWordsView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedWordsView, dict(seed_num=0, page_index=2), screenshot_name="SeedWordsView_2"),
+            #     ScreenshotConfig(seed_views.SeedBIP85ApplicationModeView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedBIP85SelectChildIndexView, dict(seed_num=0, num_words=24)),
+            #     ScreenshotConfig(seed_views.SeedBIP85InvalidChildIndexView, dict(seed_num=0, num_words=12)), 
+            #     ScreenshotConfig(seed_views.SeedWordsBackupTestPromptView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedWordsBackupTestView, dict(seed_num=0, rand_seed=6102)),
+            #     ScreenshotConfig(seed_views.SeedWordsBackupTestMistakeView, dict(seed_num=0, cur_index=7, wrong_word="satoshi")),
+            #     ScreenshotConfig(seed_views.SeedWordsBackupTestSuccessView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRFormatView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRWarningView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=0, seedqr_format=QRType.SEED__COMPACTSEEDQR, num_modules=21), screenshot_name="SeedTranscribeSeedQRWholeQRView_12_Compact"),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=0, seedqr_format=QRType.SEED__SEEDQR, num_modules=25),        screenshot_name="SeedTranscribeSeedQRWholeQRView_12_Standard"),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=2, seedqr_format=QRType.SEED__COMPACTSEEDQR, num_modules=25), screenshot_name="SeedTranscribeSeedQRWholeQRView_24_Compact"),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRWholeQRView, dict(seed_num=2, seedqr_format=QRType.SEED__SEEDQR, num_modules=29),        screenshot_name="SeedTranscribeSeedQRWholeQRView_24_Standard"),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRZoomedInView, dict(seed_num=0, seedqr_format=QRType.SEED__COMPACTSEEDQR, initial_zone_x=1, initial_zone_y=1), screenshot_name="SeedTranscribeSeedQRZoomedInView_12_Compact"),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRZoomedInView, dict(seed_num=0, seedqr_format=QRType.SEED__SEEDQR, initial_zone_x=2, initial_zone_y=2),        screenshot_name="SeedTranscribeSeedQRZoomedInView_12_Standard"),
 
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmQRPromptView, dict(seed_num=0)),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmWrongSeedView),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmInvalidQRView),
-                ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmSuccessView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmQRPromptView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmWrongSeedView),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmInvalidQRView),
+            #     ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmSuccessView, dict(seed_num=0)),
 
-                # Screenshot can't render live preview screens
-                # ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmScanView, dict(seed_num=0)),
+            #     # Screenshot can't render live preview screens
+            #     # ScreenshotConfig(seed_views.SeedTranscribeSeedQRConfirmScanView, dict(seed_num=0)),
 
-                ScreenshotConfig(seed_views.SeedSelectSeedView, dict(flow=Controller.FLOW__VERIFY_SINGLESIG_ADDR), screenshot_name="SeedSelectSeedView_address_verification"),
-                ScreenshotConfig(seed_views.AddressVerificationSigTypeView),
-                ScreenshotConfig(seed_views.SeedAddressVerificationView, dict(seed_num=0), run_before=load_address_verification_data_cb),
-                ScreenshotConfig(seed_views.SeedAddressVerificationSuccessView, dict(seed_num=0)),  # Relies on callback above
+            #     ScreenshotConfig(seed_views.SeedSelectSeedView, dict(flow=Controller.FLOW__VERIFY_SINGLESIG_ADDR), screenshot_name="SeedSelectSeedView_address_verification"),
+            #     ScreenshotConfig(seed_views.AddressVerificationSigTypeView),
+            #     ScreenshotConfig(seed_views.SeedAddressVerificationView, dict(seed_num=0), run_before=load_address_verification_data_cb),
+            #     ScreenshotConfig(seed_views.SeedAddressVerificationSuccessView, dict(seed_num=0)),  # Relies on callback above
 
-                ScreenshotConfig(seed_views.LoadMultisigWalletDescriptorView),
-                ScreenshotConfig(seed_views.MultisigWalletDescriptorView, run_before=load_multisig_wallet_descriptor_cb),
-                ScreenshotConfig(seed_views.SeedDiscardView, dict(seed_num=0)),
+            #     ScreenshotConfig(seed_views.LoadMultisigWalletDescriptorView),
+            #     ScreenshotConfig(seed_views.MultisigWalletDescriptorView, run_before=load_multisig_wallet_descriptor_cb),
+            #     ScreenshotConfig(seed_views.SeedDiscardView, dict(seed_num=0)),
 
-                ScreenshotConfig(seed_views.SeedSelectSeedView, dict(flow=Controller.FLOW__SIGN_MESSAGE), screenshot_name="SeedSelectSeedView_sign_message"),
-                ScreenshotConfig(seed_views.SeedSignMessageConfirmMessageView),
-                ScreenshotConfig(seed_views.SeedSignMessageConfirmAddressView),
+            #     ScreenshotConfig(seed_views.SeedSelectSeedView, dict(flow=Controller.FLOW__SIGN_MESSAGE), screenshot_name="SeedSelectSeedView_sign_message"),
+            #     ScreenshotConfig(seed_views.SeedSignMessageConfirmMessageView),
+            #     ScreenshotConfig(seed_views.SeedSignMessageConfirmAddressView),
 
-                ScreenshotConfig(seed_views.SeedElectrumMnemonicStartView),
-            ],
+            #     ScreenshotConfig(seed_views.SeedElectrumMnemonicStartView),
+            # ],
             "PSBT Views": [
                 ScreenshotConfig(psbt_views.PSBTSelectSeedView, run_before=PSBTSelectSeedView_cb_before),
                 ScreenshotConfig(psbt_views.PSBTOverviewView, run_before=load_basic_psbt_cb),
@@ -363,38 +375,44 @@ def generate_screenshots(locale):
                 ScreenshotConfig(psbt_views.PSBTFinalizeView),
                 #ScreenshotConfig(PSBTSignedQRDisplayViewScreenshotConfig),
                 ScreenshotConfig(psbt_views.PSBTSigningErrorView),
+
+                ScreenshotConfig(psbt_views.PSBTOverviewView, screenshot_name="PSBTOverviewView_bip353", run_before=load_bip353_psbt_cb),
+                ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0), screenshot_name="PSBTAddressDetailsView_bip353"),
+                ScreenshotConfig(psbt_views.PSBTBIP353DNSSECWarningView, dict(address_num=0)),
+                ScreenshotConfig(psbt_views.PSBTBIP353DNSSECDetailsView, dict(address_num=0)),
+
             ],
-            "Tools Views": [
-                ScreenshotConfig(tools_views.ToolsMenuView),
-                #ScreenshotConfig(ToolsImageEntropyLivePreviewView),
-                #ScreenshotConfig(ToolsImageEntropyFinalImageView),
-                ScreenshotConfig(tools_views.ToolsImageEntropyMnemonicLengthView),
-                ScreenshotConfig(tools_views.ToolsDiceEntropyMnemonicLengthView),
-                ScreenshotConfig(tools_views.ToolsDiceEntropyEntryView, dict(total_rolls=50)),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordNumWordsView),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordFinalizePromptView),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordCoinFlipsView),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordShowFinalWordView, screenshot_name="ToolsCalcFinalWordShowFinalWordView_pick_word"),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordShowFinalWordView, dict(coin_flips="0010101"), screenshot_name="ToolsCalcFinalWordShowFinalWordView_coin_flips"),
-                ScreenshotConfig(tools_views.ToolsCalcFinalWordDoneView),
-                ScreenshotConfig(tools_views.ToolsAddressExplorerSelectSourceView),
-                ScreenshotConfig(tools_views.ToolsAddressExplorerAddressTypeView),
-                ScreenshotConfig(tools_views.ToolsAddressExplorerAddressListView),
-                # ScreenshotConfig(tools_views.ToolsAddressExplorerAddressView),
-            ],
-            "Settings Views": settings_views_list + [
-                ScreenshotConfig(settings_views.IOTestView),
-                ScreenshotConfig(settings_views.DonateView),
-                ScreenshotConfig(settings_views.SettingsIngestSettingsQRView, dict(data=settingsqr_data_persistent), screenshot_name="SettingsIngestSettingsQRView_persistent"),
-                ScreenshotConfig(settings_views.SettingsIngestSettingsQRView, dict(data=settingsqr_data_not_persistent), screenshot_name="SettingsIngestSettingsQRView_not_persistent"),
-            ],
-            "Misc Error Views": [
-                ScreenshotConfig(NotYetImplementedView),
-                ScreenshotConfig(UnhandledExceptionView, dict(error=["IndexError", "line 1, in some_buggy_code.py", "list index out of range"])),
-                ScreenshotConfig(NetworkMismatchErrorView, dict(derivation_path="m/84'/1'/0'")),
-                ScreenshotConfig(OptionDisabledView, dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)),
-                ScreenshotConfig(scan_views.ScanInvalidQRTypeView)
-            ]
+            # "Tools Views": [
+            #     ScreenshotConfig(tools_views.ToolsMenuView),
+            #     #ScreenshotConfig(ToolsImageEntropyLivePreviewView),
+            #     #ScreenshotConfig(ToolsImageEntropyFinalImageView),
+            #     ScreenshotConfig(tools_views.ToolsImageEntropyMnemonicLengthView),
+            #     ScreenshotConfig(tools_views.ToolsDiceEntropyMnemonicLengthView),
+            #     ScreenshotConfig(tools_views.ToolsDiceEntropyEntryView, dict(total_rolls=50)),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordNumWordsView),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordFinalizePromptView),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordCoinFlipsView),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordShowFinalWordView, screenshot_name="ToolsCalcFinalWordShowFinalWordView_pick_word"),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordShowFinalWordView, dict(coin_flips="0010101"), screenshot_name="ToolsCalcFinalWordShowFinalWordView_coin_flips"),
+            #     ScreenshotConfig(tools_views.ToolsCalcFinalWordDoneView),
+            #     ScreenshotConfig(tools_views.ToolsAddressExplorerSelectSourceView),
+            #     ScreenshotConfig(tools_views.ToolsAddressExplorerAddressTypeView),
+            #     ScreenshotConfig(tools_views.ToolsAddressExplorerAddressListView),
+            #     # ScreenshotConfig(tools_views.ToolsAddressExplorerAddressView),
+            # ],
+            # "Settings Views": settings_views_list + [
+            #     ScreenshotConfig(settings_views.IOTestView),
+            #     ScreenshotConfig(settings_views.DonateView),
+            #     ScreenshotConfig(settings_views.SettingsIngestSettingsQRView, dict(data=settingsqr_data_persistent), screenshot_name="SettingsIngestSettingsQRView_persistent"),
+            #     ScreenshotConfig(settings_views.SettingsIngestSettingsQRView, dict(data=settingsqr_data_not_persistent), screenshot_name="SettingsIngestSettingsQRView_not_persistent"),
+            # ],
+            # "Misc Error Views": [
+            #     ScreenshotConfig(NotYetImplementedView),
+            #     ScreenshotConfig(UnhandledExceptionView, dict(error=["IndexError", "line 1, in some_buggy_code.py", "list index out of range"])),
+            #     ScreenshotConfig(NetworkMismatchErrorView, dict(derivation_path="m/84'/1'/0'")),
+            #     ScreenshotConfig(OptionDisabledView, dict(settings_attr=SettingsConstants.SETTING__MESSAGE_SIGNING)),
+            #     ScreenshotConfig(scan_views.ScanInvalidQRTypeView)
+            # ]
         }
 
         return screenshot_sections

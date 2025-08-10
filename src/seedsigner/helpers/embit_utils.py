@@ -3,7 +3,7 @@ import embit
 from binascii import b2a_base64
 from hashlib import sha256
 
-from embit import bip32, compact, ec
+from embit import bip32, bip353, compact, ec
 from embit.bip32 import HDKey
 from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
@@ -200,3 +200,18 @@ def sign_message(seed_bytes: bytes, derivation: str, msg: bytes, compressed: boo
     flag = bytes([27 + flag + c])
     ser = flag + secp256k1.ecdsa_signature_serialize_compact(sig._sig)
     return b2a_base64(ser).strip().decode()
+
+
+
+def bip353_verify(dnssec_proof: tuple) -> dict:
+    """
+    Verify a BIP-353 DNSSEC proof.
+    :return: the verified data as a dict.
+    """
+    from embit import bip353
+    hrn, proof = dnssec_proof
+    hrn_final = hrn.decode().replace("@", ".user._bitcoin-payment.") + "."
+    result = bip353.verify_dns_proof(hrn_final, proof)
+    if "verified_rrs" not in result or not result["verified_rrs"]:
+        raise Exception("BIP-353 verification failed")
+    return result

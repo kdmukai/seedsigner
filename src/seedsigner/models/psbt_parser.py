@@ -1,6 +1,6 @@
 import logging
 from binascii import hexlify
-from embit import psbt, script, ec, bip32
+from embit import psbt, script, ec, bip32, bip353
 from embit.descriptor import Descriptor
 from embit.networks import NETWORKS
 from embit.psbt import PSBT
@@ -33,6 +33,7 @@ class PSBTParser():
         self.num_inputs = 0
         self.destination_addresses = []
         self.destination_amounts = []
+        self.dnssec_proofs = []
         self.op_return_data: bytes = None
 
         self.root = None
@@ -116,6 +117,8 @@ class PSBTParser():
         self.destination_addresses = []
         self.destination_amounts = []
         for i, out in enumerate(self.psbt.outputs):
+            # TODO: `self.psbt.tx.vout[i]` references in this loop can be replaced with
+            # `out` (though a better variable name would be preferred)
             out_policy = PSBTParser._get_policy(out, self.psbt.tx.vout[i].script_pubkey, self.psbt.xpubs)
             is_change = False
 
@@ -214,8 +217,16 @@ class PSBTParser():
                 self.change_amount += self.psbt.tx.vout[i].value
 
             else:
-                addr = self.psbt.tx.vout[i].script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
-                self.destination_addresses.append(addr)
+                if out.dnssec_proof:
+                    hrn_orig, proof = out.dnssec_proof
+                    self.destination_addresses.append(hrn_orig.decode())
+                    self.dnssec_proofs.append(out.dnssec_proof)
+
+                else:
+                    addr = self.psbt.tx.vout[i].script_pubkey.address(NETWORKS[SettingsConstants.map_network_to_embit(self.network)])
+                    self.destination_addresses.append(addr)
+                    self.dnssec_proofs.append(None)
+
                 self.destination_amounts.append(self.psbt.tx.vout[i].value)
                 self.spend_amount += self.psbt.tx.vout[i].value
 
