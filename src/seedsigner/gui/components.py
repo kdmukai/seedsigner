@@ -1315,6 +1315,131 @@ class BtcAmount(BaseComponent):
 
 
 @dataclass
+class NumberHighlightedText(BaseComponent):
+    """
+        Display multi-line text using a fixed-width font with a highlight color call-out
+        for any numbers in the text. Primary use case is for displaying BIP-353 human-
+        readable addresses (email-style recipients) that might have number substition
+        exploits (e.g. "craig@sparowwa11et.com").
+        * Letters are rendered with the base font color
+        * Numbers are rendered with the accent font color
+        * Text automatically wraps to fit within the specified width
+    """
+    width: int = 0
+    edge_padding = GUIConstants.EDGE_PADDING
+    screen_x: int = 0
+    screen_y: int = 0
+    text: str = None
+    font_size: int = 24
+    font_accent_color: str = GUIConstants.ACCENT_COLOR  # For numbers
+    font_base_color: str = GUIConstants.BODY_FONT_COLOR  # For letters
+    line_spacing: int = GUIConstants.BODY_LINE_SPACING
+
+
+    def __post_init__(self):
+        # Line break logic only works with fixed-width fonts
+        self.font_name = GUIConstants.FIXED_WIDTH_FONT_NAME
+
+        super().__post_init__()
+        if self.width == 0:
+            self.width = self.renderer.canvas_width
+        
+        self.font = Fonts.get_font(self.font_name, self.font_size)
+        
+        # Fixed width font means we only have to measure one max-height character
+        left, top, right, bottom = self.font.getbbox("Q")
+        char_width, char_height = right - left, bottom - top
+
+        usable_width = self.width - 2 * self.edge_padding
+
+        # Calculate how many characters can fit per line
+        max_chars_per_line = math.floor(usable_width / char_width)
+        
+        # Split text into lines by breaking at the character limit.
+        # When a line is too long, break on the last period or "@" character.
+        lines = []
+        remaining_text = self.text
+        
+        while remaining_text:
+            if len(remaining_text) <= max_chars_per_line:
+                # Remaining text fits on one line
+                lines.append(remaining_text)
+                break
+            else:
+                # Find the best break point within the character limit
+                candidate_line = remaining_text[:max_chars_per_line]
+                
+                # Look for the last occurrence of ".", "@", or "-" in the candidate line
+                last_period = candidate_line.rfind(".")
+                last_at = candidate_line.rfind("@")
+                last_hyphen = candidate_line.rfind("-")
+                
+                # Use the rightmost break point to maximize line length
+                break_pos = max(last_period, last_at, last_hyphen)
+                
+                if break_pos > 0:
+                    # Found a good break point, include the break character
+                    break_line = remaining_text[:break_pos + 1]
+                    lines.append(break_line)
+                    remaining_text = remaining_text[break_pos + 1:]
+                else:
+                    # No good break point found, break at character limit
+                    lines.append(remaining_text[:max_chars_per_line])
+                    remaining_text = remaining_text[max_chars_per_line:]
+
+        # Build text_params for rendering characters with appropriate colors.
+        # Group consecutive characters of the same type together.
+        self.text_params = []
+        cur_y = char_height
+        
+        for line in lines:
+            # Center the line horizontally
+            line_start_x = self.screen_x + int((usable_width - len(line) * char_width) / 2) + self.edge_padding
+            
+            # Group consecutive characters of the same type
+            cur_x = line_start_x
+            i = 0
+            while i < len(line):
+                char = line[i]
+                is_digit = char.isdigit()
+                
+                # Find all consecutive characters of the same type
+                group_text = char
+                i += 1
+                while i < len(line) and line[i].isdigit() == is_digit:
+                    group_text += line[i]
+                    i += 1
+                
+                # Choose color based on character type
+                if is_digit:
+                    color = self.font_accent_color
+                else:
+                    color = self.font_base_color
+                
+                self.text_params.append((
+                    (cur_x, cur_y),
+                    group_text,
+                    color,
+                    self.font
+                ))
+                
+                # Move x position by the length of the group
+                cur_x += len(group_text) * char_width
+            
+            cur_y += char_height + self.line_spacing
+        
+        # Remove the extra line spacing from the last line for height calculation
+        # self.height = cur_y - self.line_spacing if lines else 0
+        self.height = cur_y - char_height
+
+
+    def render(self):
+        for p in self.text_params:
+            self.image_draw.text((p[0][0], p[0][1] + self.screen_y), text=p[1], fill=p[2], font=p[3], anchor="ls")
+
+
+
+@dataclass
 class Button(BaseComponent):
     """
     Buttons offer two rendering methods:

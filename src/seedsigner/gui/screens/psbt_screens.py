@@ -6,7 +6,7 @@ from gettext import gettext as _
 from gettext import ngettext
 from PIL import Image, ImageDraw, ImageFilter
 
-from seedsigner.gui.components import (BtcAmount, Icon, FontAwesomeIconConstants, IconTextLine, FormattedAddress, GUIConstants, Fonts, SeedSignerIconConstants, TextArea,
+from seedsigner.gui.components import (BtcAmount, Icon, FontAwesomeIconConstants, IconTextLine, FormattedAddress, GUIConstants, Fonts, NumberHighlightedText, SeedSignerIconConstants, TextArea,
     calc_bezier_curve, linear_interp)
 from seedsigner.gui.renderer import Renderer
 from seedsigner.models.threads import BaseThread
@@ -627,14 +627,13 @@ class PSBTAddressDetailsScreen(ButtonListScreen):
         recipient_display = None
         if "@" in self.address:
             # This is a BIP-353 email style address
-            recipient_display = TextArea(
+            recipient_display = NumberHighlightedText(
                 image_draw=draw,
                 canvas=center_img,
-                text=self.address,
-                font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
-                screen_y=btc_amount.height + 2*GUIConstants.COMPONENT_PADDING,
+                # text=self.address,
+                text="fake-addr5-craig8@sparrowwa11et.com",
                 font_size=GUIConstants.get_button_font_size() + 2,
-                font_color=GUIConstants.ACCENT_COLOR,
+                screen_y=btc_amount.height + 2*GUIConstants.COMPONENT_PADDING,
             )
         
         else:
@@ -673,13 +672,10 @@ class PSBTBIP353DNSSECDetailsScreen(ButtonListScreen):
 
         super().__post_init__()
     
-        hrn_display = TextArea(
+        hrn_display = NumberHighlightedText(
             text=self.hrn,
-            font_name=GUIConstants.FIXED_WIDTH_EMPHASIS_FONT_NAME,
             font_size=GUIConstants.get_button_font_size() + 2,
-            font_color=GUIConstants.ACCENT_COLOR,
             screen_y=self.top_nav.height + GUIConstants.COMPONENT_PADDING,
-            allow_text_overflow=True,
         )
         self.components.append(hrn_display)
 

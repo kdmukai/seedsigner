@@ -376,8 +376,8 @@ def generate_screenshots(locale):
 
                 ScreenshotConfig(psbt_views.PSBTOverviewView, screenshot_name="PSBTOverviewView_bip353", run_before=load_bip353_psbt_cb),
                 ScreenshotConfig(psbt_views.PSBTAddressDetailsView, dict(address_num=0), screenshot_name="PSBTAddressDetailsView_bip353"),
-                ScreenshotConfig(psbt_views.PSBTBIP353DNSSECWarningView, dict(address_num=0)),
                 ScreenshotConfig(psbt_views.PSBTBIP353DNSSECDetailsView, dict(address_num=0)),
+                ScreenshotConfig(psbt_views.PSBTBIP353DNSSECVerificationFailedView, dict(address_num=0)),
 
             ],
             "Tools Views": [

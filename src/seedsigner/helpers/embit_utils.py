@@ -210,7 +210,11 @@ def bip353_verify(dnssec_proof: tuple) -> dict:
     """
     from embit import bip353
     hrn, proof = dnssec_proof
-    hrn_final = hrn.decode().replace("@", ".user._bitcoin-payment.") + "."
+
+    # The verification is case-insensitive, but we force lowercase so that when the hrn
+    # is displayed to the user later, any capital letter substitutions (e.g. "I" for "l")
+    # will be less likely to fool the user.
+    hrn_final = (hrn.decode().replace("@", ".user._bitcoin-payment.") + ".").lower()
     result = bip353.verify_dns_proof(hrn_final, proof)
     if "verified_rrs" not in result or not result["verified_rrs"]:
         raise Exception("BIP-353 verification failed")

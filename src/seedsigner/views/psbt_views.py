@@ -286,7 +286,7 @@ class PSBTAddressDetailsView(View):
         
         if "@" in psbt_parser.destination_addresses[self.address_num]:
             # This is a BIP-353 email style address
-            return Destination(PSBTBIP353DNSSECWarningView, view_args={"address_num": self.address_num})
+            return Destination(PSBTBIP353DNSSECDetailsView, view_args={"address_num": self.address_num})
 
         elif self.address_num < len(psbt_parser.destination_addresses) - 1:
             # Show the next receive addr
@@ -305,42 +305,6 @@ class PSBTAddressDetailsView(View):
 
 
 
-class PSBTBIP353DNSSECWarningView(View):
-    """
-    """
-    def __init__(self, address_num):
-        super().__init__()
-        self.address_num = address_num
-        psbt_parser: PSBTParser = self.controller.psbt_parser
-
-        if not psbt_parser:
-            # Should not be able to get here
-            raise Exception("Routing error")
-
-        self.hrn = psbt_parser.dnssec_proofs[self.address_num][0].decode()
-
-
-    def run(self):
-        from seedsigner.gui.screens import WarningScreen
-
-        selected_menu_num = WarningScreen(
-            title=_("BIP-353 Verification"),
-            status_icon_name=SeedSignerIconConstants.WARNING,
-            status_headline=_("Verify Online"),
-            text=_("Compare the recipient's address on the next screen with a live check at https://satsto.me"),
-            button_data=[ButtonOption("View Address")],
-        ).display()
-
-        if selected_menu_num == RET_CODE__BACK_BUTTON:
-            return Destination(BackStackView)
-
-        return Destination(
-            PSBTBIP353DNSSECDetailsView,
-            view_args={"address_num": self.address_num},
-        )
-
-
-
 class PSBTBIP353DNSSECDetailsView(View):
     """
     """
@@ -349,15 +313,11 @@ class PSBTBIP353DNSSECDetailsView(View):
         self.address_num = address_num
         self.psbt_parser: PSBTParser = self.controller.psbt_parser
 
-        if not self.psbt_parser:
-            # Should not be able to get here
-            raise Exception("Routing error")
-
         try:
             result = embit_utils.bip353_verify(self.psbt_parser.dnssec_proofs[self.address_num])
         except Exception as e:
-            print(f"Failed to verify DNSSEC proof: {e}")
-            raise e
+            self.set_redirect(Destination(PSBTBIP353DNSSECVerificationFailedView, view_args={"address_num": self.address_num}))
+            return
 
         self.hrn = self.psbt_parser.dnssec_proofs[self.address_num][0].decode()
         # Trim the "bitcoin:" prefix
@@ -368,7 +328,6 @@ class PSBTBIP353DNSSECDetailsView(View):
         from seedsigner.gui.screens.psbt_screens import PSBTBIP353DNSSECDetailsScreen
 
         button_data = []
-        # TRANSLATOR_NOTE: Short for "Next step"
         button_data.append(ButtonOption("Next"))
 
         selected_menu_num = self.run_screen(
@@ -397,6 +356,36 @@ class PSBTBIP353DNSSECDetailsView(View):
             # There's no change output to verify. Move on to sign the PSBT.
             return Destination(PSBTFinalizeView)
 
+
+
+class PSBTBIP353DNSSECVerificationFailedView(View):
+    """
+    View that displays a dire error when DNSSEC verification fails for a BIP-353
+    recipient address in a PSBT.
+    """
+    def __init__(self, address_num):
+        super().__init__()
+        self.address_num = address_num
+
+
+    def run(self):
+        psbt_parser: PSBTParser = self.controller.psbt_parser
+        address = psbt_parser.destination_addresses[self.address_num]
+
+        self.run_screen(
+            DireWarningScreen,
+            title=_("BIP-353 Verification Failed"),
+            status_headline=_("Invalid DNSSEC Proof"),
+            text=_("{} failed verification. It is not safe to proceed.").format(address),
+            button_data=[ButtonOption("Discard PSBT")],
+            show_back_button=False,
+        )
+
+        # Do not allow the user to proceed with this PSBT; explicitly discard it (even
+        # though MainMenuView would clear it anyway).
+        self.controller.psbt = None
+        self.controller.psbt_parser = None
+        return Destination(MainMenuView, clear_history=True)
 
 
 class PSBTChangeDetailsView(View):
