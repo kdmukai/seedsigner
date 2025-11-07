@@ -121,19 +121,31 @@ class SettingsConstants:
     ALL_LOCALES = {
         # --------- Fully supported languages -------------------------------------------
         LOCALE__CATALAN: "Català",
+        LOCALE__CZECH: "čeština",
         LOCALE__GERMAN: "Deutsch",
         LOCALE__ENGLISH: "English",
         LOCALE__SPANISH: "Español",
         LOCALE__FRENCH: "Français",
         LOCALE__ITALIAN: "Italiano",
         LOCALE__DUTCH: "Nederlands",
+        LOCALE__NORWEGIAN: "Norsk",
+        LOCALE__POLISH: "Polski",
+        LOCALE__PORTUGUESE_BR: "Português (Brasil)",
 
         # --------- Beta languages ------------------------------------------------------
         LOCALE__CHINESE_SIMPLIFIED: "(beta) 简体中文 (Chinese Simplified)",
+        LOCALE__GREEK: "(beta) Ελληνικά (Greek)",  # OpenSans includes Greek chars
         LOCALE__HINDI: "(beta) हिन्दी (Hindi)",
+        LOCALE__INDONESIAN: "(beta) Indonesian",
         LOCALE__JAPANESE: "(beta) 日本語 (Japanese)",
         LOCALE__KOREAN: "(beta) 한국어 (Korean)",
+        LOCALE__RUSSIAN: "(beta) русский (Russian)",  # OpenSans includes cyrillic chars
         LOCALE__THAI: "(beta) ไทย (Thai)",
+        LOCALE__TURKISH: "(beta) Türkçe (Turkish)",
+        LOCALE__VIETNAMESE: "(beta) Tiếng Việt (Vietnamese)",
+
+        # --------- In-progress languages ------------------------------------------------------
+        LOCALE__PERSIAN: "(alpha) فارسی (Persian)",
 
         # --------- Placeholders / Coming soon ------------------------------------------
         # Commented out options require explicit additional font support.
@@ -141,18 +153,15 @@ class SettingsConstants:
         LOCALE__ARABIC: "العربية (Arabic)",
         # LOCALE__BENGALI: "বাংলা (Bengali)",
         LOCALE__BULGARIAN: "български (Bulgarian)",  # OpenSans includes cyrillic chars
-        LOCALE__CZECH: "čeština",
         # LOCALE__CHINESE_TRADITIONAL: "繁體中文 (Chinese Traditional)",
         LOCALE__DANISH: "Dansk",
         LOCALE__ESTONIAN: "Eesti",
         # LOCALE__EGYPTIAN: "مصرى (Egyptian)",
         LOCALE__GAELIC: "Gaeilge",
-        LOCALE__GREEK: "Ελληνικά (Greek)",  # OpenSans includes Greek chars
         # LOCALE__GUJARATI: "ગુજરાતી (Gujarati)",
         LOCALE__HAUSA: "Hausa",
         # LOCALE__HEBREW: "עברית (Hebrew)",
         LOCALE__CROATIAN: "Hrvatski",
-        LOCALE__INDONESIAN: "Indonesia",
         LOCALE__JAVANESE: "Jawa (Javanese)",
         # LOCALE__LAO: "ລາວ (Lao)",
         LOCALE__LATVIAN: "Latviešu",
@@ -161,14 +170,9 @@ class SettingsConstants:
         LOCALE__MALAY: "Melayu",
         LOCALE__MALTESE: "Malti",
         # LOCALE__MARATHI: "मराठी (Marathi)",
-        LOCALE__NORWEGIAN: "Norsk",
-        LOCALE__PERSIAN: "فارسی (Persian)",
-        LOCALE__POLISH: "Polski",
-        LOCALE__PORTUGUESE_BR: "Português (Brasil)",
         LOCALE__PORTUGUESE_PT: "Português (Portugal)",
         # LOCALE__PUNJABI: "ਪੰਜਾਬੀ (Punjabi)",
         LOCALE__ROMANIAN: "Română",
-        LOCALE__RUSSIAN: "русский (Russian)",  # OpenSans includes cyrillic chars
         LOCALE__SLOVAK: "Slovenčina",
         LOCALE__SLOVENIAN: "Slovenščina",
         LOCALE__FINNISH: "Suomi",
@@ -176,10 +180,8 @@ class SettingsConstants:
         LOCALE__TAGALOG: "Tagalog",
         # LOCALE__TAMIL: "தமிழ் (Tamil)",
         # LOCALE__TELUGU: "తెలుగు (Telugu)",
-        LOCALE__TURKISH: "Türkçe",
         LOCALE__UKRANIAN: "українська (Ukranian)",   # OpenSans includes cyrillic chars
         # LOCALE__URDU: "اردو (Urdu)",
-        LOCALE__VIETNAMESE: "Tiếng Việt (Vietnamese)",
     }
 
     @classmethod
