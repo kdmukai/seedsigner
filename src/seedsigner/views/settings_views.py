@@ -65,6 +65,10 @@ class SettingsMenuView(View):
             title = _("Dev Options")
             next_destination = None
 
+        import time
+        print(f"{time.time():.2f}")
+        button_data.append(ButtonOption(f"{time.time():.2f}"))
+
         selected_menu_num = self.run_screen(
             ButtonListScreen,
             title=title,
