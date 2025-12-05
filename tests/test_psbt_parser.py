@@ -153,10 +153,16 @@ class TestPSBTParser:
         """
         PSBTParser should correctly handle PSBTs with zero fingerprints (created from XPUB-only imports, 
         without derivation path) by matching public keys against the seed and filling in correct fingerprints.
+
+        Should also handle the rare case where the actual fingerprint is 00000000!
         """
-        for input in PSBTTestData.ALL_INPUTS:
+        single_sig_test_data = [(input, PSBTTestData.seed) for input in PSBTTestData.SINGLE_SIG_INPUTS]
+        multisig_test_data = [(input, seed) for input in PSBTTestData.MULTISIG_INPUTS for seed in PSBTTestData.MULTISIG_SEEDS]
+        fingerprint_00000000_test_data = [(input, PSBTTestData.fingerprint_00000000_seed) for input in PSBTTestData.ALL_FINGERPRINT_00000000_PSBTS]
+
+        for input, seed in single_sig_test_data + multisig_test_data + fingerprint_00000000_test_data:
             psbt = PSBT.parse(a2b_base64(input))
-            
+
             # Backup original derivations
             original_derivations = []
             original_taproot_derivations = []
@@ -184,14 +190,14 @@ class TestPSBTParser:
             
             # Verify that has_matching_input_fingerprint works with zero fingerprints
             # This tests the fallback mechanism that tries to derive and match pubkeys
-            assert PSBTParser.has_matching_input_fingerprint(psbt, PSBTTestData.seed, SettingsConstants.REGTEST)
+            assert PSBTParser.has_matching_input_fingerprint(psbt, seed, SettingsConstants.REGTEST)
             
             # Test that it correctly rejects wrong seeds
             wrong_seed = Seed(["bacon"] * 24)
             assert PSBTParser.has_matching_input_fingerprint(psbt, wrong_seed, SettingsConstants.REGTEST) == False
             
             # Test the PSBTParser's ability to fill zero fingerprints during parsing
-            parser = PSBTParser(p=psbt, seed=PSBTTestData.seed, network=SettingsConstants.REGTEST)
+            parser = PSBTParser(p=psbt, seed=seed, network=SettingsConstants.REGTEST)
             
             # Verify fingerprints were correctly filled after parsing
             seed_fingerprint = parser.seed.get_fingerprint(SettingsConstants.REGTEST)
@@ -199,7 +205,7 @@ class TestPSBTParser:
             
             for inp in parser.psbt.inputs:
                 for pub, derivation in inp.bip32_derivations.items():
-                    if derivation.fingerprint != b"\x00\x00\x00\x00":
+                    if derivation.fingerprint != b"\x00\x00\x00\x00" or seed_fingerprint == "00000000":
                         fingerprints_filled = True
                         # Should match the seed's fingerprint
                         from binascii import hexlify
@@ -207,7 +213,7 @@ class TestPSBTParser:
                 
                 # Also check Taproot derivations
                 for pub, (leaf_hashes, derivation) in inp.taproot_bip32_derivations.items():
-                    if derivation.fingerprint != b"\x00\x00\x00\x00":
+                    if derivation.fingerprint != b"\x00\x00\x00\x00" or seed_fingerprint == "00000000":
                         fingerprints_filled = True
                         # Should match the seed's fingerprint
                         from binascii import hexlify
