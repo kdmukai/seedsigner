@@ -364,6 +364,12 @@ class ST7789(BaseDisplayDriver):
         GPIO.output(self.dc,GPIO.HIGH)
         self._write(data=pix)
 
+    def blit_rgb565(self, x1: int, y1: int, x2: int, y2: int, data: bytes):
+        # _set_window uses inclusive end coords
+        self._set_window(x1, y1, x2, y2)
+        GPIO.output(self.dc, GPIO.HIGH)
+        self.spi.writebytes2(data)
+
     def _write(self, command=None, data=None):
         """SPI write to the device: commands and data."""
         if self.cs:

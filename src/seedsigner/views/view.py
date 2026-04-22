@@ -195,13 +195,11 @@ class MainMenuView(View):
     SETTINGS = ButtonOption("Settings", SeedSignerIconConstants.SETTINGS)
 
     def run(self):
-        from seedsigner.gui.screens.screen import MainMenuScreen
+        from seedsigner.gui.screens.lvgl_screens import lvgl_main_menu_screen
+        from seedsigner.gui.renderer import Renderer
+
         button_data = [self.SCAN, self.SEEDS, self.TOOLS, self.SETTINGS]
-        selected_menu_num = self.run_screen(
-            MainMenuScreen,
-            title=_("Home"),
-            button_data=button_data,
-        )
+        selected_menu_num = lvgl_main_menu_screen(Renderer.get_instance())
 
         if selected_menu_num == RET_CODE__POWER_BUTTON:
             return Destination(PowerOptionsView)

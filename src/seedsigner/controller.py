@@ -80,6 +80,10 @@ class BackgroundImportThread(BaseThread):
         time_import('seedsigner.views.tools_views')
         time_import('seedsigner.views.settings_views')
 
+        # Initialize LVGL runtime (no hardware impact until a screen is rendered)
+        from seedsigner.gui.screens.lvgl_screens import ensure_lvgl_runtime
+        ensure_lvgl_runtime()
+
 
 
 class Controller(Singleton):
@@ -194,7 +198,7 @@ class Controller(Singleton):
         controller.back_stack = BackStack()
 
         # Other behavior constants
-        controller.screensaver_activation_ms = 2 * 60 * 1000  # two minutes
+        controller.screensaver_activation_ms = 10 * 1000  # ten seconds
     
         background_import_thread = BackgroundImportThread()
         background_import_thread.start()
@@ -395,16 +399,11 @@ class Controller(Singleton):
             logger.info(f"Controller: settings toggle_render_lock for {self.toast_notification_thread.__class__.__name__}")
             self.toast_notification_thread.toggle_renderer_lock()
 
-        logger.info("Controller: Starting screensaver")
-        if not self.screensaver:
-            # Do a lazy/late import and instantiation to reduce Controller initial startup time
-            from seedsigner.views.screensaver import ScreensaverScreen
-            from seedsigner.hardware.buttons import HardwareButtons
-            self.screensaver = ScreensaverScreen(HardwareButtons.get_instance())
-        
-        # Start the screensaver, but it will block until it can acquire the Renderer.lock.
-        self.screensaver.start()
-        logger.info("Controller: Screensaver started")
+        logger.info("Controller: Starting LVGL screensaver")
+        from seedsigner.gui.screens.lvgl_screens import lvgl_screensaver_screen
+        from seedsigner.gui.renderer import Renderer
+        lvgl_screensaver_screen(Renderer.get_instance())
+        logger.info("Controller: Screensaver ended")
     
 
     def reset_screensaver_timeout(self):

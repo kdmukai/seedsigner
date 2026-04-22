@@ -175,6 +175,12 @@ class ST7789(BaseDisplayDriver):
         GPIO.output(self._dc,GPIO.HIGH)
         self._spi.writebytes2(_buffer)
 
+    def blit_rgb565(self, x1: int, y1: int, x2: int, y2: int, data: bytes):
+        # SetWindows uses exclusive end coords (subtracts 1 internally)
+        self.SetWindows(x1, y1, x2 + 1, y2 + 1)
+        GPIO.output(self._dc, GPIO.HIGH)
+        self._spi.writebytes2(data)
+
     def invert(self, enabled: bool = True):
         """Invert how the display interprets colors"""
         self.command(0x21 if enabled else 0x20)

@@ -44,6 +44,20 @@ class BaseDisplayDriver:
         raise Exception("show_image() must be implemented in child classes")
 
 
+    def blit_rgb565(self, x1: int, y1: int, x2: int, y2: int, data: bytes):
+        """
+        Write raw RGB565 pixel data to a display region.
+
+        Coordinates are inclusive (matching LVGL's lv_area_t convention):
+            x1, y1 = top-left pixel
+            x2, y2 = bottom-right pixel
+
+        data: big-endian RGB565 bytes, row-major, (x2-x1+1)*(y2-y1+1)*2 bytes.
+        Must be implemented in child classes that support LVGL rendering.
+        """
+        raise NotImplementedError("blit_rgb565() must be implemented in child classes")
+
+
     def cleanup(self):
         """
         Cleanup resources used by the display driver.
