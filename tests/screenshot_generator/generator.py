@@ -452,6 +452,7 @@ def generate_screenshots(locale):
                 ScreenshotConfig(psbt_views.PSBTOpReturnView, screenshot_name="PSBTOpReturnView_raw_hex_data", mock_context_manager=mock_psbt_with_op_return_raw_bytes_loaded),
                 ScreenshotConfig(psbt_views.PSBTSurplusDerivationPathsView),
                 ScreenshotConfig(psbt_views.PSBTMixedDerivationPathTypesView),
+                ScreenshotConfig(psbt_views.PSBTUnsupportedDerivationPathView),
                 ScreenshotConfig(psbt_views.PSBTOutputOwnershipContradictionView),
                 ScreenshotConfig(psbt_views.PSBTInputOwnershipContradictionView),
                 ScreenshotConfig(psbt_views.PSBTMissingInputScriptView),
